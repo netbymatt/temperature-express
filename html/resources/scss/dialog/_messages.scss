@@ -1,0 +1,66 @@
+#dialog-messages {
+	width: 800px;
+	max-width: 90vw;
+	max-height: 90vh;
+	height: 500px;
+
+	.byline {
+		text-align: center;
+	}
+
+	#dialog-messages-retry,
+	#dialog-messages-copy {
+		float: right;
+	}
+
+	@keyframes copy {
+		0% {}
+
+		50% {
+			background-color: white;
+		}
+
+		100% {}
+	}
+
+	&.copy-animation {
+		animation-name: copy;
+		animation-duration: 0.15s;
+	}
+
+	.content {
+		max-height: 450px;
+		font-family: monospace;
+
+		div {
+			padding-top: 0.2em;
+
+			color: hsl(0, 0%, 65%);
+
+			border-bottom: 1px solid hsl(0, 0%, 45%);
+
+			&.progress {
+				color: unset;
+			}
+
+			&.new {
+				@media (prefers-color-scheme: dark) {
+					background-color: hsl(0, 0%, 35%);
+				}
+
+				background-color: hsl(140, 35%, 35%);
+
+				color: hsl(100, 63%, 65%);
+
+			}
+
+			&.error {
+				color: hsl(0, 100%, 90%);
+				background-color: hsl(0, 35%, 30%);
+			}
+		}
+
+
+	}
+
+}

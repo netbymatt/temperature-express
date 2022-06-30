@@ -1,0 +1,11 @@
+@mixin fade-on-show {
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.2s ease-in-out, visibility 0.2s;
+
+	&.show {
+		visibility: visible;
+		opacity: 1;
+	}
+
+}

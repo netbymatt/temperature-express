@@ -1,0 +1,39 @@
+#dialog-sun {
+	width: unset;
+
+	.content {
+		padding: 1.5em;
+	}
+
+	table {
+		margin-right: auto;
+		margin-left: auto;
+		border-collapse: collapse;
+		white-space: nowrap;
+		text-align: right;
+
+		thead tr {
+			border-bottom: 2px solid hsl(0, 0%, 0%);
+		}
+
+		th {
+			text-align: center;
+		}
+
+		td {
+			padding-left: 8px;
+			padding: 0.5em;
+		}
+
+		.duration {
+			font-size: 0.7em;
+			text-align: center;
+			vertical-align: top;
+			height: 2em;
+		}
+
+		#moonphase {
+			text-align: left;
+		}
+	}
+}

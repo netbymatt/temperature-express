@@ -1,0 +1,44 @@
+#dialog-alert {
+	height: 1px;
+
+	.inactive {
+		color: hsl(0, 0%, 60%);
+	}
+
+	.inactive h3,
+	.inactive h4 {
+		text-decoration: line-through;
+	}
+
+	h3 {
+		margin-bottom: 0px;
+		cursor: pointer;
+	}
+
+	ul {
+		margin-top: 0px;
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	.content li div div.times {
+		margin-top: 5px;
+		font-size: 0.8em;
+		white-space: normal;
+	}
+
+	.times span {
+		white-space: normal;
+	}
+
+	.content li div div {
+		white-space: pre-wrap;
+		font-family: monospace;
+	}
+
+	&.show {
+		height: 75vh;
+	}
+}

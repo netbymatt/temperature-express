@@ -1,0 +1,42 @@
+#dialog-outlook {
+	max-width: 450px;
+
+	a {
+		text-decoration: unset;
+		color: unset;
+	}
+
+	h4 {
+		margin-left: 1em;
+	}
+}
+
+
+#dialog-outlook-map {
+	max-width: 820px;
+
+	img {
+		image-rendering: -webkit-optimize-contrast;
+		max-width: 100%;
+	}
+
+	a {
+		text-decoration: unset;
+		color: unset;
+	}
+
+}
+
+#dialog-outlook-map-navigation {
+	position: relative;
+	height: 2.8em;
+
+	button {
+		position: absolute;
+		top: 0px;
+	}
+
+	.right {
+		right: 0px;
+	}
+}

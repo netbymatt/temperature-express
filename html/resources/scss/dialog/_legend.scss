@@ -1,0 +1,36 @@
+#dialog-legend {
+	width: 400px;
+
+	.content {
+		.touch-button {
+			width: 41%;
+			text-align: unset;
+			font-size: 1.0em;
+			height: 1em;
+			display: inline-block;
+		}
+
+		label {
+			text-transform: capitalize;
+		}
+
+		div {
+			display: inline-block;
+		}
+
+		.color-box {
+			height: 10px;
+			width: 30px;
+			vertical-align: middle;
+			margin: 3px;
+			border-radius: 5px;
+		}
+	}
+
+	.buttons {
+		#legend-update {
+			float: right;
+		}
+	}
+
+}

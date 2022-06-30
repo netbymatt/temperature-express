@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Temperature Express</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" type="image/png" sizes="64x64" href="images/tempexp-64.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="images/tempexp-32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/tempexp-16.png">
+	<link rel="preload" href="/products/outlook/day1otlk_cat.nolyr.geojson" as="fetch" type="application/json"
+		crossorigin="anonymous">
+	<link rel="preload" href="/products/outlook/day2otlk_cat.nolyr.geojson" as="fetch" type="application/json"
+		crossorigin="anonymous">
+	<link rel="preload" href="/products/outlook/day3otlk_cat.nolyr.geojson" as="fetch" type="application/json"
+		crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+	<!-- temp.exp insert header -->
+	<link rel="stylesheet" href="resources/css/style.css" type="text/css" />
+	<script
+		type="text/javascript">_apiUrl = '<%-_apiUrl%>'; if (_apiUrl === '' || !_apiUrl || _apiUrl.includes('%-')) _apiUrl = 'https://api.weather.gov/';</script>
+	<script type="text/javascript" src="resources/flot/jquery.flot.js"></script>
+	<script type="text/javascript" src="resources/flot/lib/jquery.event.drag.js"></script>
+	<script type="text/javascript" src="resources/flot/lib/jquery.mousewheel.js"></script>
+	<script type="module" src="resources/js/loading.mjs"></script>
+	<script type="module" src="resources/js/location.mjs"></script>
+	<script type="module" src="resources/js/legend.mjs"></script>
+	<script type="module" src="resources/js/astronomical.mjs"></script>
+
+	<script type="text/javascript" src="resources/vendor/arrow.js"></script>
+	<script type="text/javascript" src="resources/vendor/suncalc.js"></script>
+	<!-- temp.exp end-insert -->
+</head>
+
+<body>
+
+	<div id="title">
+		<div id="location">
+			Loading location...
+		</div>
+		<div id="date">
+			<span></span>
+		</div>
+		<div class="progress-bar-container">
+			<div id="progressbar"></div>
+		</div>
+	</div>
+
+	<div id="loading" class="show">
+		<div class="centering">
+			<div id="loading-throbber">
+				<div class="icon">
+					<i id="throbber-0" class="fas fa-sun"> </i>
+					<i id="throbber-1" class="fas fa-cloud-sun"> </i>
+					<i id="throbber-2" class="fas fa-cloud"> </i>
+					<i id="throbber-3" class="fas fa-cloud-rain"> </i>
+					<i id="throbber-4" class="fas fa-bolt"> </i>
+					<i id="throbber-5" class="fas fa-snowflake"> </i>
+					<i id="throbber-6" class="fas fa-wind"> </i>
+					<i id="throbber-7" class="fas fa-temperature-low"> </i>
+					<i id="throbber-8" class="fas fa-cloud-moon"> </i>
+					<i id="throbber-9" class="fas fa-temperature-high"> </i>
+					<i id="throbber-10" class="fas fa-cloud-sun-rain"> </i>
+					<i id="throbber-11" class="fas fa-rainbow"> </i>
+					<i id="throbber-12" class="fas fa-umbrella"> </i>
+					<i id="throbber-13" class="fas fa-moon"> </i>
+					<i id="throbber-14" class="fas fa-meteor"> </i>
+					<i id="throbber-15" class="fas fa-cloud-moon-rain"> </i>
+					<i id="throbber-16" class="fas fa-cloud-showers-heavy"> </i>
+				</div>
+				<div id="loading-text">
+					<div id="loading-current"></div>
+					<div id="loading-next"></div>
+				</div>
+			</div>
+			<div id="loading-error">Unable to load forecast from NWS<br><button id="retry-forecast"><i
+						class="fas fa-undo-alt"></i> Retry</button></div>
+		</div>
+	</div>
+
+	<div id="chart-container">
+		<div id="chart">
+			<div class="days"></div>
+		</div>
+		<div class="chart-area-button-container">
+			<button class="touch-button chart-area-button" id="outlook-button">
+				<i class="fas fa-binoculars"></i>
+			</button>
+			<button class="touch-button chart-area-button" id="alert-button">
+				<i class="fas fa-exclamation-triangle"></i>
+			</button>
+		</div>
+		<div id="weather-text"></div>
+	</div>
+
+
+	<div id="table">
+		<table class="data-table">
+		</table>
+	</div>
+
+	<div id="tooltip" class="initial-hide">
+		<div class="title-container">
+			<div class="value">
+				Value
+			</div>
+			<div class="title">
+				Title
+			</div>
+		</div>
+		<div class="timestamp">
+			Timestamps
+		</div>
+	</div>
+
+	<div class="top-left">
+		<img src="images/tempexp-32.png" width="32" height="32">
+	</div>
+	<div class="top-right">
+		<div class="touch-button" id="menu-touch">
+			<i class="fas fa-bars"></i>
+		</div>
+	</div>
+
+	<div id="dialog-alert" class="dialog initial-hide">
+		<div class="title">
+			<div>Current and Recent Alerts</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div id="dialog-alert-content" class="content"></div>
+	</div>
+	<div id="dialog-legend" class="dialog initial-hide">
+		<div class="title">
+			<div>Legend</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content">
+			<div class="keys">
+			</div>
+		</div>
+		<div class="buttons">
+			<button id="legend-update" value="Update" class="touch-button"><i class="fas fa-check"></i> Update</button>
+		</div>
+	</div>
+
+	<div id="dialog-location" class="dialog initial-hide">
+		<div class="title">
+			<div>Location</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content">
+			<input type="search" id="locationSearch" placeholder="Enter location" class="touch-button" spellcheck="false" />
+			<div class="error">Geolocation unavailable</div>
+			<button class="touch-button"><i class="fas fa-square" id="followMe"></i> Use GPS</button>
+		</div>
+	</div>
+
+	<div id="dialog-messages" class="dialog initial-hide">
+		<div class="title copy">
+			<div>Temp.Exp Console v<%=version??' Dev'%>
+			</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content"></div>
+		<div class="byline"><a href="https://github.com/netbymatt/temperature-express/">Temperature Express from Net by
+				Matt</a></div>
+		<div class="buttons">
+			<button class="touch-button" id="dialog-messages-retry"><i class="fas fa-undo-alt"></i> Retry</button>
+			<button class="touch-button" id="dialog-messages-copy"><i class="fas fa-copy"></i> Copy</button>
+			<button class="touch-button" id="dialog-messages-reset"><i class="fas fa-download"></i> Refresh
+				Application</button>
+		</div>
+	</div>
+	</div>
+
+	<div class="hidden-placeholders">
+		<div class="day"></div>
+		<ul class="loading">
+			<li>Locating hurricanes</li>
+			<li>Randomizing forecast</li>
+			<li>Contacting GOES satellite</li>
+			<li>Launching weather balloon</li>
+			<li>Seeding clouds</li>
+			<li>Rotating Nexrad radar</li>
+			<li>Polling local meteorologists</li>
+			<li>Emptying rain gauge</li>
+			<li>Calibrating anemometer</li>
+			<li>Deploying weather spotters</li>
+			<li>Shaking magic 8 ball</li>
+			<li>Consulting Ouija board</li>
+			<li>Adjusting for climate change</li>
+			<li>Reticulating splines</li>
+			<li>Gathering marble sized hail</li>
+			<li>Checking under the weather</li>
+			<li>Consulting fair weather friends</li>
+			<li>Finding rainbows</li>
+		</ul>
+	</div>
+
+	<div class="dialog side-menu">
+		<div class="title">
+			<div>Menu</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content">
+			<div class="row forecast">
+				<img src="" />
+				<div id="menu-forecast-header"></div>
+				<div id="menu-forecast">
+					<div id="menu-forecast-high">High: <span></span></div>
+					<div id="menu-forecast-low">Low: <span></span></div>
+					<div>Wind: <span id="menu-forecast-wind-direction"></span> <span id="menu-forecast-wind-speed"></span></div>
+					<div id="menu-forecast-text"></div>
+				</div>
+			</div>
+			<div class="row link" id="menu-location">
+				<div id="menu-location-dialog">
+					<i class="fas fa-location-arrow" id="menu-location-no-gps"></i><i class="fas fa-map-marked"
+						id="menu-location-with-gps"></i><span class="menu-location-text"></span>
+				</div>
+				<div id="menu-location-use-gps"><i class="fas fa-map-marked"></i>Use GPS</div>
+				<div id="menu-prev-locations">
+					<div></div>
+				</div>
+			</div>
+			<div class="row link" id="menu-alerts"><i class="fas fa-exclamation-triangle"></i>Alerts</div>
+			<div class="row link" id="menu-outlook"><i class="fas fa-binoculars"></i>SPC Outlook</div>
+			<div class="row link hidden-placeholders" id="menu-add"><i class="fas fa-bookmark"></i>Add to home screen</div>
+			<div class="row link" id="menu-legend"><i class="fas fa-book"></i>Legend</div>
+			<div class="row link" id="menu-table">
+				<div class="table"><i class="fas fa-table"></i>Show as table</div>
+				<div class="chart" style="display: none;"><i class="fas fa-chart-line"></i>Show as graph</div>
+			</div>
+			<div class="row link" id="menu-sun"><i class="fas fa-sun"></i>Sunrise and sunset</div>
+			<div class="row link" id="menu-units"><i class="fas fa-ruler"></i>Units: <span>US</span></div>
+			<!-- temp.exp insert menu-bottom -->
+			<!-- temp.exp end-insert -->
+			<div class="footer" id="menu-footer">
+				<!-- temp.exp insert menu-footer -->
+				<!-- temp.exp end-insert -->
+				<div>Observation Site: <span id="menu-footer-site"></span></div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<div id="dialog-outlook" class="dialog initial-hide">
+		<div class="title">
+			<div>SPC Outlook</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content">
+			<div id="dialog-outlook-1" data-day="1"></div>
+			<div id="dialog-outlook-2" data-day="2"></div>
+			<div id="dialog-outlook-3" data-day="3"></div>
+		</div>
+	</div>
+
+	<div id="dialog-outlook-map" class="dialog initial-hide">
+		<div class="title">
+			<div>Day 1 Outlook Map: Today</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content">
+			<div id="dialog-outlook-map-navigation">
+				<button data-new-day="0" class="touch-button left">Previous</button>
+				<button data-new-day="0" class="touch-button right">Next</button>
+			</div>
+			<img width="815" aspect-ratio="815/555" />
+		</div>
+	</div>
+
+	<div id="dialog-sun" class="dialog initial-hide">
+		<div class="title">
+			<div>Astronomical Info</div>
+			<div class="close"><i class="fa fa-window-close"></i></div>
+		</div>
+		<div class="content">
+			<table>
+				<thead>
+					<tr>
+						<th>
+						</th>
+						<th>
+							Rise
+						</th>
+						<th>
+							Set
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							Sun
+						</td>
+						<td id="sunrise" class="data">
+						</td>
+						<td id="sunset" class="data">
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td colspan="2" class="duration data" id="sunduration">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Moon
+						</td>
+						<td id="moonrise" class="data">
+						</td>
+						<td id="moonset" class="data">
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td colspan="2" class="duration data" id="moonduration">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Phase
+						</td>
+						<td colspan="2" id="moonphase" class="data">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- temp.exp insert dialogs -->
+	<!-- temp.exp end-insert -->
+</body>
+
+</html>

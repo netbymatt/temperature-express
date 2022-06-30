@@ -1,0 +1,96 @@
+@use 'utils'as u;
+
+#loading {
+	width: 100%;
+	height: calc(100% - 50px);
+	top: 50px;
+	position: relative;
+	overflow: hidden;
+	@include u.fade-on-show();
+
+	.centering {
+		margin-left: 50%;
+		top: 50%;
+		position: absolute;
+		transform: translateY(-50%);
+	}
+
+	.icon {
+		height: 4.5em;
+		position: relative;
+		left: -50%;
+		width: 400px;
+	}
+}
+
+#loading-throbber {
+	&.error {
+		visibility: hidden;
+	}
+}
+
+
+#loading-throbber i {
+	font-size: 4em;
+	color: hsl(205, 57%, 47%);
+	position: absolute;
+	opacity: 0;
+	transition: opacity 0.2s ease-in-out;
+	left: calc(50% - 36px);
+	text-align: center;
+	width: 72px;
+
+}
+
+#loading-text {
+	position: relative;
+	width: 400px;
+	text-align: center;
+	color: hsl(205, 57%, 47%);
+	left: -200px;
+	height: 1.2em;
+	overflow: hidden;
+
+	div {
+		position: absolute;
+		width: 400px;
+		transition: all 0.4s ease-in-out;
+	}
+}
+
+#loading-error {
+	position: relative;
+	width: 400px;
+	text-align: center;
+	color: hsl(205, 57%, 47%);
+	left: -200px;
+	overflow: hidden;
+	visibility: hidden;
+	top: -100px;
+
+	&.error {
+		visibility: visible;
+	}
+}
+
+
+#loading-next {
+	top: -20px;
+
+	&.second {
+		top: 0px;
+	}
+}
+
+#loading-current {
+	left: 0px;
+
+	&.second {
+		left: -400px;
+	}
+}
+
+#loading-next:not(.second),
+#loading-current:not(.second) {
+	transition: unset;
+}

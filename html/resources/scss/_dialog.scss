@@ -1,0 +1,93 @@
+@use 'colors'as c;
+@use 'utils'as u;
+
+@use 'dialog/_legend';
+@use 'dialog/_outlook';
+@use 'dialog/_sun';
+@use 'dialog/_location';
+@use 'dialog/_alert';
+@use 'dialog/_messages';
+
+$border-radius: 5px;
+
+.dialog {
+	z-index: 100;
+	background-color: lightgrey;
+	width: 75vw;
+	border-radius: $border-radius;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 5px;
+	display: flex;
+	flex-flow: column;
+	@include u.fade-on-show();
+
+	@media(prefers-color-scheme:dark) {
+		background-color: hsl(0 0% 25% / 1);
+	}
+
+	.title {
+		border: c.$button-like-border;
+		border-radius: $border-radius;
+		background: c.$button-like-background;
+		margin-bottom: 5px;
+		font-weight: bold;
+		font-size: 1.1em;
+
+		@media(prefers-color-scheme: dark) {
+			border: c.$button-like-border-dark;
+			background: c.$button-like-background-dark;
+		}
+
+		>div:first-child {
+			float: left;
+			margin: 5px;
+			width: calc(100% - 50px);
+		}
+
+	}
+
+	.content {
+		overflow-y: auto;
+		flex-grow: 1;
+		padding: 2px;
+
+		.right {
+			float: right;
+		}
+
+		.right label {
+			display: block;
+		}
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	.close {
+		float: right;
+		padding: 3px 3px 0px 3px;
+		position: relative;
+		margin: 2px;
+		cursor: pointer;
+		border: c.$button-like-border;
+		background-color: white;
+		border-radius: 4px;
+		color: c.$accent-blue;
+
+		@media (prefers-color-scheme: dark) {
+			color: hsl(0deg, 0%, 50%);
+			background-color: darkgray;
+			border: c.$button-like-border-dark;
+			color: hsl(0deg, 0%, 90%);
+		}
+	}
+
+	.close:hover {
+		color: hsl(205deg, 57%, 35%);
+	}
+
+}

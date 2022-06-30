@@ -1,0 +1,44 @@
+{
+	"name": "temperature-express",
+	"version": "1.20.0",
+	"description": "Hourly forecast graph from data at weather.gov",
+	"main": "index.js",
+	"scripts": {
+		"lint": "eslint html/resources/js/**",
+		"lint:fix": "npm run lint -- --fix",
+		"build:html": "cpy --rename=index.html ./html/index.ejs .",
+		"build:css": "sass ./html/resources/scss/style.scss ./html/resources/css/style.css",
+		"build": "npm run build:html && npm run build:css"
+	},
+	"funding": [
+		"https://buymeacoffee.com/temp.exp"
+	],
+	"repository": {
+		"type": "git",
+		"url": "github:netbymatt/temperature-express"
+	},
+	"keywords": [
+		"weather",
+		"graph",
+		"chart",
+		"api.weather.gov",
+		"temperature-express"
+	],
+	"author": "Matt Walsh",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/netbymatt/temperature-express/issues"
+	},
+	"homepage": "https://temperature.express/",
+	"dependencies": {
+		"ejs": "^3.1.8",
+		"express": "^4.18.1"
+	},
+	"devDependencies": {
+		"cpy-cli": "^4.1.0",
+		"eslint": "^8.18.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-plugin-import": "^2.26.0",
+		"sass": "^1.53.0"
+	}
+}

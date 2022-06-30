@@ -1,0 +1,871 @@
+#dialog-legend {
+  width: 400px;
+}
+#dialog-legend .content .touch-button {
+  width: 41%;
+  text-align: unset;
+  font-size: 1em;
+  height: 1em;
+  display: inline-block;
+}
+#dialog-legend .content label {
+  text-transform: capitalize;
+}
+#dialog-legend .content div {
+  display: inline-block;
+}
+#dialog-legend .content .color-box {
+  height: 10px;
+  width: 30px;
+  vertical-align: middle;
+  margin: 3px;
+  border-radius: 5px;
+}
+#dialog-legend .buttons #legend-update {
+  float: right;
+}
+
+#dialog-outlook {
+  max-width: 450px;
+}
+#dialog-outlook a {
+  text-decoration: unset;
+  color: unset;
+}
+#dialog-outlook h4 {
+  margin-left: 1em;
+}
+
+#dialog-outlook-map {
+  max-width: 820px;
+}
+#dialog-outlook-map img {
+  image-rendering: -webkit-optimize-contrast;
+  max-width: 100%;
+}
+#dialog-outlook-map a {
+  text-decoration: unset;
+  color: unset;
+}
+
+#dialog-outlook-map-navigation {
+  position: relative;
+  height: 2.8em;
+}
+#dialog-outlook-map-navigation button {
+  position: absolute;
+  top: 0px;
+}
+#dialog-outlook-map-navigation .right {
+  right: 0px;
+}
+
+#dialog-sun {
+  width: unset;
+}
+#dialog-sun .content {
+  padding: 1.5em;
+}
+#dialog-sun table {
+  margin-right: auto;
+  margin-left: auto;
+  border-collapse: collapse;
+  white-space: nowrap;
+  text-align: right;
+}
+#dialog-sun table thead tr {
+  border-bottom: 2px solid hsl(0deg, 0%, 0%);
+}
+#dialog-sun table th {
+  text-align: center;
+}
+#dialog-sun table td {
+  padding-left: 8px;
+  padding: 0.5em;
+}
+#dialog-sun table .duration {
+  font-size: 0.7em;
+  text-align: center;
+  vertical-align: top;
+  height: 2em;
+}
+#dialog-sun table #moonphase {
+  text-align: left;
+}
+
+#dialog-location {
+  width: 300px;
+  top: 130px;
+  transform: translateX(-50%);
+}
+#dialog-location input[type=search] {
+  border: 2px solid black;
+  font-size: 1.2em;
+  background-color: hsl(0deg, 0%, 90%);
+  background: hsl(0deg, 0%, 90%);
+  color: black;
+}
+#dialog-location .touch-button {
+  width: calc(100% - 10px);
+}
+#dialog-location #followMe {
+  font-size: 1.2em;
+}
+#dialog-location .error {
+  display: none;
+  color: red;
+  font-weight: bold;
+  margin-top: 0.3em;
+}
+#dialog-location i {
+  color: hsl(204deg, 55%, 58%);
+}
+#dialog-location .error.show {
+  display: block;
+}
+
+#dialog-alert {
+  height: 1px;
+}
+#dialog-alert .inactive {
+  color: hsl(0deg, 0%, 60%);
+}
+#dialog-alert .inactive h3,
+#dialog-alert .inactive h4 {
+  text-decoration: line-through;
+}
+#dialog-alert h3 {
+  margin-bottom: 0px;
+  cursor: pointer;
+}
+#dialog-alert ul {
+  margin-top: 0px;
+}
+#dialog-alert .hidden {
+  display: none;
+}
+#dialog-alert .content li div div.times {
+  margin-top: 5px;
+  font-size: 0.8em;
+  white-space: normal;
+}
+#dialog-alert .times span {
+  white-space: normal;
+}
+#dialog-alert .content li div div {
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+#dialog-alert.show {
+  height: 75vh;
+}
+
+#dialog-messages {
+  width: 800px;
+  max-width: 90vw;
+  max-height: 90vh;
+  height: 500px;
+}
+#dialog-messages .byline {
+  text-align: center;
+}
+#dialog-messages #dialog-messages-retry,
+#dialog-messages #dialog-messages-copy {
+  float: right;
+}
+@keyframes copy {
+  50% {
+    background-color: white;
+  }
+}
+#dialog-messages.copy-animation {
+  animation-name: copy;
+  animation-duration: 0.15s;
+}
+#dialog-messages .content {
+  max-height: 450px;
+  font-family: monospace;
+}
+#dialog-messages .content div {
+  padding-top: 0.2em;
+  color: hsl(0deg, 0%, 65%);
+  border-bottom: 1px solid hsl(0deg, 0%, 45%);
+}
+#dialog-messages .content div.progress {
+  color: unset;
+}
+#dialog-messages .content div.new {
+  background-color: hsl(140deg, 35%, 35%);
+  color: hsl(100deg, 63%, 65%);
+}
+@media (prefers-color-scheme: dark) {
+  #dialog-messages .content div.new {
+    background-color: hsl(0deg, 0%, 35%);
+  }
+}
+#dialog-messages .content div.error {
+  color: hsl(0deg, 100%, 90%);
+  background-color: hsl(0deg, 35%, 30%);
+}
+
+.dialog {
+  z-index: 100;
+  background-color: lightgrey;
+  width: 75vw;
+  border-radius: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 5px;
+  display: flex;
+  flex-flow: column;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+.dialog.show {
+  visibility: visible;
+  opacity: 1;
+}
+@media (prefers-color-scheme: dark) {
+  .dialog {
+    background-color: hsl(0deg, 0%, 25%);
+  }
+}
+.dialog .title {
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  background: linear-gradient(0deg, #f3f3f3 25%, hsl(0deg, 0%, 90%) 50%, #f3f3f3 75%);
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+@media (prefers-color-scheme: dark) {
+  .dialog .title {
+    border: 1px solid hsl(0deg, 0%, 50%);
+    background: linear-gradient(0deg, hsl(0deg, 0%, 45%) 0%, hsl(0deg, 0%, 20%) 40%, hsl(0deg, 0%, 20%) 60%, hsl(0deg, 0%, 45%) 100%);
+  }
+}
+.dialog .title > div:first-child {
+  float: left;
+  margin: 5px;
+  width: calc(100% - 50px);
+}
+.dialog .content {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 2px;
+}
+.dialog .content .right {
+  float: right;
+}
+.dialog .content .right label {
+  display: block;
+}
+.dialog .hidden {
+  display: none;
+}
+.dialog .close {
+  float: right;
+  padding: 3px 3px 0px 3px;
+  position: relative;
+  margin: 2px;
+  cursor: pointer;
+  border: 1px solid darkgray;
+  background-color: white;
+  border-radius: 4px;
+  color: hsl(204deg, 55%, 58%);
+}
+@media (prefers-color-scheme: dark) {
+  .dialog .close {
+    color: hsl(0deg, 0%, 50%);
+    background-color: darkgray;
+    border: 1px solid hsl(0deg, 0%, 50%);
+    color: hsl(0deg, 0%, 90%);
+  }
+}
+.dialog .close:hover {
+  color: hsl(205deg, 57%, 35%);
+}
+
+.side-menu {
+  width: 250px;
+  top: 0px;
+  right: -250px;
+  height: 100vh;
+  box-sizing: border-box;
+  transform: translateX(0px);
+  left: unset;
+  position: absolute;
+  transition: all 0.3s ease-in-out;
+}
+.side-menu .row {
+  min-height: 50px;
+  border-bottom: 1px solid hsl(0deg, 0%, 60%);
+  padding: 20px 4px;
+  box-sizing: border-box;
+}
+.side-menu .row i {
+  margin-right: 4px;
+  color: hsl(204deg, 55%, 58%);
+  width: 25px;
+}
+.side-menu .link {
+  cursor: pointer;
+}
+.side-menu h3 {
+  margin: 0px;
+}
+.side-menu .forecast.row {
+  display: none;
+}
+.side-menu .forecast.row img {
+  float: right;
+  border-radius: 10px;
+  border: hsl(0deg, 0%, 60%);
+}
+.side-menu .forecast span {
+  font-weight: bold;
+}
+.side-menu #menu-forecast {
+  font-size: 0.8em;
+}
+.side-menu #menu-prev-locations div,
+.side-menu #menu-location-use-gps {
+  padding: 8px 0px;
+  margin-left: 10px;
+  font-size: 0.8em;
+}
+.side-menu .gps #menu-location-no-gps,
+.side-menu .gps #menu-location-use-gps {
+  display: none;
+}
+.side-menu #menu-location-with-gps {
+  display: none;
+}
+.side-menu .gps #menu-location-with-gps {
+  display: inline-block;
+}
+.side-menu #menu-footer {
+  text-align: right;
+  font-size: 0.7em;
+  padding: inherit;
+  cursor: pointer;
+}
+.side-menu.show {
+  transform: translateX(-250px);
+}
+
+#table {
+  width: 100%;
+  height: calc(100vh - 50px);
+  top: 50px;
+  position: absolute;
+  visibility: hidden;
+  overflow: auto;
+  opacity: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+#table.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.data-table {
+  border-collapse: collapse;
+}
+.data-table tbody td {
+  font-family: monospace;
+  text-align: right;
+  border-right: 1px solid #EEEEEE;
+}
+@media (prefers-color-scheme: dark) {
+  .data-table tbody td {
+    border-right: 1px solid hsl(0deg, 0%, 55%);
+  }
+}
+.data-table td,
+.data-table th {
+  padding-left: 5px;
+}
+.data-table .new-day {
+  border-top: 2px solid hsl(0deg, 0%, 0%);
+}
+@media (prefers-color-scheme: dark) {
+  .data-table .new-day {
+    border-top: 2px solid hsl(0deg, 0%, 55%);
+  }
+}
+.data-table td table {
+  float: right;
+}
+.data-table tbody tr:nth-child(odd) {
+  background: hsl(0deg, 0%, 93%);
+}
+@media (prefers-color-scheme: dark) {
+  .data-table tbody tr:nth-child(odd) {
+    background: hsl(0deg, 0%, 15%);
+  }
+}
+.data-table tbody tr:nth-child(even) {
+  background: hsl(0deg, 0%, 100%);
+}
+@media (prefers-color-scheme: dark) {
+  .data-table tbody tr:nth-child(even) {
+    background: hsl(0deg, 0%, 0%);
+  }
+}
+.data-table thead td {
+  position: sticky;
+  top: 0px;
+  background: hsl(0deg, 0%, 93%);
+}
+@media (prefers-color-scheme: dark) {
+  .data-table thead td {
+    background: hsl(0deg, 0%, 15%);
+  }
+}
+.data-table tfoot td {
+  position: sticky;
+  bottom: 0px;
+  background: hsl(0deg, 0%, 93%);
+}
+@media (prefers-color-scheme: dark) {
+  .data-table tfoot td {
+    background: hsl(0deg, 0%, 15%);
+  }
+}
+.data-table tbody tr:nth-child(odd) td:first-child {
+  background: hsl(0deg, 0%, 93%);
+}
+@media (prefers-color-scheme: dark) {
+  .data-table tbody tr:nth-child(odd) td:first-child {
+    background: hsl(0deg, 0%, 15%);
+  }
+}
+.data-table thead tr {
+  background: hsl(0deg, 0%, 93%);
+  border-collapse: collapse;
+}
+@media (prefers-color-scheme: dark) {
+  .data-table thead tr {
+    background: hsl(0deg, 0%, 15%);
+  }
+}
+.data-table thead td,
+.data-table tfoot td {
+  font: unset;
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 0.75em;
+}
+
+#tooltip {
+  text-transform: capitalize;
+  position: absolute;
+  opacity: 0.8;
+  border-radius: 5px;
+  background-color: lightgray;
+  border: 1px solid darkgray;
+  cursor: default;
+  user-select: none;
+  width: 150px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+#tooltip.show {
+  visibility: visible;
+  opacity: 1;
+}
+@media (prefers-color-scheme: dark) {
+  #tooltip {
+    color: black;
+  }
+}
+#tooltip > div {
+  padding: 2px;
+}
+#tooltip .title-container {
+  box-shadow: 0px 5px 5px darkgrey;
+  height: 1.2em;
+}
+#tooltip .title {
+  font-size: 0.8em;
+  margin-top: 0.2em;
+}
+#tooltip .value {
+  float: right;
+  font-family: monospace;
+  font-size: 1.3em;
+  font-weight: bold;
+}
+#tooltip .timestamp {
+  font-family: monospace;
+  text-align: center;
+}
+#tooltip.show {
+  opacity: 0.8;
+}
+@media (prefers-color-scheme: dark) {
+  #tooltip.show {
+    opacity: 1;
+  }
+}
+
+.progress-bar-container {
+  position: absolute;
+  bottom: -2px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 4px;
+}
+
+#progressbar {
+  background-color: rgb(52, 131, 188);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out, width 0.5s ease-in-out;
+  height: 3px;
+  border-top-right-radius: 1.5px;
+  border-bottom-right-radius: 1.5px;
+}
+
+#progressbar.show {
+  opacity: 1;
+}
+
+#progressbar.reset {
+  transition: unset;
+  opacity: 0;
+}
+
+#loading {
+  width: 100%;
+  height: calc(100% - 50px);
+  top: 50px;
+  position: relative;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+#loading.show {
+  visibility: visible;
+  opacity: 1;
+}
+#loading .centering {
+  margin-left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translateY(-50%);
+}
+#loading .icon {
+  height: 4.5em;
+  position: relative;
+  left: -50%;
+  width: 400px;
+}
+
+#loading-throbber.error {
+  visibility: hidden;
+}
+
+#loading-throbber i {
+  font-size: 4em;
+  color: hsl(205deg, 57%, 47%);
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  left: calc(50% - 36px);
+  text-align: center;
+  width: 72px;
+}
+
+#loading-text {
+  position: relative;
+  width: 400px;
+  text-align: center;
+  color: hsl(205deg, 57%, 47%);
+  left: -200px;
+  height: 1.2em;
+  overflow: hidden;
+}
+#loading-text div {
+  position: absolute;
+  width: 400px;
+  transition: all 0.4s ease-in-out;
+}
+
+#loading-error {
+  position: relative;
+  width: 400px;
+  text-align: center;
+  color: hsl(205deg, 57%, 47%);
+  left: -200px;
+  overflow: hidden;
+  visibility: hidden;
+  top: -100px;
+}
+#loading-error.error {
+  visibility: visible;
+}
+
+#loading-next {
+  top: -20px;
+}
+#loading-next.second {
+  top: 0px;
+}
+
+#loading-current {
+  left: 0px;
+}
+#loading-current.second {
+  left: -400px;
+}
+
+#loading-next:not(.second),
+#loading-current:not(.second) {
+  transition: unset;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: sans-serif;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: black;
+    color: hsl(0deg, 0%, 90%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  a {
+    color: lightblue;
+  }
+}
+
+#chart-container {
+  width: 100vw;
+  height: calc(100% - 50px);
+  top: 50px;
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+#chart-container.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+#chart {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  #chart .tickLabel {
+    fill: white;
+  }
+}
+#chart .days {
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+#chart .day {
+  font-size: 0.75em;
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+}
+#chart .day i {
+  display: block;
+  font-size: 2em;
+  color: hsl(205deg, 57%, 47%);
+}
+
+#weather-text {
+  position: absolute;
+  bottom: 45px;
+  left: 22px;
+  max-width: calc(100vw - 65px);
+  min-height: 1.2em;
+  border-radius: 5px;
+  text-transform: capitalize;
+  background-color: hsl(0deg, 0%, 35%);
+  color: white;
+  padding: 0.1em 0.4em;
+  font-size: 0.8em;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+@media (prefers-color-scheme: dark) {
+  #weather-text {
+    background-color: hsl(0deg, 0%, 65%);
+    color: black;
+  }
+}
+#weather-text.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+#title {
+  width: 100%;
+  height: 50px;
+  position: absolute;
+  text-align: center;
+  font-weight: bold;
+}
+
+#location {
+  height: 35px;
+  line-height: 35px;
+}
+
+#date {
+  height: 15px;
+  font-weight: normal;
+  font-size: 0.75em;
+}
+
+#date span.old {
+  background-color: red;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+#title i {
+  color: hsl(205deg, 57%, 47%);
+  padding-right: 5px;
+}
+
+.tickLabel {
+  font-family: monospace;
+}
+
+.legend {
+  cursor: pointer;
+}
+
+.legendlabel {
+  text-transform: capitalize;
+}
+
+.top-right {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.top-left {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+.top-left img {
+  margin: 10px;
+}
+
+.touch-button {
+  padding: 10px;
+  margin: 5px;
+  display: inline-block;
+  background: linear-gradient(0deg, #f3f3f3 25%, hsl(0deg, 0%, 90%) 50%, #f3f3f3 75%);
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+@media (prefers-color-scheme: dark) {
+  .touch-button {
+    background: linear-gradient(0deg, hsl(0deg, 0%, 45%) 0%, hsl(0deg, 0%, 20%) 40%, hsl(0deg, 0%, 20%) 60%, hsl(0deg, 0%, 45%) 100%);
+    border: 1px solid hsl(0deg, 0%, 50%);
+    color: hsl(0deg, 0%, 90%);
+  }
+}
+.touch-button:hover {
+  background: white;
+}
+@media (prefers-color-scheme: dark) {
+  .touch-button:hover {
+    background: hsl(0deg, 0%, 65%);
+  }
+}
+
+input[type=checkbox] {
+  transform: scale(1.2);
+}
+
+.hidden-placeholders {
+  display: none;
+}
+
+.chart-area-button-container {
+  right: 40px;
+  position: absolute;
+  top: 25px;
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-area-button {
+  visibility: hidden;
+  opacity: 0;
+  width: 15px;
+  height: 0px;
+  box-sizing: content-box;
+  /* top-bottom, right-left */
+  padding: 0px 10px;
+  margin: 0px 5px;
+  position: relative;
+  color: hsl(39deg, 100%, 50%);
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, height 0.5s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+.chart-area-button.show {
+  visibility: visible;
+  opacity: 1;
+  height: 15px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.chart-area-button.red {
+  color: red;
+}
+
+#chart-area-button.disabled i::before {
+  text-decoration: line-through 2px solid black;
+  color: lightgray;
+}
+
+.initial-hide {
+  display: none;
+}
+
+#retry-forecast {
+  font-size: 1em;
+  margin-top: 0.2em;
+  padding: 0.2em;
+}
+
+/*# sourceMappingURL=style.css.map */

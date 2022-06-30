@@ -1,0 +1,239 @@
+@use 'colors'as c;
+@use 'utils'as u;
+@use 'dialog';
+@use 'menu';
+@use 'table';
+@use 'tooltip';
+@use 'progressbar';
+@use 'loading';
+
+body {
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	font-family: sans-serif;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+
+	@media (prefers-color-scheme: dark) {
+		background-color: black;
+		color: c.$body-text-color;
+	}
+
+}
+
+a {
+	@media (prefers-color-scheme: dark) {
+		color: lightblue;
+	}
+}
+
+#chart-container {
+	width: 100vw;
+	height: calc(100% - 50px);
+	top: 50px;
+	position: absolute;
+	@include u.fade-on-show();
+}
+
+#chart {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+
+	.tickLabel {
+		@media (prefers-color-scheme: dark) {
+			fill: white;
+		}
+	}
+
+	.days {
+		position: relative;
+		overflow: hidden;
+		cursor: default;
+		user-select: none;
+		white-space: nowrap;
+	}
+
+	.day {
+		font-size: 0.75em;
+		font-weight: bold;
+		position: relative;
+		text-align: center;
+		overflow: hidden;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	.day i {
+		display: block;
+		font-size: 2.0em;
+		color: hsl(205, 57%, 47%);
+	}
+}
+
+#weather-text {
+	position: absolute;
+	bottom: 45px;
+	left: 22px;
+	max-width: calc(100vw - 65px);
+	min-height: 1.2em;
+	border-radius: 5px;
+
+	text-transform: capitalize;
+	background-color: hsl(0deg, 0%, 35%);
+	color: white;
+	padding: 0.1em 0.4em;
+	font-size: 0.8em;
+
+	@media (prefers-color-scheme: dark) {
+		background-color: hsl(0deg, 0%, 65%);
+		color: black;
+	}
+
+	@include u.fade-on-show();
+}
+
+
+#title {
+	width: 100%;
+	height: 50px;
+	position: absolute;
+	text-align: center;
+	font-weight: bold;
+}
+
+#location {
+	height: 35px;
+	line-height: 35px;
+}
+
+#date {
+	height: 15px;
+	font-weight: normal;
+	font-size: 0.75em;
+}
+
+#date span.old {
+	background-color: red;
+	padding: 2px 5px;
+	border-radius: 4px;
+
+}
+
+#title i {
+	color: hsl(205, 57%, 47%);
+	padding-right: 5px;
+}
+
+.tickLabel {
+	font-family: monospace;
+}
+
+.legend {
+	cursor: pointer;
+}
+
+.legendlabel {
+	text-transform: capitalize;
+}
+
+.top-right {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+
+.top-left {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+
+	img {
+		margin: 10px;
+	}
+}
+
+.touch-button {
+	padding: 10px;
+	margin: 5px;
+	display: inline-block;
+	background: linear-gradient(0deg, #f3f3f3 25%, hsl(0deg, 0%, 90%) 50%, #f3f3f3 75%);
+	border: 1px solid lightgray;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+
+	@media(prefers-color-scheme: dark) {
+		background: c.$button-like-background-dark;
+		border: c.$button-like-border-dark;
+		color: c.$body-text-color;
+	}
+
+	&:hover {
+		background: white;
+
+		@media(prefers-color-scheme: dark) {
+			background: hsl(0deg 0% 65%);
+		}
+	}
+}
+
+input[type=checkbox] {
+	transform: scale(1.2)
+}
+
+.hidden-placeholders {
+	display: none;
+}
+
+.chart-area-button-container {
+	right: 40px;
+	position: absolute;
+	top: 25px;
+	width: 48px;
+	display: flex;
+	flex-direction: column;
+}
+
+.chart-area-button {
+	visibility: hidden;
+	opacity: 0;
+	width: 15px;
+	height: 0px;
+	box-sizing: content-box;
+	/* top-bottom, right-left */
+	padding: 0px 10px;
+	margin: 0px 5px;
+	position: relative;
+	color: hsl(39, 100%, 50%);
+	transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, height 0.5s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+.chart-area-button.show {
+	visibility: visible;
+	opacity: 1;
+	height: 15px;
+	padding: 10px;
+	margin: 5px;
+}
+
+.chart-area-button.red {
+	color: red;
+}
+
+#chart-area-button.disabled i::before {
+	text-decoration: line-through 2px solid black;
+	color: lightgray;
+}
+
+.initial-hide {
+	display: none;
+}
+
+#retry-forecast {
+	font-size: 1.0em;
+	margin-top: 0.2em;
+	padding: 0.2em;
+}

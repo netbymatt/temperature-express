@@ -1,0 +1,25 @@
+.progress-bar-container {
+	position: absolute;
+	bottom: -2px;
+	width: 100%;
+	box-sizing: border-box;
+	height: 4px;
+}
+
+#progressbar {
+	background-color: rgb(52, 131, 188);
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out, width 0.5s ease-in-out;
+	height: 3px;
+	border-top-right-radius: 1.5px;
+	border-bottom-right-radius: 1.5px;
+}
+
+#progressbar.show {
+	opacity: 1;
+}
+
+#progressbar.reset {
+	transition: unset;
+	opacity: 0;
+}

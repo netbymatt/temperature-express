@@ -1,0 +1,38 @@
+@use '../colors'as c;
+
+#dialog-location {
+	width: 300px;
+	top: 130px;
+	transform: translateX(-50%);
+
+	input[type=search] {
+		border: 2px solid black;
+		font-size: 1.2em;
+		background-color: c.$body-text-color;
+		background: c.$body-text-color;
+		color: black;
+	}
+
+	.touch-button {
+		width: calc(100% - 10px);
+	}
+
+	#followMe {
+		font-size: 1.2em;
+	}
+
+	.error {
+		display: none;
+		color: red;
+		font-weight: bold;
+		margin-top: 0.3em;
+	}
+
+	i {
+		color: c.$accent-blue;
+	}
+
+	.error.show {
+		display: block;
+	}
+}

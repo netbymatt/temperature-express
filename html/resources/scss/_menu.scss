@@ -1,0 +1,87 @@
+@use 'colors'as c;
+
+.side-menu {
+	width: 250px;
+	top: 0px;
+	right: -250px;
+	height: 100vh;
+	box-sizing: border-box;
+	transform: translateX(0px);
+	left: unset;
+	position: absolute;
+	transition: all .3s ease-in-out;
+
+	.row {
+		min-height: 50px;
+		border-bottom: 1px solid hsl(0, 0%, 60%);
+		padding: 20px 4px;
+		box-sizing: border-box;
+
+		i {
+			margin-right: 4px;
+			color: c.$accent-blue;
+			width: 25px;
+		}
+
+	}
+
+
+	.link {
+		cursor: pointer;
+	}
+
+	h3 {
+		margin: 0px;
+	}
+
+	.forecast {
+		&.row {
+			display: none;
+
+			img {
+				float: right;
+				border-radius: 10px;
+				border: hsl(0, 0%, 60%);
+			}
+		}
+
+		span {
+			font-weight: bold;
+		}
+	}
+
+	#menu-forecast {
+		font-size: 0.8em;
+	}
+
+	#menu-prev-locations div,
+	#menu-location-use-gps {
+		padding: 8px 0px;
+		margin-left: 10px;
+		font-size: 0.8em;
+	}
+
+	.gps #menu-location-no-gps,
+	.gps #menu-location-use-gps {
+		display: none;
+	}
+
+	#menu-location-with-gps {
+		display: none;
+	}
+
+	.gps #menu-location-with-gps {
+		display: inline-block;
+	}
+
+	#menu-footer {
+		text-align: right;
+		font-size: 0.7em;
+		padding: inherit;
+		cursor: pointer;
+	}
+
+	&.show {
+		transform: translateX(-250px);
+	}
+}

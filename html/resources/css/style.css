@@ -746,7 +746,7 @@ body {
   font-size: 0.75em;
 }
 
-#date span.old {
+#date.old span {
   background-color: red;
   padding: 2px 5px;
   border-radius: 4px;
@@ -868,4 +868,22 @@ input[type=checkbox] {
   padding: 0.2em;
 }
 
-/*# sourceMappingURL=style.css.map */
+.small-loading {
+  display: none;
+  width: 5px;
+  height: 5px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+#date.old .small-loading {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}/*# sourceMappingURL=style.css.map */

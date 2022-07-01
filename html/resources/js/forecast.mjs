@@ -4,7 +4,7 @@ import { getOptions, saveOptions } from './options.mjs';
 import * as Menu from './menu.mjs';
 import * as Table from './table.mjs';
 import * as Tooltip from './tooltip.mjs';
-import DataForecast from './forecast/forecast.mjs';
+import DataForecast, { OLD_FORECAST_LIMIT } from './forecast/forecast.mjs';
 import DataObs from './forecast/observations.mjs';
 import { getSavedLocation } from './placemanager.mjs';
 import plotForecast from './forecast/plot.mjs';
@@ -289,4 +289,5 @@ export {
 	chartVisibility,
 	setUnits,
 	readVisibility,
+	OLD_FORECAST_LIMIT,
 };

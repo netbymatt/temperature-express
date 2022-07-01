@@ -1,6 +1,8 @@
 // these functions get lat-long as well as follow me populated, and detailed forecast information
 import { DateTime } from '../vendor/luxon.min.mjs';
-import { forEachElem, apiUrl, fetchWithRetry } from './utils.mjs';
+import {
+	forEachElem, apiUrl, fetchWithRetry, backoff,
+} from './utils.mjs';
 import {
 	getSavedLocation, getSavedPlaces, saveLocation,
 } from './placemanager.mjs';
@@ -269,17 +271,55 @@ const stillRetrying = (e, iteration) => {
 const getHourlyForecast = async (baseUrl) => {
 	// cancel previous request if present
 	getHourlyForecast?.cancel?.();
+	getHourlyForecastRetry?.cancel?.();
 	try {
 		const fetchHandler = fetchWithRetry(baseUrl, 0, stillRetrying);
 		getHourlyForecast.cancel = fetchHandler.cancel;
 		const data = await fetchHandler.data;
 		ProgressBar.set('Hourly forecast received');
+		// test for old data
+		if (!forecastIsFresh(data)) {
+			getHourlyForecastRetry(baseUrl);
+		}
 		// store the data
 		Forecast.formatData(data, false);
 	} catch (e) {
 		ProgressBar.message('Get hourly forecast failed', true);
 		stillRetrying(0, 2);
 	}
+};
+
+const forecastIsFresh = (data) => {
+	const updateTime = DateTime.fromISO(data.properties.updateTime);
+	return Date.now() - updateTime <= Forecast.OLD_FORECAST_LIMIT;
+};
+
+// sometimes an out of date forecast is received, retry in the background
+const getHourlyForecastRetry = async (url, count = 0) => {
+	// clear cancel handle
+	getHourlyForecastRetry.cancel = null;
+
+	// message
+	ProgressBar.message('Auto retrying for newer forecast');
+
+	if (count > 0) {
+		try {
+			const response = await fetch(url);
+			if (!response.ok) throw new Error('Unable to get fresher forecast');
+			const data = await response.json();
+			// if fresh update the chart
+			if (forecastIsFresh(data)) {
+				Forecast.formatData(data, false);
+				return;
+			}
+		} catch (e) {
+			ProgressBar.message(e.message, true);
+		}
+	}
+
+	// call again
+	const timeoutHandle = setTimeout(() => getHourlyForecastRetry(url, count + 1), backoff(count) * 1000);
+	getHourlyForecastRetry.cancel = () => clearTimeout(timeoutHandle);
 };
 
 // get list of stations for specified base url

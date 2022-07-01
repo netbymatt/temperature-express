@@ -61,6 +61,7 @@ const fetchWithRetry = (url, maxRetries, stillRetrying) => {
 			const response = await fetch(url);
 			if (response.status === 200) {
 				const data = await response.json();
+				if (data?.status !== undefined) throw new Error(`Internal error code from NWS: ${data.status}`);
 				resolve(data);
 			} else {
 				throw new Error(response.status);

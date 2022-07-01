@@ -4,6 +4,8 @@ import {
 } from '../config.mjs';
 import { getDuration, convertTimestamp } from '../utils.mjs';
 
+const OLD_FORECAST_LIMIT = 10800000;
+
 // prepare the forecast data
 const prepForecastData = (fcst, metaData, options) => {
 	// populate initial min and max
@@ -109,11 +111,12 @@ const setLastUpdate = (fcst) => {
 		weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
 	});
 	// if older than 3 hours alert user
-	if (Date.now() - updateTime > 10800000) {
-		dateSpan.classList.add('old');
+	if (Date.now() - updateTime > OLD_FORECAST_LIMIT) {
+		dateSpan.parentNode.classList.add('old');
 	} else {
-		dateSpan.classList.remove('old');
+		dateSpan.parentNode.classList.remove('old');
 	}
 };
 
 export default prepForecastData;
+export { OLD_FORECAST_LIMIT };

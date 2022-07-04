@@ -86,6 +86,8 @@ const formatData = (fcst, allObs, reset) => {
 		if (plot) {
 			if (obs?.features?.length > 0) {
 				const dataset = DataObs(obs, metaData, getOptions());
+				// update if temperature is available
+				updateCurrentTemperature(dataset);
 				// add the data to the plot
 				const currentDataset = plot.getData();
 				currentDataset.push(...dataset);
@@ -263,6 +265,9 @@ const setUnits = (newUnit) => {
 	axes.y4axis.options.min = newAxes.y4.min;
 	axes.y4axis.options.max = newAxes.y4.max;
 
+	// update the current temperature
+	updateCurrentTemperature(newData);
+
 	// redraw the graph
 	plot.setData(newData);
 	plot.setupGrid(true);
@@ -282,6 +287,17 @@ const toggleUnits = () => {
 	// get the text forecast (it switches units internally)
 	Menu.unitsChanged();
 };
+
+const updateCurrentTemperature = (dataset) => {
+	const temperatureData = dataset.find(d=>d.label === 'Temperature' && d.isObs);
+	if (temperatureData) {
+		const latestTemperature = temperatureData.data?.at?.(-1)?.[1];
+		const scale = temperatureData.scale;
+		if (latestTemperature) {
+			document.getElementById('current-temperature').innerHTML = latestTemperature.toFixed(scale.currentPrecision) + scale.currentUnitName;
+		}
+	}
+}
 
 export {
 	getInfo,

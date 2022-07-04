@@ -362,12 +362,14 @@
 .side-menu .menu-forecast-expand {
   float: right;
   cursor: pointer;
-}
-.side-menu .menu-forecast-expand i {
-  text-align: right;
-  margin-right: 0px;
   width: 1.75em;
   height: 1.75em;
+  text-align: right;
+}
+.side-menu .menu-forecast-expand i {
+  margin-right: 0px;
+  transition: transform 0.3s ease-in-out;
+  width: unset;
 }
 .side-menu .menu-forecast-expand i.fa-chevron-up {
   display: none;
@@ -385,11 +387,8 @@
 .side-menu .expanded #menu-forecast-text-expanded {
   display: block;
 }
-.side-menu .expanded i.fa-chevron-up {
-  display: block;
-}
 .side-menu .expanded i.fa-chevron-down {
-  display: none;
+  transform: rotate(180deg);
 }
 
 #table {

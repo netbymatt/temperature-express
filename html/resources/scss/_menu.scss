@@ -92,12 +92,14 @@
 	.menu-forecast-expand {
 		float: right;
 		cursor: pointer;
+		width: 1.75em;
+		height: 1.75em;
+		text-align: right;
 
 		i {
-			text-align: right;
 			margin-right: 0px;
-			width: 1.75em;
-			height: 1.75em;
+			transition: transform 0.3s ease-in-out;
+			width: unset;
 		}
 
 		i.fa-chevron-up {
@@ -109,6 +111,7 @@
 		margin-top: 5px;
 		margin-left: 5px;
 	}
+
 
 	#menu-forecast-text-expanded {
 		display: none;
@@ -123,12 +126,8 @@
 			display: block;
 		}
 
-		i.fa-chevron-up {
-			display: block;
-		}
-
 		i.fa-chevron-down {
-			display: none;
+			transform: rotate(180deg);
 		}
 	}
 

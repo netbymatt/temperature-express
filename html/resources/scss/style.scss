@@ -257,3 +257,9 @@ input[type=checkbox] {
 		transform: rotate(360deg);
 	}
 }
+
+.clearfix {
+	content: "";
+	clear: both;
+	display: table;
+}

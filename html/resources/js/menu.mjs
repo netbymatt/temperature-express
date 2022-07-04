@@ -20,6 +20,7 @@ const init = () => {
 	// other menu items
 	document.getElementById('menu-add').addEventListener('click', addToHomeScreen);
 	document.getElementById('menu-footer').addEventListener('click', () => { hide(); ProgressBar.showMessages(); });
+	document.querySelector('.menu-forecast-expand').addEventListener('click', swapTextForecast);
 
 	registerCloseAll(ProgressBar.hideMessages);
 
@@ -126,6 +127,7 @@ const forecastReceived = (forecastData) => {
 	document.getElementById('menu-forecast-wind-direction').innerHTML = data.windDirection;
 	document.getElementById('menu-forecast-wind-speed').innerHTML = data.windSpeed;
 	document.getElementById('menu-forecast-text').innerHTML = data.shortForecast;
+	document.getElementById('menu-forecast-text-expanded').innerHTML = data.detailedForecast;
 
 	// show the forecast
 	document.querySelector('.side-menu .row.forecast').style.display = 'block';
@@ -190,6 +192,12 @@ const closeAll = () => {
 
 const registerCloseAll = (handler) => {
 	itemsToClose.push(handler);
+};
+
+const swapTextForecast = () => {
+	// toggle expanded state
+	const container = document.getElementById('menu-forecast-text-area');
+	container.classList.toggle('expanded');
 };
 
 export {

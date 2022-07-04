@@ -45,6 +45,10 @@
 			}
 		}
 
+		.clearfix {
+			width: 100%;
+		}
+
 		span {
 			font-weight: bold;
 		}
@@ -84,4 +88,48 @@
 	&.show {
 		transform: translateX(-250px);
 	}
+
+	.menu-forecast-expand {
+		float: right;
+		cursor: pointer;
+
+		i {
+			text-align: right;
+			margin-right: 0px;
+			width: 1.75em;
+			height: 1.75em;
+		}
+
+		i.fa-chevron-up {
+			display: none;
+		}
+	}
+
+	#menu-forecast-text-area {
+		margin-top: 5px;
+		margin-left: 5px;
+	}
+
+	#menu-forecast-text-expanded {
+		display: none;
+	}
+
+	.expanded {
+		#menu-forecast-text {
+			display: none;
+		}
+
+		#menu-forecast-text-expanded {
+			display: block;
+		}
+
+		i.fa-chevron-up {
+			display: block;
+		}
+
+		i.fa-chevron-down {
+			display: none;
+		}
+	}
+
 }

@@ -207,7 +207,6 @@ const getPoint = async (_place) => {
 // get hourly forecast, text forecast and list of nearest stations
 const pointReceived = (point, _place) => {
 	const place = { ..._place };
-	ProgressBar.set('NWS point received');
 	// if json was provided store new values
 	if (point) {
 		place.pointX = point.properties.gridX;
@@ -218,6 +217,7 @@ const pointReceived = (point, _place) => {
 		place.pointInfo = point;
 		place.timeZone = point.properties.timeZone;
 	}
+	ProgressBar.set(`NWS point received ${place.office}:${place.pointX},${place.pointY}`);
 
 	// fill out title
 	// add a map marker if using follow me
@@ -344,7 +344,7 @@ const getStations = async (baseUrl, place) => {
 // extract nearest station
 const stationsReceived = async (stations, _place) => {
 	const place = { ..._place };
-	ProgressBar.set('List of stations received');
+	ProgressBar.set(`List of stations received: ${stations.features[0].properties.stationIdentifier}`);
 	// see if there is a closest location
 	try {
 		// if no json was provided then the cached station should be used

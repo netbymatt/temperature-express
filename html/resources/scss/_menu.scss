@@ -131,4 +131,18 @@
 		}
 	}
 
+	#menu-forecast-wfo {
+		float: right;
+		font-size: 0.8em;
+
+		a {
+			text-decoration: none;
+		}
+
+		i {
+			margin: 0px;
+			width: unset;
+		}
+	}
+
 }

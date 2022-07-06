@@ -85,6 +85,12 @@ const getTextForecast = async (_baseUrl, isRetry) => {
 	// check for a base url
 	if (typeof baseUrl !== 'string') return;
 
+	// update wfo link
+	const wfo = getSavedPlaces()[0].office;
+	const wfoElem = document.getElementById('menu-forecast-wfo');
+	wfoElem.querySelector('a').href = `https://weather.gov/${wfo}`;
+	wfoElem.querySelector('span').innerHTML = `K${wfo}`;
+
 	const units = (getOptions().units === 1) ? 'us' : 'si';
 	try {
 		const response = await fetch(`${baseUrl}/forecast?units=${units}`);

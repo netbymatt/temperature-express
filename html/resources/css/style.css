@@ -390,6 +390,17 @@
 .side-menu .expanded i.fa-chevron-down {
   transform: rotate(180deg);
 }
+.side-menu #menu-forecast-wfo {
+  float: right;
+  font-size: 0.8em;
+}
+.side-menu #menu-forecast-wfo a {
+  text-decoration: none;
+}
+.side-menu #menu-forecast-wfo i {
+  margin: 0px;
+  width: unset;
+}
 
 #table {
   width: 100%;

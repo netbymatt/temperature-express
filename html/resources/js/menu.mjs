@@ -24,6 +24,9 @@ const init = () => {
 
 	registerCloseAll(ProgressBar.hideMessages);
 
+	// close menu handler when clicking wfo link
+	document.getElementById('menu-forecast-wfo').addEventListener('click', hide);
+
 	// set the initial units
 	if (getOptions().units === 0) {
 		// in metric

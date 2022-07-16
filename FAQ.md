@@ -1,6 +1,6 @@
 ## What is this?
 
-The [National Weather Service](https://www.weather.gov/) provides a huge amount of forecast and climate data for free including an hour-by-hour forecast for the next 7 days. Unfortunately, getting it displayed in a concise format is not something they do well. The main graph attempts to display the most relevant parts of the forecast (high and low temperature, wind chill, heat index, clouds, precipitation and dewpoint) in an easy to digest format.
+The [National Weather Service](https://www.weather.gov/) provides a huge amount of forecast and climate data for free including an hour-by-hour forecast for the next 7 days. Unfortunately, getting it displayed in a concise format is not something they do well. The main graph to display the most relevant parts of the forecast (high and low temperature, wind chill, heat index, clouds, precipitation and dewpoint) in an easy to digest format.
 
 ## Why is this better than my weather app?
 
@@ -14,7 +14,7 @@ There are some other things that make it faster too. The first time you load thi
 
 It makes it quicker to answer the typical weather questions like: Will it be warmer or cooler tomorrow? - Just compare the heights of the red line. Is it going to rain tomorrow? - Look for the blue filled areas. Will the sun be out on Saturday? - Look for no grey filled area on Saturday.
 
-The graph makes it much easier to convey how the weather will change during the day. Your favorite weather app, or search result card might simply say "Sunny, High of 80" today. But that tiny little bit of information might mask something important like the temperature dropping to 60 by 5 pm. That big temperature drop might mess up your evening plans if you were going to be outside.
+The graph makes it much easier to convey how the weather will change during the day. Your favorite weather app or search result card might simply say "Sunny, High of 80" today. But that tiny little bit of information might mask something important like the temperature dropping to 60 by 5 pm. That big temperature drop might mess up your evening plans if you were going to be outside.
 
 If you're interested in the exact values, just tap any point on the graph to get the exact value and the time for that value. Or, If you want to view most of the data as a table, you can get one by clicking the table icon on the menu. I think you'll quickly see that the graph is a much easier to digest format.
 
@@ -24,7 +24,7 @@ Let's take this scenario: You're in New York and your Phone/Laptop/Tablet is set
 
 ## Why do you work on this?
 
-I'm a programmer. Javascript, HTML, Node.js and other web technologies are not part of my day job, but seem to be where the innovation is happening. I use this and other side projects to keep myself up to date with them.
+I'm a programmer and engineer. Javascript, HTML, Node.js and other web technologies are not part of my day job, but seem to be where the innovation is happening. I use this and other side projects to keep myself up to date with them.
 
 ## It loads to fast. I want to read all those funny messages
 
@@ -35,7 +35,7 @@ These technical notes include information about the production environment for h
 
 * The web site is made up of static files stored in S3 and hosted by Cloudfront. (There's a weather pun in there!)
 * Cloudfront is configured to provide mount points for the api.weather.gov API. This ensures that I meet their requirement of having a User-Agent string specific to this app. It also keeps all of the XHR requests on the same domain, side-stepping the occasional CORS issues that pop up with weather.api.gov
-* [Flot](https://www.github.com/flot/flot) is used as the graphing tool.
+* [Flot](https://www.github.com/flot/flot) is used as the graphing tool. It is fast and small. It also renders the fastest and smoothest on mobile when informally compared to other plotting libraries.
 * The code has undergone three major overhauls. The initial release in Fall of 2018 made extensive use of jQuery and jQuery UI. In fact, the color scheme still used is a hold-over from the Jquery UI theme Overcast.
 * The next overhaul in 2021 removed jQuery, except for the reference to Flot that requires it (a separate side project of mine is removing jQuery from Flot).
 * The 2022 overhaul moved from about 8 .js files to 20-some much more modular .mjs (module) files for easier code management. Sass was introduced at this time as well.

@@ -1,7 +1,7 @@
 # Temperature Express
 ![Temperature Express Logo](https://github.com/netbymatt/temperature-express/blob/main/html/images/tempexp-192.png?raw=true)
 
-This is the base code for https://temperature.express
+This is the base code for https://temperature.express which is available as a web site and progressive web app.
 
 A graphical representation of the hourly forecast data and observations available through [https://api.weather.gov](https://www.weather.gov/documentation/services-web-api).
 

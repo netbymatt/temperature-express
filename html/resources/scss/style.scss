@@ -239,10 +239,13 @@ input[type=checkbox] {
 		height: 15px;
 		padding: 10px;
 		margin: 5px;
+
+		@media (min-width: c.$chart-button-min-width) {
+			height: 18px;
+		}
 	}
 
 	@media (min-width: c.$chart-button-min-width) {
-		height: 18px;
 		margin: 5px;
 		transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 	}

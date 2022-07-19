@@ -923,8 +923,12 @@ input[type=checkbox] {
   margin: 5px;
 }
 @media (min-width: 400px) {
-  .chart-area-button {
+  .chart-area-button.show {
     height: 18px;
+  }
+}
+@media (min-width: 400px) {
+  .chart-area-button {
     margin: 5px;
     transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
   }

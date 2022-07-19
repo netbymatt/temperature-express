@@ -196,9 +196,11 @@ const toggleTable = () => {
 const chartVisibility = (show) => {
 	if (show) {
 		document.getElementById('chart-container').classList.add('show');
+		document.querySelector('.chart-area-button-container').classList.add('show');
 		document.getElementById('loading').classList.remove('show');
 	} else {
 		document.getElementById('chart-container').classList.remove('show');
+		document.querySelector('.chart-area-button-container').classList.remove('show');
 		document.getElementById('loading').classList.add('show');
 		forEachElem('#loading .centering>div', (elem) => elem.classList.remove('error'));
 	}

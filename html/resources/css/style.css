@@ -880,10 +880,26 @@ input[type=checkbox] {
 .chart-area-button-container {
   right: 40px;
   position: absolute;
-  top: 25px;
-  width: 48px;
+  top: 75px;
   display: flex;
   flex-direction: column;
+  z-index: 3;
+  width: 48px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
+.chart-area-button-container.show {
+  visibility: visible;
+  opacity: 1;
+}
+@media (min-width: 400px) {
+  .chart-area-button-container {
+    flex-direction: row-reverse;
+    top: 2px;
+    width: unset;
+    right: 48px;
+  }
 }
 
 .chart-area-button {
@@ -899,13 +915,19 @@ input[type=checkbox] {
   color: hsl(39deg, 100%, 50%);
   transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, height 0.5s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out;
 }
-
 .chart-area-button.show {
   visibility: visible;
   opacity: 1;
   height: 15px;
   padding: 10px;
   margin: 5px;
+}
+@media (min-width: 400px) {
+  .chart-area-button {
+    height: 18px;
+    margin: 5px;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  }
 }
 
 .chart-area-button.red {

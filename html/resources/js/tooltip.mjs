@@ -84,23 +84,45 @@ const hideTextForecast = () => {
 	document.getElementById('weather-text').classList.remove('show');
 };
 
-const generateTextForecastData = (data) => {
+const generateTextForecastData = (data, isObservations) => {
 	if (!data) {
 		fillTextForecast.data = undefined;
 		return;
 	}
 
-	fillTextForecast.data = data.map((period) => {
-		let { startTime, endTime } = getDuration(period.validTime);
-		// adjust for time zones to match graph not actually using time zones
-		startTime = convertTimestamp(startTime);
-		endTime = convertTimestamp(endTime);
+	// set up the initial array
+	if (!fillTextForecast.data) {
+		fillTextForecast.data = [];
+	}
+
+	if (!isObservations) {
+		fillTextForecast.data.push(...data.map((period) => {
+			let { startTime, endTime } = getDuration(period.validTime);
+			// adjust for time zones to match graph not actually using time zones
+			startTime = convertTimestamp(startTime);
+			endTime = convertTimestamp(endTime);
+			return {
+				...period,
+				startTime,
+				endTime,
+			};
+		}));
+		return;
+	}
+
+	// observations
+	fillTextForecast.data.push(...data.map((obs) => {
+		const startTime = convertTimestamp(Date.parse(obs.properties.timestamp));
 		return {
-			...period,
 			startTime,
-			endTime,
+			endTime: startTime + 1000,
+			value: [
+				{
+					weather: obs?.properties.textDescription,
+				},
+			],
 		};
-	});
+	}));
 };
 
 export {

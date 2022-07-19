@@ -103,6 +103,9 @@ const formatData = (fcst, allObs, reset) => {
 				plot.setData(currentDataset);
 				plot.setupGrid(true);
 				plot.draw();
+
+				// store text descriptions
+				Tooltip.generateTextForecastData(allObs.data.features, true);
 			} // obs != 0 (no data provided)
 		} // format observation data
 		// store the data for later
@@ -289,15 +292,15 @@ const toggleUnits = () => {
 };
 
 const updateCurrentTemperature = (dataset) => {
-	const temperatureData = dataset.find(d=>d.label === 'Temperature' && d.isObs);
+	const temperatureData = dataset.find((d) => d.label === 'Temperature' && d.isObs);
 	if (temperatureData) {
 		const latestTemperature = temperatureData.data?.at?.(-1)?.[1];
-		const scale = temperatureData.scale;
+		const { scale } = temperatureData;
 		if (latestTemperature) {
 			document.getElementById('current-temperature').innerHTML = latestTemperature.toFixed(scale.currentPrecision) + scale.currentUnitName;
 		}
 	}
-}
+};
 
 export {
 	getInfo,

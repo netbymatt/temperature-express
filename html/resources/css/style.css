@@ -837,6 +837,11 @@ body {
   margin-top: 0.9em;
   margin-left: 5px;
 }
+@media (max-width: 350px) {
+  .top-left #current-temperature {
+    display: none;
+  }
+}
 
 .touch-button {
   padding: 10px;

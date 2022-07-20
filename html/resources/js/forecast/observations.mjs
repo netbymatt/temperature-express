@@ -55,11 +55,17 @@ const makeObsTrend = (obs, config, name) => {
 			observedValue = item.properties.windSpeed.value;
 			windDirection = (item.properties.windDirection.value + 180) % 360;
 			break;
+		case 'cloudLayers':
+			// return null to gap-fill when there are no cloud reports
+			if (item.properties.cloudLayers.length === 0) return null;
+			observedValue = decodeClouds(item.properties.cloudLayers);
+			break;
 		default:
 			observedValue = item.properties[name].value;
 		}
 
-		if (!observedValue) return null;
+		// do not pass along null values for cloud layers (this would extend the last known value)
+		if (!observedValue && name !== 'cloudLayers') return null;
 
 		// default pair
 		const pair = [
@@ -93,5 +99,23 @@ const makeObsTrend = (obs, config, name) => {
 
 	return sorted;
 };
+
+const cloudValues = {
+	SKC: 0,
+	NCD: 0,
+	CLR: 0,
+	NSC: 0,
+	FEW: 25,
+	SCT: 50,
+	BKN: 75,
+	OVC: 100,
+	VV: 100,
+};
+
+const decodeClouds = (data) => data.reduce((prev, cur) => {
+	const amount = cloudValues[cur.amount] ?? 0;
+	if (amount > prev) return amount;
+	return prev;
+}, 0);
 
 export default prepObsData;

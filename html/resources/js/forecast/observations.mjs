@@ -105,17 +105,16 @@ const cloudValues = {
 	NCD: 0,
 	CLR: 0,
 	NSC: 0,
-	FEW: 25,
-	SCT: 50,
-	BKN: 75,
+	FEW: 18,	// 1-2 oktas
+	SCT: 43,	// 3-4 oktas
+	BKN: 75,	// 5-7 oktas
 	OVC: 100,
 	VV: 100,
 };
 
-const decodeClouds = (data) => data.reduce((prev, cur) => {
+const decodeClouds = (data) => data.reduce((sum, cur) => {
 	const amount = cloudValues[cur.amount] ?? 0;
-	if (amount > prev) return amount;
-	return prev;
-}, 0);
+	return sum + amount;
+}, 0) / data.length;
 
 export default prepObsData;

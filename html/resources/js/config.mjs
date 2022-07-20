@@ -83,7 +83,8 @@ const LEGEND_COLORS = {
 const colorByLegend = (legend, observation) => {
 	// if observation change the opacity to 50% for faded look
 	if (observation) {
-		return LEGEND_COLORS[legend].replace(')', ', 0.5)');
+		if (legend !== 'Clouds') return LEGEND_COLORS[legend].replace(')', ', 0.5)');
+		return LEGEND_COLORS[legend];
 	}
 	return LEGEND_COLORS[legend];
 };
@@ -157,6 +158,7 @@ const AVAILABLE_TRENDS = { // trends that will be extracted from resulting data 
 
 const AVAILABLE_OBS = { // observations that will be extracted from resulting data (past observations)
 	// display name, scaled number, display units, y axis, fill type
+	cloudLayers: trendConfig('Clouds', new ScaledNumber(0, 0, 100, SCALES.PERCENT), '%', AXIS.PERCENT, FILL.ZERO),
 	temperature: trendConfig('Temperature', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 	dewpoint: trendConfig('Dewpoint', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 	windSpeed: trendConfig('Wind Speed', new ScaledNumber(0, -1000, 1000, SCALES.WIND), 'mph', AXIS.PERCENT, FILL.NO),

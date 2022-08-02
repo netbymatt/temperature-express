@@ -274,8 +274,9 @@ const headerClick = (e) => {
 	const day = +rawDay - 1;
 	if (!data[day]) return;
 
-	// load the map dialog
+	// load the map dialog and close the outlook dialog
 	Map.show(day);
+	hide();
 };
 
 // wrapper for show outlooks so errors within don't cause the entire forecast to fail

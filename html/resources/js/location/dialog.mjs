@@ -3,7 +3,7 @@ import {
 	getSavedLocation, DEFAULT_PLACE, saveLocation,
 } from '../placemanager.mjs';
 import * as ProgressBar from '../progress.mjs';
-import { fetchWithRetry, forEachElem } from '../utils.mjs';
+import { fetchWithRetry, forEachElem, apiUrl } from '../utils.mjs';
 import * as Table from '../table.mjs';
 import * as Tooltip from '../tooltip.mjs';
 import * as Alerts from '../alerts.mjs';
@@ -82,17 +82,61 @@ const locationSearchStart = async (e) => {
 	Tooltip.handler(false);
 	Alerts.updateButtonState(true);
 
-	// US is appended to search to help target the results
-	const url = `https://nominatim.openstreetmap.org/search/${encodeURIComponent(`${lookup}`)}`;
-	const data = { format: 'jsonv2', addressdetails: 1, countrycodes: 'us' };
-
 	// get a default place to start from, (this will eliminate follow me)
 	const place = { ...DEFAULT_PLACE };
 	place.textSearch = lookup;
 
+	// look for the Kxxx pattern and try to look up that station directly
+	const station = lookup.toUpperCase();
+	if (station.match(/^K[A-Z]{3}$/)) {
+		ProgressBar.message(`Looking up station directly: ${station}`);
+		const stationLookup = await directStationLookup(lookup);
+		if (stationLookup) {
+			ProgressBar.message(`Found lookup station match: ${station}`);
+			latLonReceivedCallback(stationLookup, place);
+			return;
+		}
+	}
+
+	// US is appended to search to help target the results
+	const url = `https://nominatim.openstreetmap.org/search/${encodeURIComponent(`${lookup}`)}`;
+	const data = { format: 'jsonv2', addressdetails: 1, countrycodes: 'us' };
+
 	const queryString = new URLSearchParams(data);
 
 	geoCodeLocation(`${url}?${queryString}`, place);
+};
+
+// one time direct station lookup, no retries for speed
+const directStationLookup = async (stationId) => {
+	try {
+		// try to get the result
+		const stationResponse = await fetch(`${apiUrl}stations/${stationId}`);
+		if (!stationResponse.ok) {
+			ProgressBar.message(`Station lookup failed ${stationId}: Network error`);
+			return false;
+		}
+
+		// get the entire response
+		const station = await stationResponse.json();
+
+		// test for nws internal 404
+		if (station?.status !== undefined) {
+			ProgressBar.message(`Station lookup failed ${stationId}: ${station.status}`);
+			return false;
+		}
+
+		// format for the correct response type
+		return 		[
+			{
+				lat: station.geometry.coordinates[1],
+				lon: station.geometry.coordinates[0],
+			},
+		];
+	} catch (err) {
+		ProgressBar.message(`Station lookup error: ${err.message}`);
+		return false;
+	}
 };
 
 const geoCodeLocation = async (url, place) => {

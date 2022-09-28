@@ -28,7 +28,7 @@ const buildFullTable = (data) => {
 	// loop through all legends
 	data.forEach((series) => {
 		// hide values that are not every hour by testing data length
-		if (series.lines.show && !series.isObs && series.data.length === data[0].data.length) {
+		if (series.lines.show && !series.isObs && series.data.length >= data[0].data.length) {
 			tableHeader += `<td>${series.label}</td>`;
 		}
 	});
@@ -61,7 +61,7 @@ const buildFullTable = (data) => {
 		// loop through visible columns
 		const dataHtml = data.map((series) => {
 			// hide values that are not every hour by testing data length
-			if (series.lines.show && !series.isObs && series.data.length === data[0].data.length) {
+			if (series.lines.show && !series.isObs && series.data.length >= data[0].data.length) {
 				if (i < series.data.length) {
 					return `<td>${
 						// hide null values

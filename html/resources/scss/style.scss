@@ -242,12 +242,16 @@ input[type=checkbox] {
 
 		@media (min-width: c.$chart-button-min-width) {
 			height: 18px;
+			width: 15px;
 		}
 	}
 
 	@media (min-width: c.$chart-button-min-width) {
-		margin: 5px;
-		transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+		width: 0px;
+		height: 18px;
+		padding: 10px 0px;
+		margin: 5px 0px;
+		transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, width 0.5s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out;
 	}
 }
 

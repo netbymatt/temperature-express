@@ -66,7 +66,7 @@ const makeForecastTrend = (series, config, windDirections = []) => {
 		if (config.valueFunction) {
 			// additional value function
 			value = [
-				config.valueFunction(+config.scale.set(item.value), 0),
+				config.valueFunction(+config.scale.set(item.value, 0)),
 			];
 		} else {
 			// direct value copy

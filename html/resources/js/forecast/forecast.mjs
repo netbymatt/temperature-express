@@ -49,6 +49,34 @@ const prepForecastData = (fcst, metaData, options) => {
 	// store oldest data
 	metaData.oldestData = metaData.minTimestamp;
 
+	// special filtering for rain/snow/ice
+	// quantitativePrecipitation means any kind of precipitation
+	// if snow or ice are also present for the same timespan, null
+	// the quantitativePrecipitation value so only one shows (or two if ice and snow are present)
+	const iceData = dataset.filter((d) => d.label === 'Ice')?.[0]?.data;
+	const snowData = dataset.filter((d) => d.label === 'Snow')?.[0]?.data;
+	const rainDataIndex = dataset.findIndex((d) => d.label === 'Rain');
+
+	if (rainDataIndex) {
+		// get the rain data
+		const rainData = dataset[rainDataIndex].data;
+
+		// scan for matching snow/ice timestamps with val ~== null and replace the rain data with null if present
+		const newRainData = rainData.map(([timestamp, value]) => {
+			if (iceData?.find(([ts, val]) => (ts === timestamp && val))) {
+				return [timestamp, null];
+			}
+
+			if (snowData?.find(([ts, val]) => (ts === timestamp && val))) {
+				return [timestamp, null];
+			}
+			return [timestamp, value];
+		});
+
+		// overwrite current rain data
+		dataset[rainDataIndex].data = newRainData;
+	}
+
 	return dataset;
 };
 

@@ -69,7 +69,7 @@ const plot = (dataset, metaData, plotLimits, inchAxes) => {
 					panRange: false,
 					zoomRange: false,
 				},
-				{	// axis 3, in
+				{	// axis 3, in (snow)
 					position: 'left',
 					min: inAxes.y3.min,
 					max: inAxes.y3.max,
@@ -101,6 +101,15 @@ const plot = (dataset, metaData, plotLimits, inchAxes) => {
 					position: 'left',
 					min: 0,
 					max: 20,
+					autoScale: 'none',
+					show: false,
+					panRange: false,
+					zoomRange: false,
+				},
+				{	// axis 7, in / 5 (intended for rain)
+					position: 'left',
+					min: inAxes.y7.min,
+					max: inAxes.y7.max,
 					autoScale: 'none',
 					show: false,
 					panRange: false,

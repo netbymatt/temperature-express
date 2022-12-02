@@ -78,6 +78,7 @@ const LEGEND_COLORS = {
 	Ice: 'rgb(0,255,0)',
 	Barometer: 'rgb(192,192,192)',
 	'Lightning (1-5)': 'rgb(128,128,0)',
+	Rain: 'rgb(232, 198, 67)',
 };
 
 // return a set color for each legend
@@ -98,6 +99,9 @@ const SCALES = {	// unit[0] = the units provided by the nws api (metric), [1] = 
 		unit: 'in', m: 25.4, b: 0, precision: 1,
 	}],
 	INCHES_ICE: [{ unit: 'mm' }, {
+		unit: 'in', m: 25.4, b: 0, precision: 2,
+	}],
+	INCHES_RAIN: [{ unit: 'mm' }, {
 		unit: 'in', m: 25.4, b: 0, precision: 2,
 	}],
 	BAROMETER: [
@@ -121,6 +125,7 @@ const AXIS = {
 	BAROMETER_IN: 5,
 	TEMPERATURE: 1,
 	LIGHTNING: 6,
+	RAIN_IN: 7,
 };
 
 const FILL = {
@@ -147,6 +152,7 @@ const AVAILABLE_TRENDS = { // trends that will be extracted from resulting data 
 	// display name, scaled number, display units, y axis, fill type, extra function
 	skyCover: trendConfig('Clouds', new ScaledNumber(0, 0, 100, SCALES.PERCENT), '%', AXIS.PERCENT, FILL.ZERO),
 	probabilityOfPrecipitation: trendConfig('Precip', new ScaledNumber(0, 0, 100, SCALES.PERCENT), '%', AXIS.PERCENT, FILL.ZERO, NULL_VALUES(0)),
+	quantitativePrecipitation: trendConfig('Rain', new ScaledNumber(0, 0, 1000, SCALES.INCHES_RAIN), 'in', AXIS.RAIN_IN, FILL.ZERO, NULL_VALUES(0)),
 	snowfallAmount: trendConfig('Snow', new ScaledNumber(0, 0, 1000, SCALES.INCHES), 'in', AXIS.SNOW_IN, FILL.ZERO, NULL_VALUES(0)),
 	iceAccumulation: trendConfig('Ice', new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE), 'in', AXIS.ICE_IN, FILL.ZERO, NULL_VALUES(0)),
 	temperature: trendConfig('Temperature', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
@@ -186,6 +192,11 @@ const AXIS_LIMITS = {
 		// max is intentionally high to keep the barometer towards the bottom of the graph
 		min: 29,
 		max: 34,
+	},
+	y7: {
+		// rain in inches
+		min: 0,
+		max: 2.5,
 	},
 };
 

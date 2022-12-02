@@ -224,6 +224,7 @@ const inchAxes = (units) => {
 	const y3 = new ScaledNumber(0, 0, 1000, SCALES.INCHES);
 	const y4 = new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE);
 	const y5 = new ScaledNumber(0, 0, 1e7, SCALES.BAROMETER);
+	const y7 = new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE);
 
 	return {
 		y3: {
@@ -237,6 +238,10 @@ const inchAxes = (units) => {
 		y5: {
 			min: +y5.set(AXIS_LIMITS.y5.min, 1).setUnit(units),
 			max: +y5.set(AXIS_LIMITS.y5.max, 1).setUnit(units),
+		},
+		y7: {
+			min: +y7.set(AXIS_LIMITS.y7.min, 1).setUnit(units),
+			max: +y7.set(AXIS_LIMITS.y7.max, 1).setUnit(units),
 		},
 	};
 };

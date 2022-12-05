@@ -10,7 +10,6 @@ const holidaySource = {
 	'11/11': 'monument',
 
 	// thanksgiving
-	'11/25/2021': 'drumstick-bite',
 	'11/24/2022': 'drumstick-bite',
 	'11/23/2023': 'drumstick-bite',
 	'11/28/2024': 'drumstick-bite',
@@ -22,18 +21,15 @@ const holidaySource = {
 	'11/28/2030': 'drumstick-bite',
 
 	// begin daylight savings
-	'3/14/2021': 'clock',
 	'3/13/2022': 'clock',
 	'3/12/2023': 'clock',
 	'3/10/2024': 'clock',
 	// end daylight savings
-	'11/7/2021': 'clock',
 	'11/6/2022': 'clock',
 	'11/5/2023': 'clock',
 	'11/3/2024': 'clock',
 
 	// memorial day
-	'5/31/2021': 'monument',
 	'5/30/2022': 'monument',
 	'5/29/2023': 'monument',
 	'5/27/2024': 'monument',
@@ -44,7 +40,6 @@ const holidaySource = {
 	'5/28/2029': 'monument',
 
 	// labor day
-	'9/6/2021': 'industry',
 	'9/5/2022': 'industry',
 	'9/4/2023': 'industry',
 	'9/2/2024': 'industry',
@@ -55,7 +50,6 @@ const holidaySource = {
 	'9/3/2029': 'industry',
 
 	// election day
-	'11/2/2021': 'vote-yea',
 	'11/8/2022': 'vote-yea',
 	'11/7/2023': 'vote-yea',
 	'11/5/2024': 'vote-yea',
@@ -66,7 +60,6 @@ const holidaySource = {
 	'11/12/2029': 'vote-yea',
 
 	// easter
-	'4/4/2021': 'egg',
 	'4/17/2022': 'egg',
 	'4/9/2023': 'egg',
 	'3/31/2024': 'egg',
@@ -77,7 +70,6 @@ const holidaySource = {
 	'4/1/2029': 'egg',
 
 	// spring
-	'3/20/2021': 'seedling',
 	'3/20/2022': 'seedling',
 	'3/20/2023': 'seedling',
 	'3/19/2024': 'seedling',
@@ -85,7 +77,6 @@ const holidaySource = {
 	'3/20/2026': 'seedling',
 
 	// summer
-	'6/20/2021': 'sun',
 	'6/21/2022': 'sun',
 	'6/21/2023': 'sun',
 	'6/20/2024': 'sun',
@@ -93,7 +84,6 @@ const holidaySource = {
 	'6/21/2026': 'sun',
 
 	// fall
-	'9/22/2021': 'leaf',
 	'9/22/2022': 'leaf',
 	'9/23/2023': 'leaf',
 	'9/22/2024': 'leaf',
@@ -101,7 +91,6 @@ const holidaySource = {
 	'9/22/2026': 'leaf',
 
 	// winter
-	'12/21/2021': 'snowflake',
 	'12/21/2022': 'snowflake',
 	'12/21/2023': 'snowflake',
 	'12/21/2024': 'snowflake',

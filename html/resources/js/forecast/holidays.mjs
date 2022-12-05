@@ -21,6 +21,13 @@ const holidaySource = {
 	'12/11': ['syringe', 'COVID-19 Vaccine first available'],
 	'10/31': ['ghost', 'Halloween'],
 	'11/11': ['monument', 'Veterans Day'],
+	'10/21': ['school', 'Back to the Future Day'],
+	'7/20': ['user-astronaut', 'Moon Landing Anniversary'],
+	'3/10': ['star', 'Mario Day'],
+	'3/14': ['pie', 'Pi Day'],
+	'4/5': ['hand-spock', 'First Contact Day'],
+	'4/7': ['network-wired', 'Internet\'s Birthday'],
+	'5/4': ['jedi-order', 'Star Wars Day'],
 
 	// thanksgiving
 	'11/24/2022': THANKSGIVING,

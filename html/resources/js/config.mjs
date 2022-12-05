@@ -74,7 +74,7 @@ const LEGEND_COLORS = {
 	'Feels Like': 'rgb(210, 98, 161)',
 	'Wind Speed': 'rgb(237, 194, 64)',
 	'Wind Gust': 'rgb(235, 150, 0)',
-	Snow: 'rgb(133,133,239)',
+	Snow: 'rgb(58,58,239)',
 	Ice: 'rgb(0,255,0)',
 	Barometer: 'rgb(192,192,192)',
 	'Lightning (1-5)': 'rgb(128,128,0)',

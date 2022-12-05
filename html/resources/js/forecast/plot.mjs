@@ -213,8 +213,12 @@ const plotDays = (plt) => {
 
 // holiday icon lookup
 const holidayIcon = (day) => {
-	const iconType = Holidays(day);
-	return iconType ? `<i class="fas fa-${iconType}"></i>` : '';
+	const icon = Holidays(day);
+
+	// extract icon type and title text (or default)
+	const iconType = icon?.[0] ?? icon;
+	const iconTitle = icon?.[1] ?? '';
+	return icon ? `<i class="fas fa-${iconType}" title="${iconTitle}"></i>` : '';
 };
 
 export default plot;

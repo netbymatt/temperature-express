@@ -74,7 +74,7 @@ const prepForecastData = (fcst, metaData, options) => {
 		});
 
 		// overwrite current rain data
-		dataset[rainDataIndex].data = newRainData;
+		dataset[rainDataIndex].data = zeroAdjacentNulls(newRainData);
 	}
 
 	return dataset;
@@ -83,7 +83,7 @@ const prepForecastData = (fcst, metaData, options) => {
 // format forecast as a set of series data arrays
 const makeForecastTrend = (series, config, windDirections = []) => {
 	const startOfHour = DateTime.utc().startOf('hour').toMillis();
-	return series.map((item) => {
+	const dataWithNulls = series.map((item) => {
 		const duration = getDuration(item.validTime);
 
 		// loop through duration at one hour intervals
@@ -117,6 +117,31 @@ const makeForecastTrend = (series, config, windDirections = []) => {
 		} while (duration.startTime < duration.endTime);
 		return eachHour;
 	}).flat(1);
+
+	// some data requires extra processing
+	if (!config.valueFunction) return dataWithNulls;
+
+	return zeroAdjacentNulls(dataWithNulls);
+};
+
+// scan forwards and backwards through the array and replace a null that is adjacent
+// modify data in place
+const zeroAdjacentNulls = (data) => {
+	const newData = [];
+	const lastIndex = data.length - 1;
+	for (let i = 0; i <= lastIndex; i += 1) {
+		// copy only if not already touched
+		if (!newData[i]) newData[i] = [data[i][0], data[i][1]];
+
+		// forwards
+		const next = data?.[i + 1]?.[1];
+		if (data[i][1] === null && next !== null && next !== undefined) newData[i][1] = 0;
+
+		// backwards
+		const prev = data?.[lastIndex - i - 1]?.[1];
+		if (data[lastIndex - i][1] === null && prev !== null && prev !== undefined) newData[lastIndex - i] = [data[lastIndex - i][0], 0];
+	}
+	return newData;
 };
 
 // find wind direction, private

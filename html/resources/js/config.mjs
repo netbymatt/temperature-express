@@ -160,7 +160,7 @@ const AVAILABLE_TRENDS = { // trends that will be extracted from resulting data 
 	apparentTemperature: trendConfig('Feels Like', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 	windSpeed: trendConfig('Wind Speed', new ScaledNumber(0, -1000, 1000, SCALES.WIND), 'mph', AXIS.PERCENT, FILL.NO),
 	pressure: trendConfig('Barometer', new ScaledNumber(0, 0, 1e7, SCALES.BAROMETER), '"', AXIS.BAROMETER_IN, FILL.NO),
-	lightningActivityLevel: trendConfig('Lightning (1-5)', new ScaledNumber(0, 0, 5, SCALES.LIGHTNING), '', AXIS.LIGHTNING, FILL.ZERO, NULL_VALUES(1)),
+	lightningActivityLevel: trendConfig('Lightning (1-5)', new ScaledNumber(0, 0, 5, SCALES.LIGHTNING), '', AXIS.LIGHTNING, FILL.ZERO, NULL_VALUES(0)),
 };
 
 const AVAILABLE_OBS = { // observations that will be extracted from resulting data (past observations)

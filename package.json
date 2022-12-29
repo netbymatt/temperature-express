@@ -1,6 +1,6 @@
 {
 	"name": "temperature-express",
-	"version": "1.29.2",
+	"version": "1.29.3",
 	"description": "Hourly forecast graph from data at weather.gov",
 	"main": "index.js",
 	"scripts": {

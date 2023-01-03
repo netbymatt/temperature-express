@@ -83,43 +83,61 @@ const formatData = (fcst, allObs, reset) => {
 		// set observation station
 		document.querySelector('#menu-footer-site').innerHTML = allObs.station;
 		// see if forecast has been plotted by testing for presence of plot
-		if (plot) {
-			if (obs?.features?.length > 0) {
-				const dataset = DataObs(obs, metaData, getOptions());
-				// update if temperature is available
-				updateCurrentTemperature(dataset);
-				// add the data to the plot
-				const currentDataset = plot.getData();
-				currentDataset.push(...dataset);
-				// update minimums for scrolling
-				// get plot limits
-				const { endOfLast, oldestData } = plotLimits();
-				plot.getOptions().xaxis.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData]; // 12 hours - range of data
-				plot.getOptions().xaxis.panRange = [oldestData, endOfLast];
-				plot.getAxes().xaxis.options.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData];
-				plot.getAxes().xaxis.options.panRange = [oldestData, endOfLast];
+		if (!plot) {
+			const emptyMetaData = {
+				minTimestamp: DateTime.now().startOf('day'),
+				maxTimestamp: DateTime.now().plus({ days: 7 }).endOf('day'),
+			};
+			plot = plotForecast([], emptyMetaData, plotLimits(), inchAxes);
+			chartVisibility(true);
+			// indicate still loading
+			document.getElementById('date').classList.add('loading');
+		}
+		if (obs?.features?.length > 0) {
+			const dataset = DataObs(obs, metaData, getOptions());
+			// update if temperature is available
+			updateCurrentTemperature(dataset);
+			// add the data to the plot
+			const currentDataset = plot.getData();
+			currentDataset.push(...dataset);
+			// update minimums for scrolling
+			// get plot limits
+			const { endOfLast, oldestData } = plotLimits();
+			plot.getOptions().xaxis.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData]; // 12 hours - range of data
+			plot.getOptions().xaxis.panRange = [oldestData, endOfLast];
+			plot.getAxes().xaxis.options.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData];
+			plot.getAxes().xaxis.options.panRange = [oldestData, endOfLast];
 
-				// redraw the plot
-				plot.setData(currentDataset);
-				plot.setupGrid(true);
-				plot.draw();
+			// redraw the plot
+			plot.setData(currentDataset);
+			plot.setupGrid(true);
+			plot.draw();
 
-				// store text descriptions
-				Tooltip.generateTextForecastData(allObs.data.features, true);
-			} // obs != 0 (no data provided)
-		} // format observation data
+			// store text descriptions
+			Tooltip.generateTextForecastData(allObs.data.features, true);
+		} // obs != 0 (no data provided)
 		// store the data for later
 		formatData.obs = allObs;
 	} // observation data provided
 };
 
 // calculate plotting limits
-const plotLimits = () => ({
+const plotLimits = () => {
+	// if no metadata exists plot 7 days each way
+	if (!metaData.minTimestamp || !metaData.maxTimestamp || !metaData.oldestData) {
+		return {
+			beginningOfFirst: convertTimestamp(DateTime.now().startOf('day')),
+			endOfLast: convertTimestamp(DateTime.now().plus({ days: 7 }).endOf('day')),
+			oldestData: convertTimestamp(DateTime.now().plus({ days: -7 }).startOf('day')),
+		};
+	}
 	// calculate beginning of first day and end of last day to snap display to full days
-	beginningOfFirst: convertTimestamp(metaData.minTimestamp.startOf('day')),
-	endOfLast: convertTimestamp(metaData.maxTimestamp.endOf('day')),
-	oldestData: convertTimestamp(metaData.oldestData.startOf('day')),
-});
+	return {
+		beginningOfFirst: convertTimestamp(metaData.minTimestamp.startOf('day')),
+		endOfLast: convertTimestamp(metaData.maxTimestamp.endOf('day')),
+		oldestData: convertTimestamp(metaData.oldestData.startOf('day')),
+	};
+};
 
 // plot data, public
 const plotData = (dataset) => {

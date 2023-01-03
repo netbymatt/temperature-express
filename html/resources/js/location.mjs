@@ -282,7 +282,9 @@ const getHourlyForecast = async (baseUrl) => {
 			getHourlyForecastRetry(baseUrl);
 		}
 		// store the data
-		Forecast.formatData(data, false);
+		setTimeout(() => {
+			Forecast.formatData(data, false);
+		}, 10000);
 	} catch (e) {
 		ProgressBar.message('Get hourly forecast failed', true);
 		stillRetrying(0, 2);

@@ -163,6 +163,9 @@ const setLastUpdate = (fcst) => {
 	dateSpan.innerHTML = updateTime.toLocaleString({
 		weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
 	});
+	// remove the loading indicator
+	dateSpan.parentNode.classList.remove('loading');
+
 	// if older than 3 hours alert user
 	if (Date.now() - updateTime > OLD_FORECAST_LIMIT) {
 		dateSpan.parentNode.classList.add('old');

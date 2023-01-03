@@ -981,6 +981,10 @@ input[type=checkbox] {
   display: inline-block;
 }
 
+#date.loading .small-loading {
+  display: inline-block;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

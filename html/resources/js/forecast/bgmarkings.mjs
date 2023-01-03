@@ -17,7 +17,7 @@ const generator = (metaData) => {
 		// array of highlights
 		const markings = [];
 
-		markings.push(...dayNight(startDays, axes, isDark, metaData));
+		markings.push(...dayNight(startDays, axes, isDark));
 
 		// calculate 5 px width for black line (as ms)
 		// since the plot is not yet drawn, we have to make a best guess about the width of the plot area based on the width of the chart placeholder

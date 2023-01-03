@@ -1,3 +1,4 @@
+import * as ProgressBar from './progress.mjs';
 import { DateTime } from '../vendor/luxon.min.mjs';
 import { forEachElem, convertTimestamp } from './utils.mjs';
 import { getOptions, saveOptions } from './options.mjs';
@@ -19,6 +20,7 @@ const metaData = {			// metadata
 	forecastTimestamp: null,
 };
 let plot = null; // the plot object once loaded
+let obsTimeoutHandle = null;
 
 // init
 document.addEventListener('DOMContentLoaded', () => init());
@@ -53,6 +55,8 @@ const formatData = (fcst, allObs, reset) => {
 			plot.shutdown();
 			plot = null;
 		}
+		clearTimeout(obsTimeoutHandle);
+		obsTimeoutHandle = null;
 		formatData.obs = undefined;
 		Tooltip.generateTextForecastData();
 	}
@@ -72,6 +76,9 @@ const formatData = (fcst, allObs, reset) => {
 		// save text forecast data
 		Tooltip.generateTextForecastData(fcst?.properties?.weather?.values);
 
+		// clear the observation timeout handle
+		clearTimeout(obsTimeoutHandle);
+
 		// test for previously stored observations and plot it
 		if (formatData.obs) formatData(false, formatData.obs);
 		formatData.fcst = fcst;
@@ -79,7 +86,19 @@ const formatData = (fcst, allObs, reset) => {
 
 	// format the observation data
 	if (allObs !== false) {
+		// store data
 		const obs = allObs.data;
+		formatData.obs = allObs;
+
+		// intentional 2 second delay to allow forecast to load first
+		// this creates a much nicer loading fade in
+		if (!plot && !obsTimeoutHandle) {
+			obsTimeoutHandle = setTimeout(() => formatData(fcst, allObs, reset), 2000);
+			return;
+		}
+		// update progress bar
+		ProgressBar.set('Observations received');
+
 		// set observation station
 		document.querySelector('#menu-footer-site').innerHTML = allObs.station;
 		// see if forecast has been plotted by testing for presence of plot
@@ -116,8 +135,6 @@ const formatData = (fcst, allObs, reset) => {
 			// store text descriptions
 			Tooltip.generateTextForecastData(allObs.data.features, true);
 		} // obs != 0 (no data provided)
-		// store the data for later
-		formatData.obs = allObs;
 	} // observation data provided
 };
 

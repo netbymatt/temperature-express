@@ -282,9 +282,7 @@ const getHourlyForecast = async (baseUrl) => {
 			getHourlyForecastRetry(baseUrl);
 		}
 		// store the data
-		setTimeout(() => {
-			Forecast.formatData(data, false);
-		}, 10000);
+		Forecast.formatData(data, false);
 	} catch (e) {
 		ProgressBar.message('Get hourly forecast failed', true);
 		stillRetrying(0, 2);
@@ -373,7 +371,6 @@ const getObservations = async (place) => {
 		const fetchHandler = fetchWithRetry(url, 3);
 		getObservations.cancel = fetchHandler.cancel;
 		const data = await fetchHandler.data;
-		ProgressBar.set('Observations received');
 		Forecast.formatData(false, { data, station: place.station });
 	} catch (e) {
 		// see if the other data arrived

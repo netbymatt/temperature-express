@@ -1,9 +1,11 @@
 import { DateTime } from '../vendor/luxon.min.mjs';
 
+const TABLE_SELECTOR = '#table table';
+
 // initialize
 document.addEventListener('DOMContentLoaded', () => {
 	// add double click handler = select all
-	document.querySelector('#table table').addEventListener('dblclick', selectTable);
+	document.querySelector(TABLE_SELECTOR).addEventListener('dblclick', selectTable);
 });
 
 const showTable = (data) => {
@@ -11,7 +13,7 @@ const showTable = (data) => {
 	const tableHtml = buildFullTable(data);
 
 	// put table on page
-	document.querySelector('#table table').innerHTML = tableHtml;
+	document.querySelector(TABLE_SELECTOR).innerHTML = tableHtml;
 
 	// show the table
 	toggleTable(true);
@@ -52,7 +54,7 @@ const buildFullTable = (data) => {
 		// timestamp (day of week, day, hour:minute)
 		html += `<tr${
 			// new day
-			(dt.c.day !== lastDay) ? ' class="new-day"' : ''
+			(dt.c.day === lastDay) ? '' : ' class="new-day"'
 		}>`
 				+ `<td>${dt.toLocaleString({ weekday: 'short' })} ${
 					dt.toLocaleString({ month: 'short', day: '2-digit' })} ${
@@ -91,8 +93,8 @@ const buildFullTable = (data) => {
 // show the table (true) or chart
 const toggleTable = (show, includeChart = true) => {
 	// get elements
-	const tableElem = document.getElementById('table');
-	const chartElem = document.getElementById('chart-container');
+	const tableElem = document.querySelector('#table');
+	const chartElem = document.querySelector('#chart-container');
 	const tableMenuElem = document.querySelector('#menu-table div.table');
 	const chartMenuElem = document.querySelector('#menu-table div.chart');
 	// toggle the menu text
@@ -116,7 +118,7 @@ const toggleTable = (show, includeChart = true) => {
 // select table, private
 // selects all text in table for easy copying
 const selectTable = () => {
-	const elem = document.querySelector('#table table');
+	const elem = document.querySelector(TABLE_SELECTOR);
 	const selection = elem.ownerDocument.defaultView.getSelection();
 	const range = elem.ownerDocument.createRange();
 	range.selectNodeContents(elem);

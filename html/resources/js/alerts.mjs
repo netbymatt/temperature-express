@@ -12,13 +12,14 @@ document.addEventListener('DOMContentLoaded', () => init());
 let isActive = false;	// active alerts present
 let isError = false;	// error detected, show error strike-through
 let hasWarningOrImmediate = false;	// at leastone item is a warning
+const DIALOG_ALERT_SELECTOR = '#dialog-alert';
 
 const init = () => {
 	// setup the alert button
-	document.getElementById('alert-button').addEventListener('click', show);
+	document.querySelector('#alert-button').addEventListener('click', show);
 
 	// alert dialog interactions, clicking headers expands/closes children
-	document.getElementById('dialog-alert').addEventListener('click', headingClick);
+	document.querySelector(DIALOG_ALERT_SELECTOR).addEventListener('click', headingClick);
 	document.querySelector('#dialog-alert.dialog .close').addEventListener('click', hide);
 	Menu.registerClickHandler('menu-alerts', show);
 	Menu.registerCloseAll(hide);
@@ -35,19 +36,19 @@ const get = async (place, isRetry) => {
 		if (response.status !== 200) throw new Error(`Response status code: ${response.status}`);
 		const json = await response.json();
 		received(json);
-	} catch (e) {
-		if (!isRetry) {
-			// try again one time
-			setTimeout(() => get(place, true), 1000);
-		} else {
+	} catch (error) {
+		if (isRetry) {
 			ProgressBar.message('Get alerts failed!', true);
-			ProgressBar.message(e, true);
+			ProgressBar.message(error, true);
 			ProgressBar.set('Get alerts failed', true);
 			// update button state
 			isActive = false;
 			isError = true;
 			hasWarningOrImmediate = false;
 			updateButtonState();
+		} else {
+			// try again one time
+			setTimeout(() => get(place, true), 1000);
 		}
 	}
 };
@@ -76,7 +77,7 @@ const received = (json) => {
 
 // update button state
 const updateButtonState = (hide) => {
-	const alertButton = document.getElementById('alert-button');
+	const alertButton = document.querySelector('#alert-button');
 	if ((isActive || isError) && !hide) {
 		alertButton.classList.add('show');
 		if (isError) alertButton.classList.add('disabled');
@@ -109,7 +110,7 @@ const testActive = (data) => {
 				type.isImmediate = true;
 			}
 			// set a flag if this is a warning
-			if (alert?.parameters?.VTEC?.[0]?.match(/\.[A-Z]{2}\.W\.[0-9]{4}/)) {
+			if (alert?.parameters?.VTEC?.[0]?.match(/\.[A-Z]{2}\.W\.\d{4}/)) {
 				alert.isWarning = true;
 				type.isWarning = true;
 			}
@@ -136,8 +137,8 @@ const testWarning = (categorized) => Object.values(categorized).reduce(
 // show the alert dialog
 const alertButton = () => {
 	// build the alert list
-	const dialog = document.getElementById('dialog-alert');
-	const dialogContent = document.getElementById('dialog-alert-content');
+	const dialog = document.querySelector(DIALOG_ALERT_SELECTOR);
+	const dialogContent = document.querySelector('#dialog-alert-content');
 	// check for error state
 	if (isError) {
 		dialogContent.innerHTML = 'Alerts could not be loaded for this location';
@@ -158,7 +159,7 @@ const alertButton = () => {
 };
 
 const hide = () => {
-	document.getElementById('dialog-alert').classList.remove('show');
+	document.querySelector(DIALOG_ALERT_SELECTOR).classList.remove('show');
 };
 
 // clicked on h3 or h4 element in dialog

@@ -16,7 +16,7 @@ const show = (day) => {
 	// close the initial popup
 	hide();
 	// set the day
-	const dialog = document.getElementById('dialog-outlook-map');
+	const dialog = document.querySelector('#dialog-outlook-map');
 	dialog.dataset.currentDay = day;
 	const titleElem = dialog.querySelector('.dialog .title div');
 	titleElem.innerHTML = titleElem.innerHTML.replace(/(\d)/, day + 1).replace(/(: ).*/, `$1${formatDay(day)}`);
@@ -38,7 +38,7 @@ const show = (day) => {
 };
 
 const changeMapDay = (e) => {
-	const { dataset } = e.target;
+	const { dataset, disabled } = e.target;
 	if (!dataset?.newDay) return;
 
 	const newDay = +dataset.newDay;
@@ -47,7 +47,7 @@ const changeMapDay = (e) => {
 	if (newDay < 0 || newDay > 7) return;
 
 	// test for disabled
-	if (e.target.disabled) return;
+	if (disabled) return;
 
 	// load the new day
 	show(newDay);

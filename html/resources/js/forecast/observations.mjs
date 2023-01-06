@@ -45,6 +45,7 @@ const makeObsTrend = (obs, config, name) => {
 		const { timestamp } = item.properties;
 		let observedValue = 0;
 		let windDirection;
+		/* eslint-disable unicorn/consistent-destructuring */
 		switch (name) {
 		case 'apparentTemperature':
 			observedValue = item.properties.windChill.value
@@ -63,6 +64,7 @@ const makeObsTrend = (obs, config, name) => {
 		default:
 			observedValue = item.properties[name].value;
 		}
+		/* eslint-enable unicorn/consistent-destructuring */
 
 		// do not pass along null values for cloud layers (this would extend the last known value)
 		if (!observedValue && name !== 'cloudLayers') return null;
@@ -87,7 +89,7 @@ const makeObsTrend = (obs, config, name) => {
 		sorted.forEach((pair) => {
 			if (pair.length < 3) return;
 			const timeStampMs = (new Date(pair[0])).getTime();
-			if (timeStampMs - lastWindTimestamp < 3600000) {
+			if (timeStampMs - lastWindTimestamp < 3_600_000) {
 				// remove too frequent wind direction
 				pair.pop();
 			} else {

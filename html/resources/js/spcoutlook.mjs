@@ -14,6 +14,8 @@ const redIconLabel = [
 	'HIGH',
 ];
 
+const DIALOG_OUTLOOK_SELECTOR = '#dialog-outlook';
+
 // list of interesting files ordered [0] = today, [1] = tomorrow...
 const urlPattern = (day, type) => `/products/outlook/day${day}otlk_${type}.nolyr.geojson`;
 const phenomenonTypes = {
@@ -26,7 +28,7 @@ const phenomenonTypes = {
 	// sigWind: 'sigwind',
 };
 	// day three only has some files
-const day3 = ['categorical'];
+const day3 = new Set(['categorical']);
 
 // the data only needs to be loaded once per application load and is stored here, it covers the entire US
 // undefined = data not loaded yet
@@ -44,7 +46,7 @@ const files = [null, null, null].map((v, i) => {
 	// build a blank data structure at the same time
 	const dataDay = {};
 	Object.entries(phenomenonTypes).forEach(([key, value]) => {
-		if (i < 2 || day3.includes(key)) {
+		if (i < 2 || day3.has(key)) {
 			day[key] = urlPattern(i + 1, value);
 			dataDay[key] = undefined;
 		}
@@ -55,7 +57,7 @@ const files = [null, null, null].map((v, i) => {
 
 const init = async () => {
 	// button interactivity
-	document.getElementById('outlook-button').addEventListener('click', buttonClick);
+	document.querySelector('#outlook-button').addEventListener('click', buttonClick);
 	document.querySelector('#dialog-outlook.dialog .close').addEventListener('click', hide);
 	document.querySelector('#dialog-outlook .content').addEventListener('click', headerClick);
 
@@ -145,16 +147,12 @@ const analyzeDetailData = (position) => {
 		const anchorElement = document.createElement('a');
 		anchorElement.href = spcDayLink(index + 1);
 		const headerElement = document.createElement('h3');
-		anchorElement.appendChild(headerElement);
+		anchorElement.append(headerElement);
 		headerElement.textContent = formatDay(index);
 		dayElements.push(anchorElement);
 
 		// if the day is empty note that
-		if (!day) {
-			const noEvents = document.createElement('h4');
-			noEvents.textContent = 'No SPC activity predicted';
-			dayElements.push(noEvents);
-		} else {
+		if (day) {
 			const list = document.createElement('ul');
 			// loop through the events
 			// ugly way to get the categorical value first, and then sort by percent
@@ -162,9 +160,13 @@ const analyzeDetailData = (position) => {
 				const riskElem = document.createElement('li');
 				if (i === 0) riskElem.textContent = 'Categorical: ';
 				riskElem.textContent += risk.LABEL2;
-				list.appendChild(riskElem);
+				list.append(riskElem);
 			});
 			dayElements.push(list);
+		} else {
+			const noEvents = document.createElement('h4');
+			noEvents.textContent = 'No SPC activity predicted';
+			dayElements.push(noEvents);
 		}
 		// get the day element
 		const dayElement = content.querySelector(`[data-day="${index + 1}"]`);
@@ -230,8 +232,8 @@ const testAllPoints = (point, _types) => {
 // sort the LABEL field where a label with text such as 'SIGN' is ranked higher than a numeric value
 const labelSortAlgorithm = (a, b) => {
 	const letterMatch = /[A-Za-z]{1,4}/;
-	const aDN = a.LABEL.match(letterMatch) ? a.DN + 1 : a.DN;
-	const bDN = b.LABEL.match(letterMatch) ? b.DN + 1 : b.DN;
+	const aDN = letterMatch.test(a.LABEL) ? a.DN + 1 : a.DN;
+	const bDN = letterMatch.test(b.LABEL) ? b.DN + 1 : b.DN;
 	return bDN - aDN;
 };
 
@@ -239,27 +241,27 @@ const testModerate = (days) => days.reduce((prevDay, day) => prevDay || (day?.re
 
 // update button state
 const updateButtonState = (hide, isModerate) => {
-	const outlookButton = document.getElementById('outlook-button');
-	if (!hide) {
+	const outlookButton = document.querySelector('#outlook-button');
+	if (hide) {
+		outlookButton.classList.remove('show', 'red');
+	} else {
 		outlookButton.classList.add('show');
 		if (isModerate) outlookButton.classList.add('red');
-	} else {
-		outlookButton.classList.remove('show', 'red');
 	}
 };
 
 const buttonClick = () => {
 	Menu.closeAll();
 	// open the dialog
-	document.querySelector('#dialog-outlook').classList.remove('initial-hide');
-	setTimeout(() => document.querySelector('#dialog-outlook').classList.add('show'), 1);
+	document.querySelector(DIALOG_OUTLOOK_SELECTOR).classList.remove('initial-hide');
+	setTimeout(() => document.querySelector(DIALOG_OUTLOOK_SELECTOR).classList.add('show'), 1);
 
 	// hide other dialogs
 	Map.hide();
 };
 
 const hide = (andMap) => {
-	document.querySelector('#dialog-outlook').classList.remove('show');
+	document.querySelector(DIALOG_OUTLOOK_SELECTOR).classList.remove('show');
 	if (andMap) Map.hide();
 };
 
@@ -283,9 +285,9 @@ const headerClick = (e) => {
 const showOutlookWrapper = (...args) => {
 	try {
 		showOutlook(...args);
-	} catch (e) {
+	} catch (error) {
 		ProgressBar.message('Error showing spc outlook', true);
-		ProgressBar.message(e, true);
+		ProgressBar.message(error, true);
 	}
 };
 

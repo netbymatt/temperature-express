@@ -4,6 +4,8 @@ import { saveOptions } from './options.mjs';
 import * as Menu from './menu.mjs';
 import * as Forecast from './forecast.mjs';
 
+const DIALOG_SELECTOR = '#dialog-legend';
+
 document.addEventListener('DOMContentLoaded', () => {
 	// dialog close buttons
 	document.querySelector('#dialog-legend.dialog .close').addEventListener('click', hide);
@@ -65,13 +67,13 @@ const menuClick = () => {
 	dialogContent.append(...checkboxes);
 
 	// show the dialog
-	document.getElementById('dialog-legend').classList.remove('initial-hide');
-	setTimeout(() => document.getElementById('dialog-legend').classList.add('show'));
+	document.querySelector(DIALOG_SELECTOR).classList.remove('initial-hide');
+	setTimeout(() => document.querySelector(DIALOG_SELECTOR).classList.add('show'));
 };
 
 // close the legend dialog
 const hide = () => {
-	document.getElementById('dialog-legend').classList.remove('show');
+	document.querySelector(DIALOG_SELECTOR).classList.remove('show');
 };
 
 // legend update, private

@@ -17,7 +17,7 @@ const forEachElem = (selector, callback) => document.querySelectorAll(selector).
 
 // watch for dark mode change
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-	readDarkMode(true);
+	readDarkMode();
 });
 let isDark;
 
@@ -66,11 +66,11 @@ const fetchWithRetry = (url, maxRetries, stillRetrying) => {
 			} else {
 				throw new Error(response.status);
 			}
-		} catch (e) {
+		} catch (error) {
 			iteration += 1;
 			ProgressBar.message(`Retrying ${url} count: ${iteration}`);
-			ProgressBar.message(e, true);
-			if (typeof stillRetrying === 'function') stillRetrying(e, iteration);
+			ProgressBar.message(error, true);
+			if (typeof stillRetrying === 'function') stillRetrying(error, iteration);
 			if (maxRetries <= 0 || maxRetries === undefined || iteration < maxRetries) {
 				timeoutHandle = setTimeout(() => fetchInternal(resolve, reject), backoff(iteration) * 1000);
 			} else {
@@ -100,9 +100,9 @@ const getFile = async (url, name) => {
 		if (response.status !== 200) throw new Error(`Status code ${response.status}`);
 		const fileData = await response.json();
 		return fileData.features;
-	} catch (e)	{
-		ProgressBar.message(`Error getting${name ? ` ${name}` : ''} spc outlook: ${url}`, true);
-		ProgressBar.message(e, true);
+	} catch (error)	{
+		ProgressBar.message(`Error getting ${name ?? ''} spc outlook: ${url}`, true);
+		ProgressBar.message(error, true);
 		return null;
 	}
 };
@@ -117,7 +117,7 @@ const formatDay = (index) => {
 	}
 
 	// calculate date
-	const date = (new Date((new Date()).getTime() + 86400 * 1000 * index));
+	const date = (new Date(Date.now() + 86_400 * 1000 * index));
 	const formatter = new Intl.DateTimeFormat([], { weekday: 'short', month: 'short', day: 'numeric' }).format;
 	return formatter(date);
 };

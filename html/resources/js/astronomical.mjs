@@ -2,6 +2,8 @@ import { DateTime, Duration } from '../vendor/luxon.min.mjs';
 import { getSavedLocation } from './placemanager.mjs';
 import * as Menu from './menu.mjs';
 
+const DIALOG_SUN = '#dialog-sun';
+
 /* globals SunCalc */
 // initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,29 +27,29 @@ const sunInfo = () => {
 	const moonTimes = SunCalc.getMoonTimes(now, lat, lon);
 	const moonPhase = SunCalc.getMoonIllumination(now);
 
-	if (sunTimes.sunrise) document.getElementById('sunrise').innerHTML = DateTime.fromJSDate(sunTimes.sunrise).setZone(timeZone).toFormat('tt').toLowerCase();
-	if (sunTimes.sunset) document.getElementById('sunset').innerHTML = DateTime.fromJSDate(sunTimes.sunset).setZone(timeZone).toFormat('tt').toLowerCase();
+	if (sunTimes.sunrise) document.querySelector('#sunrise').innerHTML = DateTime.fromJSDate(sunTimes.sunrise).setZone(timeZone).toFormat('tt').toLowerCase();
+	if (sunTimes.sunset) document.querySelector('#sunset').innerHTML = DateTime.fromJSDate(sunTimes.sunset).setZone(timeZone).toFormat('tt').toLowerCase();
 	if (sunTimes.sunrise && sunTimes.sunset) {
-		document.getElementById('sunduration').innerHTML = Duration.fromMillis(DateTime.fromJSDate(sunTimes.sunset) - DateTime.fromJSDate(sunTimes.sunrise)).toFormat('h:mm:ss');
+		document.querySelector('#sunduration').innerHTML = Duration.fromMillis(DateTime.fromJSDate(sunTimes.sunset) - DateTime.fromJSDate(sunTimes.sunrise)).toFormat('h:mm:ss');
 	}
 
-	if (moonTimes.rise) document.getElementById('moonrise').innerHTML = DateTime.fromJSDate(moonTimes.rise).setZone(timeZone).toFormat('tt').toLowerCase();
-	if (moonTimes.set) document.getElementById('moonset').innerHTML = DateTime.fromJSDate(moonTimes.set).setZone(timeZone).toFormat('tt').toLowerCase();
+	if (moonTimes.rise) document.querySelector('#moonrise').innerHTML = DateTime.fromJSDate(moonTimes.rise).setZone(timeZone).toFormat('tt').toLowerCase();
+	if (moonTimes.set) document.querySelector('#moonset').innerHTML = DateTime.fromJSDate(moonTimes.set).setZone(timeZone).toFormat('tt').toLowerCase();
 	if (moonTimes.set && moonTimes.rise) {
-		document.getElementById('moonduration').innerHTML = Duration.fromMillis(DateTime.fromJSDate(moonTimes.set) - DateTime.fromJSDate(moonTimes.rise)).toFormat('h:mm:ss');
+		document.querySelector('#moonduration').innerHTML = Duration.fromMillis(DateTime.fromJSDate(moonTimes.set) - DateTime.fromJSDate(moonTimes.rise)).toFormat('h:mm:ss');
 	}
 
-	document.getElementById('moonphase').innerHTML = (moonPhase.phase > 0.5 ? '-' : '+') + moonPhase.fraction.toFixed(2);
+	document.querySelector('#moonphase').innerHTML = (moonPhase.phase > 0.5 ? '-' : '+') + moonPhase.fraction.toFixed(2);
 };
 
 const show = () => {
 	// calc info and fill dialog
 	sunInfo();
 	// open the dialog
-	document.querySelector('#dialog-sun').classList.remove('initial-hide');
-	setTimeout(() => document.querySelector('#dialog-sun').classList.add('show'), 1);
+	document.querySelector(DIALOG_SUN).classList.remove('initial-hide');
+	setTimeout(() => document.querySelector(DIALOG_SUN).classList.add('show'), 1);
 };
 
 const hide = () => {
-	document.querySelector('#dialog-sun').classList.remove('show');
+	document.querySelector(DIALOG_SUN).classList.remove('show');
 };

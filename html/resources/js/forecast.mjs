@@ -12,6 +12,8 @@ import plotForecast from './forecast/plot.mjs';
 import { SCALES, AXIS_LIMITS } from './config.mjs';
 import ScaledNumber from '../vendor/scalednumber.mjs';
 
+const CHART_CONTAINER_SELECTOR = '#chart-container';
+
 const metaData = {			// metadata
 	minTimestamp: null,
 	maxTimestamp: null,
@@ -27,12 +29,12 @@ document.addEventListener('DOMContentLoaded', () => init());
 
 const init = () => {
 	// get timezone for conversion
-	convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60000; // time zone offset in milliseconds
+	convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60_000; // time zone offset in milliseconds
 
 	// catch window resize and update plot
 	window.addEventListener('resize', windowResize);
 	// and call it now to do the initial resize
-	windowResize(false);
+	windowResize();
 
 	Menu.registerClickHandler('menu-table', toggleTable);
 	Menu.registerClickHandler('menu-units', toggleUnits);
@@ -46,7 +48,7 @@ const formatData = (fcst, allObs, reset) => {
 	if (timeZone) {
 		const placeTime = (DateTime.now().setZone(timeZone).startOf('day'));
 		const userTime = (DateTime.now().startOf('day'));
-		convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60000 - (userTime - placeTime); // time zone offset in milliseconds
+		convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60_000 - (userTime - placeTime); // time zone offset in milliseconds
 	}
 
 	// if reset is provided clear out stored observation data
@@ -64,7 +66,7 @@ const formatData = (fcst, allObs, reset) => {
 	// forecast data provided
 	if (fcst !== false) {
 		// log the time of the forecast
-		metaData.lastUpdate = (new Date()).getTime();
+		metaData.lastUpdate = Date.now();
 		metaData.forecastTimestamp = fcst.properties.updateTime;
 
 		// prepare and plot the data
@@ -110,7 +112,7 @@ const formatData = (fcst, allObs, reset) => {
 			plot = plotForecast([], emptyMetaData, plotLimits(), inchAxes);
 			chartVisibility(true);
 			// indicate still loading
-			document.getElementById('date').classList.add('loading');
+			document.querySelector('#date').classList.add('loading');
 		}
 		if (obs?.features?.length > 0) {
 			const dataset = DataObs(obs, metaData, getOptions());
@@ -216,7 +218,7 @@ const getInfo = (type) => {
 // generate table, private
 const toggleTable = () => {
 	// see if the chart is on the page
-	if (window.getComputedStyle(document.querySelector('#chart-container')).opacity < 1) {
+	if (window.getComputedStyle(document.querySelector(CHART_CONTAINER_SELECTOR)).opacity < 1) {
 		Table.toggleTable(false);
 	} else {
 		// calculate and show the table
@@ -230,13 +232,13 @@ const toggleTable = () => {
 // show or hide the chart, with immediate option
 const chartVisibility = (show) => {
 	if (show) {
-		document.getElementById('chart-container').classList.add('show');
+		document.querySelector(CHART_CONTAINER_SELECTOR).classList.add('show');
 		document.querySelector('.chart-area-button-container').classList.add('show');
-		document.getElementById('loading').classList.remove('show');
+		document.querySelector('#loading').classList.remove('show');
 	} else {
-		document.getElementById('chart-container').classList.remove('show');
+		document.querySelector(CHART_CONTAINER_SELECTOR).classList.remove('show');
 		document.querySelector('.chart-area-button-container').classList.remove('show');
-		document.getElementById('loading').classList.add('show');
+		document.querySelector('#loading').classList.add('show');
 		forEachElem('#loading .centering>div', (elem) => elem.classList.remove('error'));
 	}
 };
@@ -339,7 +341,7 @@ const updateCurrentTemperature = (dataset) => {
 		const latestTemperature = temperatureData.data?.at?.(-1)?.[1];
 		const { scale } = temperatureData;
 		if (latestTemperature) {
-			document.getElementById('current-temperature').innerHTML = latestTemperature.toFixed(scale.currentPrecision) + scale.currentUnitName;
+			document.querySelector('#current-temperature').innerHTML = latestTemperature.toFixed(scale.currentPrecision) + scale.currentUnitName;
 		}
 	}
 };

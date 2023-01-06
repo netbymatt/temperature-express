@@ -16,8 +16,8 @@ import * as Dialog from './location/dialog.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	// set up dialog controls
-	document.getElementById('retry-forecast').addEventListener('click', retryForecast);
-	document.getElementById('dialog-messages-retry').addEventListener('click', retryForecast);
+	document.querySelector('#retry-forecast').addEventListener('click', retryForecast);
+	document.querySelector('#dialog-messages-retry').addEventListener('click', retryForecast);
 	Menu.registerClickHandler('menu-prev-locations', historyClick);
 
 	// catch foreground/background changes
@@ -46,19 +46,19 @@ const getPlace = (isRetry) => {
 		navigator.geolocation.getCurrentPosition(
 			(position) => { positionReceived(position, savedPlace); },
 			(e) => getPlaceFailed(e, isRetry),
-			{ enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 },
+			{ enableHighAccuracy: false, timeout: 5000, maximumAge: 300_000 },
 		);
-	} else if (savedPlace.pointX !== null) {
+	} else if (savedPlace.pointX === null) {
+		// something is missing, prompt the user
+		ProgressBar.reset('Needs user input');
+		Dialog.promptUser();
+	} else {
 		ProgressBar.reset(`Point: ${savedPlace.office} ${savedPlace.pointX}, ${savedPlace.pointY}`);
 		// pass saved location to getForecast
 		// format the data as expected by the function
 		ProgressBar.set('Using saved point');
 		Outlook.show([savedPlace.lon, savedPlace.lat]);
 		pointReceived(false, savedPlace);
-	} else {
-		// something is missing, prompt the user
-		ProgressBar.reset('Needs user input');
-		Dialog.promptUser();
 	}
 };
 
@@ -78,10 +78,10 @@ const getPlaceFailed = (e, isRetry) => {
 	case 3:
 		// timeout expired
 		// retry once then force user to enter a location
-		if (!isRetry) {
-			getPlace(true);
-		} else {
+		if (isRetry) {
 			Dialog.mustEnterPlaceName();
+		} else {
+			getPlace(true);
 		}
 		break;
 	default:
@@ -94,7 +94,7 @@ const positionReceived = (position, place) => {
 	ProgressBar.set('Location acquired');
 	ProgressBar.message(`${position.coords.latitude.toFixed(2)} ${position.coords.longitude.toFixed(2)}`, 'no-copy');
 	document.querySelector('#dialog-location .error').classList.remove('show');
-	document.getElementById('followMe').disabled = false;
+	document.querySelector('#followMe').disabled = false;
 	Dialog.hide();
 	// pass to latLogReceived in correct format
 	latLonReceived(
@@ -196,9 +196,9 @@ const getPoint = async (_place) => {
 		const data = await fetchHandler.data;
 		ProgressBar.set('Geocoding complete');
 		pointReceived(data, place);
-	} catch (e) {
+	} catch (error) {
 		ProgressBar.set('Could not get point from NWS', 10, true);
-		ProgressBar.message(e, true);
+		ProgressBar.message(error, true);
 	}
 };
 
@@ -225,7 +225,7 @@ const pointReceived = (point, _place) => {
 	if (place.followMe) {
 		html = `<i class="fas fa-map-marked"></i>${html}`;
 	}
-	document.getElementById('location').innerHTML = html;
+	document.querySelector('#location').innerHTML = html;
 
 	// fill text search name with nice name from nws if using gps location
 	if (!place.textSearch) {
@@ -283,7 +283,7 @@ const getHourlyForecast = async (baseUrl) => {
 		}
 		// store the data
 		Forecast.formatData(data, false);
-	} catch (e) {
+	} catch (error) {
 		ProgressBar.message('Get hourly forecast failed', true);
 		stillRetrying(0, 2);
 	}
@@ -312,8 +312,8 @@ const getHourlyForecastRetry = async (url, count = 0) => {
 				Forecast.formatData(data, false);
 				return;
 			}
-		} catch (e) {
-			ProgressBar.message(e.message, true);
+		} catch (error) {
+			ProgressBar.message(error.message, true);
 		}
 	}
 
@@ -333,9 +333,9 @@ const getStations = async (baseUrl, place) => {
 		const data = await fetchHandler.data;
 		ProgressBar.set('Geocoding complete');
 		stationsReceived(data, place);
-	} catch (e) {
+	} catch (error) {
 		ProgressBar.set('Get stations failed!', 2, true);
-		ProgressBar.message(e);
+		ProgressBar.message(error);
 		Forecast.formatData(false, 0);	// special "no data present case"
 	}
 };
@@ -353,9 +353,9 @@ const stationsReceived = async (stations, _place) => {
 			saveLocation(place);
 		}
 		getObservations(place);
-	} catch (err) {
+	} catch (error) {
 		ProgressBar.set('Station identifier not available', 2, true);
-		ProgressBar.message(err, true);
+		ProgressBar.message(error, true);
 		Forecast.formatData(false, 0);// special "no data present case"
 	}
 };
@@ -372,7 +372,7 @@ const getObservations = async (place) => {
 		getObservations.cancel = fetchHandler.cancel;
 		const data = await fetchHandler.data;
 		Forecast.formatData(false, { data, station: place.station });
-	} catch (e) {
+	} catch (error) {
 		// see if the other data arrived
 		ProgressBar.set('Get observations failed!', true);
 		Forecast.formatData(false, 0);	// special "no data present case"
@@ -382,13 +382,13 @@ const getObservations = async (place) => {
 // show error function
 const showError = (title, heading, text) => {
 	// fill values
-	document.getElementById('dialog-failed-heading').innerHTML = heading;
-	document.getElementById('dialog-failed-text').innerHTML = text;
+	document.querySelector('#dialog-failed-heading').innerHTML = heading;
+	document.querySelector('#dialog-failed-text').innerHTML = text;
 	document.querySelector('#dialog-failed .dialog .title div').innerHTML = title;
 
 	// show the dialog
-	document.getElementById('dialog-failed').classList.remove('initial-hide');
-	setTimeout(() => document.getElementById('dialog-failed').classList.add('show'), 1);
+	document.querySelector('#dialog-failed').classList.remove('initial-hide');
+	setTimeout(() => document.querySelector('#dialog-failed').classList.add('show'), 1);
 };
 
 // visibility of page changed
@@ -397,11 +397,11 @@ const visibilityChange = () => {
 	if (document.visibilityState === 'visible') {
 		// test for time since last update
 		// 15 minutes, or an hour old forecast timestamp
-		const now = (new Date()).getTime();
+		const now = Date.now();
 		const lastUpdate = Forecast.getInfo('lastUpdate');
 		const forecastTimestamp = Date.parse(Forecast.getInfo('forecastTimestamp'));
-		if (now > lastUpdate + 15 * 60000
-				|| now > forecastTimestamp + 60 * 60000) {
+		if (now > lastUpdate + 15 * 60_000
+				|| now > forecastTimestamp + 60 * 60_000) {
 			// trigger an update
 			getPlace();
 		}

@@ -12,12 +12,14 @@ import * as Forecast from '../forecast.mjs';
 let latLonReceivedCallback;
 let positionReceivedCallback;
 
+const LOCATION_SEARCH_SELECTOR = '#dialog-location';
+
 // init is called by parent module to provide latLonReceived
 const init = (latLonReceived, positionReceived) => {
 	// dialog interactions
-	document.getElementById('locationSearch').addEventListener('keypress', locationSearchStart);
+	document.querySelector(LOCATION_SEARCH_SELECTOR).addEventListener('keypress', locationSearchStart);
 	document.querySelector('#dialog-location.dialog .close').addEventListener('click', hide);
-	document.getElementById('followMe').parentNode.addEventListener('click', followMeToggle);
+	document.querySelector('#followMe').parentNode.addEventListener('click', followMeToggle);
 	// menu interactions
 	Menu.registerClickHandler('menu-location-dialog', promptUser);
 	Menu.registerClickHandler('menu-location-use-gps', setFollowMe);
@@ -34,15 +36,15 @@ const promptUser = () => {
 	Menu.closeAll();
 
 	// fill values
-	document.getElementById('locationSearch').value = getSavedLocation().textSearch;
+	document.querySelector(LOCATION_SEARCH_SELECTOR).value = getSavedLocation().textSearch;
 	setCheckbox(getSavedLocation().followMe);
 
 	// show the dialog in stages to allow for the focus and select elements to work
-	document.getElementById('dialog-location').classList.remove('initial-hide');
+	document.querySelector(LOCATION_SEARCH_SELECTOR).classList.remove('initial-hide');
 	setTimeout(() => {
-		document.getElementById('dialog-location').classList.add('show');
+		document.querySelector(LOCATION_SEARCH_SELECTOR).classList.add('show');
 		setTimeout(() => {
-			const textBox = document.getElementById('locationSearch');
+			const textBox = document.querySelector(LOCATION_SEARCH_SELECTOR);
 			textBox.focus();
 			textBox.select();
 		}, 100);
@@ -50,7 +52,7 @@ const promptUser = () => {
 };
 
 const setCheckbox = (state) => {
-	const checkbox = document.getElementById('followMe');
+	const checkbox = document.querySelector('#followMe');
 	if (state) {
 		checkbox.classList.add('fa-check-square');
 		checkbox.classList.remove('fa-square');
@@ -67,8 +69,8 @@ const locationSearchStart = async (e) => {
 	// close the dialog
 	hide();
 
-	ProgressBar.reset(e.currentTarget.value);
-	const lookup = e.currentTarget.value;
+	ProgressBar.reset(e.target.value);
+	const lookup = e.target.value;
 
 	// close the menu bar
 	Menu.closeAll();
@@ -88,7 +90,7 @@ const locationSearchStart = async (e) => {
 
 	// look for the Kxxx pattern and try to look up that station directly
 	const station = lookup.toUpperCase();
-	if (station.match(/^K[A-Z]{3}$/)) {
+	if (/^K[A-Z]{3}$/.test(station)) {
 		ProgressBar.message(`Looking up station directly: ${station}`);
 		const stationLookup = await directStationLookup(lookup);
 		if (stationLookup) {
@@ -99,7 +101,7 @@ const locationSearchStart = async (e) => {
 	}
 
 	// US is appended to search to help target the results
-	const url = `https://nominatim.openstreetmap.org/search/${encodeURIComponent(`${lookup}`)}`;
+	const url = `https://nominatim.openstreetmap.org/search/${encodeURIComponent(lookup)}`;
 	const data = { format: 'jsonv2', addressdetails: 1, countrycodes: 'us' };
 
 	const queryString = new URLSearchParams(data);
@@ -133,8 +135,8 @@ const directStationLookup = async (stationId) => {
 				lon: station.geometry.coordinates[0],
 			},
 		];
-	} catch (err) {
-		ProgressBar.message(`Station lookup error: ${err.message}`);
+	} catch (error) {
+		ProgressBar.message(`Station lookup error: ${error.message}`);
 		return false;
 	}
 };
@@ -149,9 +151,9 @@ const geoCodeLocation = async (url, place) => {
 		const data = await fetchHandler.data;
 		ProgressBar.set('Geocoding complete');
 		latLonReceivedCallback(data, place);
-	} catch (e) {
+	} catch (error) {
 		ProgressBar.set('Unable to geocode', true);
-		ProgressBar.message(e, true);
+		ProgressBar.message(error, true);
 		stillRetrying(0, 2);
 	}
 };
@@ -164,12 +166,12 @@ const stillRetrying = (e, iteration) => {
 };
 
 const hide = () => {
-	document.getElementById('dialog-location').classList.remove('show');
+	document.querySelector(LOCATION_SEARCH_SELECTOR).classList.remove('show');
 };
 
 const mustEnterPlaceName = () => {
 	document.querySelector('#dialog-location .error').classList.add('show');
-	document.getElementById('followMe').disabled = true;
+	document.querySelector('#followMe').disabled = true;
 	promptUser();
 };
 
@@ -190,7 +192,7 @@ const followMeToggle = () => {
 		Table.toggleTable(false);
 		Forecast.chartVisibility(0);
 		Tooltip.handler(false);
-		document.getElementById('location').innerHTML = 'Loading location...';
+		document.querySelector('#location').innerHTML = 'Loading location...';
 		// start lookup, save of place occurs at end of successful lookup
 		navigator.geolocation.getCurrentPosition((position) => { positionReceivedCallback(position, savedPlace); });
 		ProgressBar.reset('GPS');
@@ -206,7 +208,7 @@ const followMeToggle = () => {
 const setFollowMe = () => {
 	// hide the menu and trigger the gps function
 	hide();
-	followMeToggle({ currentTarget: { checked: true } });
+	followMeToggle();
 };
 
 export {

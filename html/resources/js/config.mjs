@@ -20,7 +20,7 @@ const trendConfig = (displayName, scale, units, yAxis, lineType, valueFunction) 
 const getLineType = (lineType, name, forceState = false) => {
 	// get value from options, default to true if not yet present it options
 	const visible = getOptions().visible[name];
-	const opt = (visible !== undefined) ? visible ?? forceState : true;
+	const opt = (visible === undefined) ? true : visible ?? forceState;
 
 	switch (lineType) {
 	case 2:
@@ -49,20 +49,17 @@ const getLineType = (lineType, name, forceState = false) => {
 const getPointType = (pointType, name, forceState = false) => {
 	// get value from options, default to true if not yet present it options
 	const visible = getOptions().visible[name];
-	const opt = (visible !== undefined) ? visible ?? forceState : true;
-
-	switch (pointType) {
-	case 2: {
+	const opt = (visible === undefined) ? true : visible ?? forceState;
+	if (pointType === 2) {
 		return {
 			show: opt,
 			fillColor: '#00000000',
 		};
 	}
-	default:
-		return {
-			show: false,
-		};
-	}
+
+	return {
+		show: false,
+	};
 };
 
 const LEGEND_COLORS = {
@@ -107,7 +104,7 @@ const SCALES = {	// unit[0] = the units provided by the nws api (metric), [1] = 
 	BAROMETER: [
 		{ unit: 'Pa' },
 		{
-			unit: '"', m: 1 / 0.0002953, b: 0, precision: 2,
+			unit: '"', m: 1 / 0.000_295_3, b: 0, precision: 2,
 		}],
 	LIGHTNING: [
 		{ unit: '', m: 1, b: -1 },

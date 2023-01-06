@@ -1,5 +1,8 @@
 import { forEachElem } from './utils.mjs';
 
+const LOADING_CURRENT_SELECTOR = '#loading-current';
+const LOADING_NEXT_SELECTOR = '#loading-next';
+
 document.addEventListener('DOMContentLoaded', () => {
 	// get the loading text
 	randomLoadingText.strings = [];
@@ -7,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// put an initial string on the page
 	const startString = randomLoadingText();
-	document.querySelector('#loading-current').innerHTML = startString;
-	document.querySelector('#loading-next').innerHTML = startString;
+	document.querySelector(LOADING_CURRENT_SELECTOR).innerHTML = startString;
+	document.querySelector(LOADING_NEXT_SELECTOR).innerHTML = startString;
 
 	// animate the throbber and loading text
 	animateThrobber();
@@ -23,7 +26,7 @@ const animateThrobber = (_state = 0) => {
 	let state = _state || 0;
 
 	// skip animation if throbber is not visible
-	if (!document.getElementById('loading').classList.contains('show')) {
+	if (!document.querySelector('#loading').classList.contains('show')) {
 		// try again next time
 		setTimeout(() => { animateThrobber(state); }, 200);
 		return;
@@ -37,11 +40,7 @@ const animateThrobber = (_state = 0) => {
 
 	// increment state
 	state += 0.5;
-	if (show) {
-		throbber.style.opacity = 1;
-	} else {
-		throbber.style.opacity = 0;
-	}
+	throbber.style.opacity = show ? 1 : 0;
 	setTimeout(() => animateThrobber(state), 200);
 };
 
@@ -56,8 +55,8 @@ const animateLoadingText = () => {
 	}
 
 	// get the elements
-	const nextElem = document.getElementById('loading-next');
-	const currentElem = document.getElementById('loading-current');
+	const nextElem = document.querySelector(LOADING_NEXT_SELECTOR);
+	const currentElem = document.querySelector(LOADING_CURRENT_SELECTOR);
 
 	// get current text so there's no duplicates
 	const newText = randomLoadingText(nextElem.textContent);
@@ -77,8 +76,8 @@ const animateLoadingText = () => {
 
 const animateLoadingTextPart2 = () => {
 	// get the elements
-	const nextElem = document.getElementById('loading-next');
-	const currentElem = document.getElementById('loading-current');
+	const nextElem = document.querySelector(LOADING_NEXT_SELECTOR);
+	const currentElem = document.querySelector(LOADING_CURRENT_SELECTOR);
 	// slide current text out and new text in
 	currentElem.classList.add('second');
 	nextElem.classList.add('second');

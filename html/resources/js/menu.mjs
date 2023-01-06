@@ -11,21 +11,23 @@ window.addEventListener('beforeinstallprompt', (e) => {
 	deferredPrompt = e;
 });
 
+const MENU_UNITS_SELECTOR = '#menu-units span';
+
 // initialize the menu
 const init = () => {
 	// open menu button
-	document.getElementById('menu-touch').addEventListener('click', show);
+	document.querySelector('#menu-touch').addEventListener('click', show);
 	// close menu button
 	document.querySelector('.side-menu.dialog .close').addEventListener('click', hide);
 	// other menu items
-	document.getElementById('menu-add').addEventListener('click', addToHomeScreen);
-	document.getElementById('menu-footer').addEventListener('click', () => { hide(); ProgressBar.showMessages(); });
+	document.querySelector('#menu-add').addEventListener('click', addToHomeScreen);
+	document.querySelector('#menu-footer').addEventListener('click', () => { hide(); ProgressBar.showMessages(); });
 	document.querySelector('.menu-forecast-expand').addEventListener('click', swapTextForecast);
 
 	registerCloseAll(ProgressBar.hideMessages);
 
 	// close menu handler when clicking wfo link
-	document.getElementById('menu-forecast-wfo').addEventListener('click', hide);
+	document.querySelector('#menu-forecast-wfo').addEventListener('click', hide);
 
 	// set the initial units
 	if (getOptions().units === 0) {
@@ -33,7 +35,7 @@ const init = () => {
 		document.querySelector('#menu-units span').innerHTML = 'Metric';
 	} else {
 		// in US
-		document.querySelector('#menu-units span').innerHTML = 'US';
+		document.querySelector(MENU_UNITS_SELECTOR).innerHTML = 'US';
 	}
 	unitsChanged();
 };
@@ -54,7 +56,7 @@ const show = () => {
 
 	// turn on "add to home screen" if we've met the requirements
 	if (deferredPrompt) {
-		document.getElementById('menu-add').classList.remove('hidden-placeholders');
+		document.querySelector('#menu-add').classList.remove('hidden-placeholders');
 	}
 };
 const hide = () => {
@@ -66,10 +68,10 @@ const unitsChanged = () => {
 	const { units } = getOptions();
 	if (units === 1) {
 		// in metric, switch to us
-		document.querySelector('#menu-units span').innerHTML = 'US';
+		document.querySelector(MENU_UNITS_SELECTOR).innerHTML = 'US';
 	} else {
 		// in US, switch to metric
-		document.querySelector('#menu-units span').innerHTML = 'Metric';
+		document.querySelector(MENU_UNITS_SELECTOR).innerHTML = 'Metric';
 	}
 	// get the text forecast (it switches units internally)
 	getTextForecast();
@@ -90,7 +92,7 @@ const getTextForecast = async (_baseUrl, isRetry) => {
 
 	// update wfo link
 	const wfo = getSavedPlaces()[0].office;
-	const wfoElem = document.getElementById('menu-forecast-wfo');
+	const wfoElem = document.querySelector('#menu-forecast-wfo');
 	wfoElem.querySelector('a').href = `https://weather.gov/${wfo}`;
 	wfoElem.querySelector('span').innerHTML = `K${wfo}`;
 
@@ -100,14 +102,14 @@ const getTextForecast = async (_baseUrl, isRetry) => {
 		if (response.status !== 200) throw new Error(`Response status code: ${response.status}`);
 		const json = await response.json();
 		forecastReceived(json);
-	} catch (e) {
-		if (!isRetry) {
+	} catch (error) {
+		if (isRetry) {
+			ProgressBar.set('Get text forecast failed', true);
+			ProgressBar.message(error, true);
+			document.querySelector('.side-menu .row.forecast').style.removeProperty('display');
+		} else {
 			ProgressBar.message('Retrying get text forecast one time');
 			setTimeout(() => getTextForecast(_baseUrl, true), 1000);
-		} else {
-			ProgressBar.set('Get text forecast failed', true);
-			ProgressBar.message(e, true);
-			document.querySelector('.side-menu .row.forecast').style.removeProperty('display');
 		}
 	}
 };
@@ -120,23 +122,23 @@ const forecastReceived = (forecastData) => {
 	// grab the data we're interested in
 	const data = forecastData.properties.periods[0];
 	// fill in the forecast
-	document.getElementById('menu-forecast-header').innerHTML = data.name;
+	document.querySelector('#menu-forecast-header').innerHTML = data.name;
 	// change the icon size from medium
 	document.querySelector('.side-menu .row.forecast img').src = data.icon.replace(/size=.*$/, 'size=50');
 	// determine if high or low temperature was provided
 	if (data.isDaytime) {
-		document.getElementById('menu-forecast-high').style.removeProperty('display');
+		document.querySelector('#menu-forecast-high').style.removeProperty('display');
 		document.querySelector('#menu-forecast-high span').innerHTML = `${data.temperature} ${data.temperatureUnit}`;
-		document.getElementById('menu-forecast-low').style.display = 'none';
+		document.querySelector('#menu-forecast-low').style.display = 'none';
 	} else {
-		document.getElementById('menu-forecast-low').style.removeProperty('display');
+		document.querySelector('#menu-forecast-low').style.removeProperty('display');
 		document.querySelector('#menu-forecast-low span').innerHTML = `${data.temperature} ${data.temperatureUnit}`;
-		document.getElementById('menu-forecast-high').style.display = 'none';
+		document.querySelector('#menu-forecast-high').style.display = 'none';
 	}
-	document.getElementById('menu-forecast-wind-direction').innerHTML = data.windDirection;
-	document.getElementById('menu-forecast-wind-speed').innerHTML = data.windSpeed;
-	document.getElementById('menu-forecast-text').innerHTML = data.shortForecast;
-	document.getElementById('menu-forecast-text-expanded').innerHTML = data.detailedForecast;
+	document.querySelector('#menu-forecast-wind-direction').innerHTML = data.windDirection;
+	document.querySelector('#menu-forecast-wind-speed').innerHTML = data.windSpeed;
+	document.querySelector('#menu-forecast-text').innerHTML = data.shortForecast;
+	document.querySelector('#menu-forecast-text-expanded').innerHTML = data.detailedForecast;
 
 	// show the forecast
 	document.querySelector('.side-menu .row.forecast').style.display = 'block';
@@ -148,7 +150,7 @@ const addToHomeScreen = async () => {
 	await deferredPrompt.prompt();
 
 	// hide option on menu
-	document.getElementById('menu-add').classList.add('hidden-placeholders');
+	document.querySelector('#menu-add').classList.add('hidden-placeholders');
 	// clear the prompt, we can't use it again
 	deferredPrompt = undefined;
 };
@@ -159,7 +161,7 @@ const fillLocationHistory = () => {
 	const places = getSavedPlaces();
 
 	// generate the elements
-	const container = document.getElementById('menu-prev-locations');
+	const container = document.querySelector('#menu-prev-locations');
 	container.innerHTML = '';
 
 	const elements = places.map((place, index) => {
@@ -172,7 +174,7 @@ const fillLocationHistory = () => {
 	container.append(...elements);
 
 	// set "use gps" visibility
-	const followMeElem = document.getElementById('menu-location');
+	const followMeElem = document.querySelector('#menu-location');
 	const { followMe } = getSavedLocation();
 	if (followMe) {
 		followMeElem.classList.add('gps');
@@ -188,7 +190,7 @@ const clickItemHandler = (handler) => (e) => {
 };
 
 const registerClickHandler = (selector, handler) => {
-	document.getElementById(selector).addEventListener('click', clickItemHandler(handler));
+	document.querySelector(`#${selector}`).addEventListener('click', clickItemHandler(handler));
 };
 
 const itemsToClose = [];
@@ -205,7 +207,7 @@ const registerCloseAll = (handler) => {
 
 const swapTextForecast = () => {
 	// toggle expanded state
-	const container = document.getElementById('menu-forecast-text-area');
+	const container = document.querySelector('#menu-forecast-text-area');
 	container.classList.toggle('expanded');
 };
 

@@ -23,12 +23,12 @@ const handler = (event, pos, item) => {
 			weekday: 'short', month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit',
 		});
 
-		const { scale } = item.series;
+		const { scale, label, color } = item.series;
 
 		const value = item.datapoint[1].toFixed(scale.currentPrecision);
 
 		// set the text of the tool tip
-		handler.title.innerHTML = item.series.label;
+		handler.title.innerHTML = label;
 		handler.value.innerHTML = `${value}${scale.currentUnitName}`;
 		handler.timestamp.innerHTML = timestamp;
 
@@ -48,7 +48,7 @@ const handler = (event, pos, item) => {
 
 		handler.elem.style.top = `${y}px`;
 		handler.elem.style.left = `${x}px`;
-		handler.titleContainer.style.backgroundColor = item.series.color;
+		handler.titleContainer.style.backgroundColor = color;
 
 		// show
 		handler.elem.classList.remove('initial-hide');
@@ -63,17 +63,17 @@ const handler = (event, pos, item) => {
 };
 
 const fillTextForecast = (timestamp) => {
-	const elem = document.getElementById('weather-text');
+	const elem = document.querySelector('#weather-text');
 
-	if (!timestamp || !fillTextForecast.data) return hideTextForecast(elem);
+	if (!timestamp || !fillTextForecast.data) return hideTextForecast();
 
 	const matchingPeriod = fillTextForecast.data.find((period) => period.startTime <= timestamp && period.endTime >= timestamp);
-	if (!matchingPeriod) return hideTextForecast(elem);
+	if (!matchingPeriod) return hideTextForecast();
 
 	const strings = matchingPeriod.value.map((f) => `${f.coverage ?? ''} ${f.intensity ?? ''} ${f.weather ?? ''}`.replaceAll('_', ' '));
 
 	const filteredStrings = strings.filter((s) => s.length > 2);
-	if (filteredStrings.length < 1) return hideTextForecast(elem);
+	if (filteredStrings.length === 0) return hideTextForecast();
 
 	elem.innerHTML = `${filteredStrings.join(', ')}`;
 	elem.classList.add('show');
@@ -81,7 +81,7 @@ const fillTextForecast = (timestamp) => {
 };
 
 const hideTextForecast = () => {
-	document.getElementById('weather-text').classList.remove('show');
+	document.querySelector('#weather-text').classList.remove('show');
 };
 
 const generateTextForecastData = (data, isObservations) => {

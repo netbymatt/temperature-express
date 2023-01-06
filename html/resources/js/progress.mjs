@@ -6,14 +6,14 @@ let value = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
 	// event handlers
-	document.getElementById('dialog-messages-reset').addEventListener('click', refresh);
-	document.getElementById('dialog-messages-copy').addEventListener('click', copy);
+	document.querySelector('#dialog-messages-reset').addEventListener('click', refresh);
+	document.querySelector('#dialog-messages-copy').addEventListener('click', copy);
 	document.querySelector('#dialog-messages.dialog .close').addEventListener('click', hideMessages);
 	// document.getElementById('dialog-messages-retry').addEventListener('click', hideMessages);
 
 	// get elements
-	element = document.getElementById('progressbar');
-	dialog = document.getElementById('dialog-messages');
+	element = document.querySelector('#progressbar');
+	dialog = document.querySelector('#dialog-messages');
 	messageContainer = dialog.querySelector('.content');
 
 	// setup the progress bar

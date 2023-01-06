@@ -36,30 +36,30 @@ const generator = (metaData) => {
 	const dayNight = (startDays, axes, isDark) => {
 		const markings = [];
 		// calculate midnight on start day
-		let i = startDays * 24 * 60 * 60 * 1000 + metaData.minTimestamp.o * 1000;
+		let index = startDays * 24 * 60 * 60 * 1000 + metaData.minTimestamp.o * 1000;
 
 		// grab latitude and longitude for sun calculations
 		const { lat, lon } = getSavedLocation();
 
 		// pre-populate sunrise and sunset times
-		let yesterdayTimes = SunCalc.getTimes(DateTime.fromMillis(i).minus({ days: 1 }).toJSDate(), lat, lon);
+		let yesterdayTimes = SunCalc.getTimes(DateTime.fromMillis(index).minus({ days: 1 }).toJSDate(), lat, lon);
 
 		const freezingColor = (isDark) ? DAY_BG_COLORS.FREEZING.DARK : DAY_BG_COLORS.FREEZING.LIGHT;
 		const dayColor = (isDark) ? DAY_BG_COLORS.DAY.DARK : DAY_BG_COLORS.DAY.LIGHT;
 
 		do {
 		// calculate today's
-			const todayTimes = SunCalc.getTimes(DateTime.fromMillis(i).toJSDate(), lat, lon);
+			const todayTimes = SunCalc.getTimes(DateTime.fromMillis(index).toJSDate(), lat, lon);
 
 			let from;
 			let to;
-			if (!isDark) {
-				from = convertTimestamp(DateTime.fromJSDate(yesterdayTimes.sunset, { zone: metaData.minTimestamp.zone.name }));
-				to = convertTimestamp(DateTime.fromJSDate(todayTimes.sunrise, { zone: metaData.minTimestamp.zone.name }));
-			} else {
+			if (isDark) {
 			// dark mode slightly lightens the background from dawn to dusk
 				from = convertTimestamp(DateTime.fromJSDate(todayTimes.sunrise, { zone: metaData.minTimestamp.zone.name }));
 				to = convertTimestamp(DateTime.fromJSDate(todayTimes.sunset, { zone: metaData.minTimestamp.zone.name }));
+			} else {
+				from = convertTimestamp(DateTime.fromJSDate(yesterdayTimes.sunset, { zone: metaData.minTimestamp.zone.name }));
+				to = convertTimestamp(DateTime.fromJSDate(todayTimes.sunrise, { zone: metaData.minTimestamp.zone.name }));
 			}
 			// gray on top
 			markings.push({
@@ -81,27 +81,26 @@ const generator = (metaData) => {
 				yaxis: { to: AVAILABLE_TRENDS.apparentTemperature.scale.set(0, 0) },
 				color: freezingColor,
 			});
-			i += 24 * 60 * 60 * 1000;
+			index += 24 * 60 * 60 * 1000;
 			// shift sunrise/set data
 			yesterdayTimes = todayTimes;
-		} while (i < axes.xaxis.max + 26 * 60 * 60 * 1000);
-		return markings;
-	};
-
-	// dark vertical line at day boundaries
-	const dayBoundaries = (startDays, axes, lineWidth) => {
-		const markings = [];
-		// reset to midnight on first day
-		let i = startDays * 24 * 60 * 60 * 1000;
-		do {
-		// vertical black line
-			markings.push({ xaxis: { from: i - lineWidth / 2, to: i + lineWidth / 2 }, color: '#000000' });
-			i += 2 * 12 * 60 * 60 * 1000;
-		} while (i < axes.xaxis.max);
+		} while (index < axes.xaxis.max + 26 * 60 * 60 * 1000);
 		return markings;
 	};
 
 	return generateMarks;
+};
+// dark vertical line at day boundaries
+const dayBoundaries = (startDays, axes, lineWidth) => {
+	const markings = [];
+	// reset to midnight on first day
+	let index = startDays * 24 * 60 * 60 * 1000;
+	do {
+	// vertical black line
+		markings.push({ xaxis: { from: index - lineWidth / 2, to: index + lineWidth / 2 }, color: '#000000' });
+		index += 2 * 12 * 60 * 60 * 1000;
+	} while (index < axes.xaxis.max);
+	return markings;
 };
 
 export default generator;

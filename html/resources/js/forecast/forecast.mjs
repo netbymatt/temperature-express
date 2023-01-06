@@ -4,7 +4,7 @@ import {
 } from '../config.mjs';
 import { getDuration, convertTimestamp } from '../utils.mjs';
 
-const OLD_FORECAST_LIMIT = 10800000;
+const OLD_FORECAST_LIMIT = 10_800_000;
 
 // prepare the forecast data
 const prepForecastData = (fcst, metaData, options) => {
@@ -53,8 +53,8 @@ const prepForecastData = (fcst, metaData, options) => {
 	// quantitativePrecipitation means any kind of precipitation
 	// if snow or ice are also present for the same timespan, null
 	// the quantitativePrecipitation value so only one shows (or two if ice and snow are present)
-	const iceData = dataset.filter((d) => d.label === 'Ice')?.[0]?.data;
-	const snowData = dataset.filter((d) => d.label === 'Snow')?.[0]?.data;
+	const iceData = dataset.find((d) => d.label === 'Ice')?.data;
+	const snowData = dataset.find((d) => d.label === 'Snow')?.data;
 	const rainDataIndex = dataset.findIndex((d) => d.label === 'Rain');
 
 	if (rainDataIndex) {
@@ -83,25 +83,17 @@ const prepForecastData = (fcst, metaData, options) => {
 // format forecast as a set of series data arrays
 const makeForecastTrend = (series, config, windDirections = []) => {
 	const startOfHour = DateTime.utc().startOf('hour').toMillis();
-	const dataWithNulls = series.map((item) => {
+	const dataWithNulls = series.flatMap((item) => {
 		const duration = getDuration(item.validTime);
 
 		// loop through duration at one hour intervals
 		const eachHour = [];
 
 		// calculate the value to add
-		let value;
-		if (config.valueFunction) {
-			// additional value function
-			value = [
-				config.valueFunction(+config.scale.set(item.value, 0)),
-			];
-		} else {
-			// direct value copy
-			value = [
-				+config.scale.set(item.value, 0),
-			];
-		}
+		const value = config.valueFunction
+			? [config.valueFunction(+config.scale.set(item.value, 0))]
+			: [+config.scale.set(item.value, 0)];
+
 		// add wind direction if necessary
 		if (config.displayName === 'Wind Speed') {
 			value.push(findWindDirection(duration.startTime, windDirections));
@@ -113,10 +105,10 @@ const makeForecastTrend = (series, config, windDirections = []) => {
 				eachHour.push([convertTimestamp(duration.startTime), ...value]);
 			}
 			// increment start time by 1 hour
-			duration.startTime += 3600000;
+			duration.startTime += 3_600_000;
 		} while (duration.startTime < duration.endTime);
 		return eachHour;
-	}).flat(1);
+	});
 
 	// some data requires extra processing
 	if (!config.valueFunction) return dataWithNulls;

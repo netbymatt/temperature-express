@@ -98,10 +98,6 @@ const message = (msg, _error = false, _style = '') => {
 	if (mustScroll) messageContainer.scrollTop = messageContainer.scrollHeight;
 };
 
-const clearMessages = () => {
-
-};
-
 const showMessages = () => {
 	dialog.classList.remove('initial-hide');
 	dialog.classList.add('show');
@@ -135,5 +131,5 @@ const copy = () => {
 };
 
 export {
-	set, reset, message, clearMessages, showMessages, hideMessages,
+	set, reset, message, showMessages, hideMessages,
 };

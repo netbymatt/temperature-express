@@ -23,9 +23,6 @@ let isDark;
 
 const readDarkMode = () => {
 	isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-	// if (redraw) {
-	// 	formatData(formatData.fcst ?? false, formatData.obs ?? false);
-	// }
 };
 readDarkMode();
 

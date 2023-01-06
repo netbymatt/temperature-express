@@ -117,10 +117,7 @@ const showDetailOutlook = async (position, daysToGet) => {
 	}
 
 	// determine if all detail data is present
-	const allDataPresent = data.reduce(
-		(prevDay, day, dayIndex) => (!daysToGet[dayIndex] || Object.values(day).reduce((prevCategory, cur) => (cur !== undefined) && prevCategory, false)) && prevDay,
-		false,
-	);
+	const allDataPresent = data.every((day, dayIndex) => (!daysToGet[dayIndex] || Object.values(day).every((cur) => (cur !== undefined))));
 	if (!allDataPresent) {
 		await getRemainingData(daysToGet);
 	}
@@ -135,7 +132,7 @@ const analyzeDetailData = (position) => {
 	const isModerate = testModerate(inside);
 
 	// see if we're inside any areas
-	const isInside = inside.reduce((prev, day) => prev || day, false);
+	const isInside = inside.some((day) => day);
 	// show the button
 	updateButtonState(!isInside, isModerate);
 
@@ -237,7 +234,7 @@ const labelSortAlgorithm = (a, b) => {
 	return bDN - aDN;
 };
 
-const testModerate = (days) => days.reduce((prevDay, day) => prevDay || (day?.reduce?.((prevArea, area) => prevArea || redIconLabel.includes(area.LABEL), false) ?? false), false);
+const testModerate = (days) => days.some((prevDay, day) => (day?.some?.((area) => redIconLabel.includes(area.LABEL)) ?? false));
 
 // update button state
 const updateButtonState = (hide, isModerate) => {

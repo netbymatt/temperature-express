@@ -125,14 +125,7 @@ const testActive = (data) => {
 };
 
 // test for any active warnings
-const testWarning = (categorized) => Object.values(categorized).reduce(
-	(prevType, type) => (
-		prevType || type.reduce(
-			(prevAlert, alert) => prevAlert || !!(alert.isWarning && alert.isActive),
-			false,
-		)),
-	false,
-);
+const testWarning = (categorized) => Object.values(categorized).some((type) => (type.some((alert) => !!(alert.isWarning && alert.isActive))));
 
 // show the alert dialog
 const alertButton = () => {

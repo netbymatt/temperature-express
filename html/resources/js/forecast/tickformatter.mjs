@@ -1,4 +1,4 @@
-import { DateTime } from '../../vendor/luxon.min.mjs';
+import { DateTime } from '../../vendor/luxon.mjs';
 
 const formatter = (val, axis) => {
 	// calculate axis total time range (hours)

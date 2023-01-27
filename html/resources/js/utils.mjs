@@ -1,4 +1,4 @@
-import { Duration } from '../vendor/luxon.min.mjs';
+import { Duration } from '../vendor/luxon.mjs';
 import * as ProgressBar from './progress.mjs';
 
 // turn an ISO date and duration into start, end and duration

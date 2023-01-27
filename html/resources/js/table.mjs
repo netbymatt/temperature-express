@@ -1,4 +1,4 @@
-import { DateTime } from '../vendor/luxon.min.mjs';
+import { DateTime } from '../vendor/luxon.mjs';
 
 const TABLE_SELECTOR = '#table table';
 

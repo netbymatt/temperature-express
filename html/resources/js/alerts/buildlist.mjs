@@ -1,4 +1,4 @@
-import { DateTime, Duration } from '../../vendor/luxon.min.mjs';
+import { DateTime, Duration } from '../../vendor/luxon.mjs';
 
 // build a list of alerts
 const buildList = (data, initialShow) => {

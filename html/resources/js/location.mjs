@@ -1,5 +1,5 @@
 // these functions get lat-long as well as follow me populated, and detailed forecast information
-import { DateTime } from '../vendor/luxon.min.mjs';
+import { DateTime } from '../vendor/luxon.mjs';
 import {
 	forEachElem, apiUrl, fetchWithRetry, backoff,
 } from './utils.mjs';

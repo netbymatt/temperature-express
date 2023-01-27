@@ -1,5 +1,5 @@
 import { getDuration, convertTimestamp } from './utils.mjs';
-import { DateTime } from '../vendor/luxon.min.mjs';
+import { DateTime } from '../vendor/luxon.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	// set up tooltip

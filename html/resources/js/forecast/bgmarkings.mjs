@@ -1,4 +1,4 @@
-import { DateTime } from '../../vendor/luxon.min.mjs';
+import { DateTime } from '../../vendor/luxon.mjs';
 import { AVAILABLE_TRENDS, DAY_BG_COLORS } from '../config.mjs';
 import { dark, convertTimestamp } from '../utils.mjs';
 import { getSavedLocation } from '../placemanager.mjs';

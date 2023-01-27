@@ -3,7 +3,7 @@ import bgMarkingsGenerator from './bgmarkings.mjs';
 import { dark } from '../utils.mjs';
 import { getOptions } from '../options.mjs';
 import Holidays from './holidays.mjs';
-import { DateTime } from '../../vendor/luxon.min.mjs';
+import { DateTime } from '../../vendor/luxon.mjs';
 
 const plot = (dataset, metaData, plotLimits, inchAxes) => {
 	const { beginningOfFirst, endOfLast, oldestData } = plotLimits;

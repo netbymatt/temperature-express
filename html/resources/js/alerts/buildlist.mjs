@@ -42,15 +42,20 @@ const buildList = (data, initialShow) => {
 			divTimes.classList.add('times');
 			li.append(divTimes);
 
-			const divSent = document.createElement('div');
-			divSent.textContent = `Sent: ${relative(alert.sent)}`;
-			divTimes.append(divSent);
-			const divEffective = document.createElement('div');
-			divEffective.textContent = `Effective: ${relative(alert.effective)}`;
-			divTimes.append(divEffective);
+			const divOnset = document.createElement('div');
+			divOnset.textContent = `Onset: ${relative(alert.onset)}`;
+			divTimes.append(divOnset);
 			const divEnds = document.createElement('div');
 			divEnds.textContent = `Ends: ${relative(alert.ends || alert.expires)}`;
 			divTimes.append(divEnds);
+			const divSent = document.createElement('div');
+			divSent.classList.add('inactive');
+			divSent.textContent = `Sent: ${relative(alert.sent)}`;
+			divTimes.append(divSent);
+			const divEffective = document.createElement('div');
+			divEffective.classList.add('inactive');
+			divEffective.textContent = `Effective: ${relative(alert.effective)}`;
+			divTimes.append(divEffective);
 		});
 		return docFragment;
 	});

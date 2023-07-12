@@ -4,6 +4,8 @@ import {
 } from '../config.mjs';
 import { convertTimestamp } from '../utils.mjs';
 
+const ALLOWED_NULLS = ['windSpeed', 'apparentTemperature', 'dewpoint', 'temperature']
+
 // prepare the observation data
 const prepObsData = (obs, metaData, options) => {
 	// update oldest data
@@ -62,17 +64,18 @@ const makeObsTrend = (obs, config, name) => {
 			observedValue = decodeClouds(item.properties.cloudLayers);
 			break;
 		default:
-			observedValue = item.properties[name].value;
+			observedValue = config.valueFunction
+			? config.valueFunction(item.properties[name].value)
+			: +item.properties[name].value;
 		}
 		/* eslint-enable unicorn/consistent-destructuring */
 
-		// do not pass along null values for cloud layers (this would extend the last known value)
-		if (!observedValue && name !== 'cloudLayers') return null;
-
+		if (ALLOWED_NULLS.includes(name) && !observedValue) return null;
+ 
 		// default pair
 		const pair = [
 			convertTimestamp(Date.parse(timestamp)),
-			config.scale.set(observedValue, 0).valueOf(), // data, set as base units and returned in selected units
+			observedValue === null ? null : config.scale.set(observedValue, 0).valueOf(), // data, set as base units and returned in selected units
 		];
 
 		// add wind direction if provided

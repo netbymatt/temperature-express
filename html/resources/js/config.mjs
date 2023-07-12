@@ -82,7 +82,7 @@ const LEGEND_COLORS = {
 const colorByLegend = (legend, observation) => {
 	// if observation change the opacity to 50% for faded look
 	if (observation) {
-		if (legend !== 'Cloud Coverage') return LEGEND_COLORS[legend].replace(')', ', 0.5)');
+		if (legend !== 'Cloud Coverage' && legend !== 'Rain') return LEGEND_COLORS[legend].replace(')', ', 0.5)');
 		return LEGEND_COLORS[legend];
 	}
 	return LEGEND_COLORS[legend];
@@ -166,9 +166,9 @@ const AVAILABLE_OBS = { // observations that will be extracted from resulting da
 	temperature: trendConfig('Temperature', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 	dewpoint: trendConfig('Dewpoint', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 	windSpeed: trendConfig('Wind Speed', new ScaledNumber(0, -1000, 1000, SCALES.WIND), 'mph', AXIS.PERCENT, FILL.NO),
-	windGust: trendConfig('Wind Gust', new ScaledNumber(0, -1000, 1000, SCALES.WIND), 'mph', AXIS.PERCENT, FILL.POINTS),
+	windGust: trendConfig('Wind Gust', new ScaledNumber(0, -1000, 1000, SCALES.WIND), 'mph', AXIS.PERCENT, FILL.POINTS, NULL_VALUES(0)),
 	barometricPressure: trendConfig('Barometer', new ScaledNumber(0, 0, 1e7, SCALES.BAROMETER), '"', AXIS.BAROMETER_IN, FILL.NO),
-	// precipitationLastHour: trendConfig('Precip', new ScaledNumber(0,-1000,1000,scales.PRECIP), 'mph', AXIS.SNOW_IN, FILL.NO),
+	precipitationLastHour: trendConfig('Rain', new ScaledNumber(0, 0, 1000, SCALES.INCHES_RAIN), 'in', AXIS.RAIN_IN, FILL.ZERO),
 	// special case in formatting routine to extract heat index or wind chill
 	apparentTemperature: trendConfig('Feels Like', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 };

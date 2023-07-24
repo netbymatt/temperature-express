@@ -7,6 +7,8 @@
   font-size: 1em;
   height: 1em;
   display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
 }
 #dialog-legend .content label {
   text-transform: capitalize;
@@ -74,7 +76,7 @@
   text-align: right;
 }
 #dialog-sun table thead tr {
-  border-bottom: 2px solid hsl(0deg, 0%, 0%);
+  border-bottom: 2px solid hsl(0, 0%, 0%);
 }
 #dialog-sun table th {
   text-align: center;
@@ -101,8 +103,8 @@
 #dialog-location input[type=search] {
   border: 2px solid black;
   font-size: 1.2em;
-  background-color: hsl(0deg, 0%, 90%);
-  background: hsl(0deg, 0%, 90%);
+  background-color: hsl(0, 0%, 90%);
+  background: hsl(0, 0%, 90%);
   color: black;
 }
 #dialog-location .touch-button {
@@ -118,7 +120,7 @@
   margin-top: 0.3em;
 }
 #dialog-location i {
-  color: hsl(204deg, 55%, 58%);
+  color: hsl(204, 55%, 58%);
 }
 #dialog-location .error.show {
   display: block;
@@ -128,7 +130,7 @@
   height: 1px;
 }
 #dialog-alert .inactive {
-  color: hsl(0deg, 0%, 60%);
+  color: hsl(0, 0%, 60%);
 }
 #dialog-alert .inactive h3,
 #dialog-alert .inactive h4 {
@@ -188,24 +190,24 @@
 }
 #dialog-messages .content div {
   padding-top: 0.2em;
-  color: hsl(0deg, 0%, 65%);
-  border-bottom: 1px solid hsl(0deg, 0%, 45%);
+  color: hsl(0, 0%, 65%);
+  border-bottom: 1px solid hsl(0, 0%, 45%);
 }
 #dialog-messages .content div.progress {
   color: unset;
 }
 #dialog-messages .content div.new {
-  background-color: hsl(140deg, 35%, 35%);
-  color: hsl(100deg, 63%, 65%);
+  background-color: hsl(140, 35%, 35%);
+  color: hsl(100, 63%, 65%);
 }
 @media (prefers-color-scheme: dark) {
   #dialog-messages .content div.new {
-    background-color: hsl(0deg, 0%, 35%);
+    background-color: hsl(0, 0%, 35%);
   }
 }
 #dialog-messages .content div.error {
-  color: hsl(0deg, 100%, 90%);
-  background-color: hsl(0deg, 35%, 30%);
+  color: hsl(0, 100%, 90%);
+  background-color: hsl(0, 35%, 30%);
 }
 
 .dialog {
@@ -230,21 +232,21 @@
 }
 @media (prefers-color-scheme: dark) {
   .dialog {
-    background-color: hsl(0deg, 0%, 25%);
+    background-color: hsl(0, 0%, 25%);
   }
 }
 .dialog .title {
   border: 1px solid darkgray;
   border-radius: 5px;
-  background: linear-gradient(0deg, #f3f3f3 25%, hsl(0deg, 0%, 90%) 50%, #f3f3f3 75%);
+  background: linear-gradient(0deg, #f3f3f3 25%, hsl(0, 0%, 90%) 50%, #f3f3f3 75%);
   margin-bottom: 5px;
   font-weight: bold;
   font-size: 1.1em;
 }
 @media (prefers-color-scheme: dark) {
   .dialog .title {
-    border: 1px solid hsl(0deg, 0%, 50%);
-    background: linear-gradient(0deg, hsl(0deg, 0%, 45%) 0%, hsl(0deg, 0%, 20%) 40%, hsl(0deg, 0%, 20%) 60%, hsl(0deg, 0%, 45%) 100%);
+    border: 1px solid hsl(0, 0%, 50%);
+    background: linear-gradient(0deg, hsl(0, 0%, 45%) 0%, hsl(0, 0%, 20%) 40%, hsl(0, 0%, 20%) 60%, hsl(0, 0%, 45%) 100%);
   }
 }
 .dialog .title > div:first-child {
@@ -275,18 +277,18 @@
   border: 1px solid darkgray;
   background-color: white;
   border-radius: 4px;
-  color: hsl(204deg, 55%, 58%);
+  color: hsl(204, 55%, 58%);
 }
 @media (prefers-color-scheme: dark) {
   .dialog .close {
-    color: hsl(0deg, 0%, 50%);
+    color: hsl(0, 0%, 50%);
     background-color: darkgray;
-    border: 1px solid hsl(0deg, 0%, 50%);
-    color: hsl(0deg, 0%, 90%);
+    border: 1px solid hsl(0, 0%, 50%);
+    color: hsl(0, 0%, 90%);
   }
 }
 .dialog .close:hover {
-  color: hsl(205deg, 57%, 35%);
+  color: hsl(205, 57%, 35%);
 }
 
 .side-menu {
@@ -302,13 +304,13 @@
 }
 .side-menu .row {
   min-height: 50px;
-  border-bottom: 1px solid hsl(0deg, 0%, 60%);
+  border-bottom: 1px solid hsl(0, 0%, 60%);
   padding: 20px 4px;
   box-sizing: border-box;
 }
 .side-menu .row i {
   margin-right: 4px;
-  color: hsl(204deg, 55%, 58%);
+  color: hsl(204, 55%, 58%);
   width: 25px;
 }
 .side-menu .link {
@@ -323,7 +325,7 @@
 .side-menu .forecast.row img {
   float: right;
   border-radius: 10px;
-  border: hsl(0deg, 0%, 60%);
+  border: hsl(0, 0%, 60%);
 }
 .side-menu .forecast .clearfix {
   width: 100%;
@@ -429,7 +431,7 @@
 }
 @media (prefers-color-scheme: dark) {
   .data-table tbody td {
-    border-right: 1px solid hsl(0deg, 0%, 55%);
+    border-right: 1px solid hsl(0, 0%, 55%);
   }
 }
 .data-table td,
@@ -437,67 +439,67 @@
   padding-left: 5px;
 }
 .data-table .new-day {
-  border-top: 2px solid hsl(0deg, 0%, 0%);
+  border-top: 2px solid hsl(0, 0%, 0%);
 }
 @media (prefers-color-scheme: dark) {
   .data-table .new-day {
-    border-top: 2px solid hsl(0deg, 0%, 55%);
+    border-top: 2px solid hsl(0, 0%, 55%);
   }
 }
 .data-table td table {
   float: right;
 }
 .data-table tbody tr:nth-child(odd) {
-  background: hsl(0deg, 0%, 93%);
+  background: hsl(0, 0%, 93%);
 }
 @media (prefers-color-scheme: dark) {
   .data-table tbody tr:nth-child(odd) {
-    background: hsl(0deg, 0%, 15%);
+    background: hsl(0, 0%, 15%);
   }
 }
 .data-table tbody tr:nth-child(even) {
-  background: hsl(0deg, 0%, 100%);
+  background: hsl(0, 0%, 100%);
 }
 @media (prefers-color-scheme: dark) {
   .data-table tbody tr:nth-child(even) {
-    background: hsl(0deg, 0%, 0%);
+    background: hsl(0, 0%, 0%);
   }
 }
 .data-table thead td {
   position: sticky;
   top: 0px;
-  background: hsl(0deg, 0%, 93%);
+  background: hsl(0, 0%, 93%);
 }
 @media (prefers-color-scheme: dark) {
   .data-table thead td {
-    background: hsl(0deg, 0%, 15%);
+    background: hsl(0, 0%, 15%);
   }
 }
 .data-table tfoot td {
   position: sticky;
   bottom: 0px;
-  background: hsl(0deg, 0%, 93%);
+  background: hsl(0, 0%, 93%);
 }
 @media (prefers-color-scheme: dark) {
   .data-table tfoot td {
-    background: hsl(0deg, 0%, 15%);
+    background: hsl(0, 0%, 15%);
   }
 }
 .data-table tbody tr:nth-child(odd) td:first-child {
-  background: hsl(0deg, 0%, 93%);
+  background: hsl(0, 0%, 93%);
 }
 @media (prefers-color-scheme: dark) {
   .data-table tbody tr:nth-child(odd) td:first-child {
-    background: hsl(0deg, 0%, 15%);
+    background: hsl(0, 0%, 15%);
   }
 }
 .data-table thead tr {
-  background: hsl(0deg, 0%, 93%);
+  background: hsl(0, 0%, 93%);
   border-collapse: collapse;
 }
 @media (prefers-color-scheme: dark) {
   .data-table thead tr {
-    background: hsl(0deg, 0%, 15%);
+    background: hsl(0, 0%, 15%);
   }
 }
 .data-table thead td,
@@ -620,7 +622,7 @@
 
 #loading-throbber i {
   font-size: 4em;
-  color: hsl(205deg, 57%, 47%);
+  color: hsl(205, 57%, 47%);
   position: absolute;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
@@ -633,7 +635,7 @@
   position: relative;
   width: 400px;
   text-align: center;
-  color: hsl(205deg, 57%, 47%);
+  color: hsl(205, 57%, 47%);
   left: -200px;
   height: 1.2em;
   overflow: hidden;
@@ -648,7 +650,7 @@
   position: relative;
   width: 400px;
   text-align: center;
-  color: hsl(205deg, 57%, 47%);
+  color: hsl(205, 57%, 47%);
   left: -200px;
   overflow: hidden;
   visibility: hidden;
@@ -692,7 +694,7 @@ body {
 @media (prefers-color-scheme: dark) {
   body {
     background-color: black;
-    color: hsl(0deg, 0%, 90%);
+    color: hsl(0, 0%, 90%);
   }
 }
 
@@ -745,7 +747,7 @@ body {
 #chart .day i {
   display: block;
   font-size: 2em;
-  color: hsl(205deg, 57%, 47%);
+  color: hsl(205, 57%, 47%);
 }
 
 #weather-text {
@@ -756,7 +758,7 @@ body {
   min-height: 1.2em;
   border-radius: 5px;
   text-transform: capitalize;
-  background-color: hsl(0deg, 0%, 35%);
+  background-color: hsl(0, 0%, 35%);
   color: white;
   padding: 0.1em 0.4em;
   font-size: 0.8em;
@@ -766,7 +768,7 @@ body {
 }
 @media (prefers-color-scheme: dark) {
   #weather-text {
-    background-color: hsl(0deg, 0%, 65%);
+    background-color: hsl(0, 0%, 65%);
     color: black;
   }
 }
@@ -802,7 +804,7 @@ body {
 }
 
 #title i {
-  color: hsl(205deg, 57%, 47%);
+  color: hsl(205, 57%, 47%);
   padding-right: 5px;
 }
 
@@ -851,7 +853,7 @@ body {
   padding: 10px;
   margin: 5px;
   display: inline-block;
-  background: linear-gradient(0deg, #f3f3f3 25%, hsl(0deg, 0%, 90%) 50%, #f3f3f3 75%);
+  background: linear-gradient(0deg, #f3f3f3 25%, hsl(0, 0%, 90%) 50%, #f3f3f3 75%);
   border: 1px solid lightgray;
   border-radius: 5px;
   cursor: pointer;
@@ -859,9 +861,9 @@ body {
 }
 @media (prefers-color-scheme: dark) {
   .touch-button {
-    background: linear-gradient(0deg, hsl(0deg, 0%, 45%) 0%, hsl(0deg, 0%, 20%) 40%, hsl(0deg, 0%, 20%) 60%, hsl(0deg, 0%, 45%) 100%);
-    border: 1px solid hsl(0deg, 0%, 50%);
-    color: hsl(0deg, 0%, 90%);
+    background: linear-gradient(0deg, hsl(0, 0%, 45%) 0%, hsl(0, 0%, 20%) 40%, hsl(0, 0%, 20%) 60%, hsl(0, 0%, 45%) 100%);
+    border: 1px solid hsl(0, 0%, 50%);
+    color: hsl(0, 0%, 90%);
   }
 }
 .touch-button:hover {
@@ -869,7 +871,7 @@ body {
 }
 @media (prefers-color-scheme: dark) {
   .touch-button:hover {
-    background: hsl(0deg, 0%, 65%);
+    background: hsl(0, 0%, 65%);
   }
 }
 
@@ -916,7 +918,7 @@ input[type=checkbox] {
   padding: 0px 10px;
   margin: 0px 5px;
   position: relative;
-  color: hsl(39deg, 100%, 50%);
+  color: hsl(39, 100%, 50%);
   transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, height 0.5s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out;
 }
 .chart-area-button.show {

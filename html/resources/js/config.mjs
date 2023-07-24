@@ -49,7 +49,7 @@ const getLineType = (lineType, name, forceState = false) => {
 const getPointType = (pointType, name, forceState = false) => {
 	// get value from options, default to true if not yet present it options
 	const visible = getOptions().visible[name];
-	const opt = (visible === undefined) ? true : visible ?? forceState;
+	const opt = (visible === undefined) ? true : visible || forceState;
 	if (pointType === 2) {
 		return {
 			show: opt,

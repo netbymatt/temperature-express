@@ -1,4 +1,4 @@
-import { getLineType } from './config.mjs';
+import { getLineType, getPointType } from './config.mjs';
 import { forEachElem } from './utils.mjs';
 import { saveOptions } from './options.mjs';
 import * as Menu from './menu.mjs';
@@ -37,7 +37,7 @@ const menuClick = () => {
 	dialogContent.innerHTML = '';
 
 	// get checkbox visibility
-	const visible = Forecast.readVisibility();
+	const visible = Forecast.readVisibility(true);
 
 	// build the checkboxes
 	const checkboxes = Object.entries(combined).map(([key, val], i) => {
@@ -92,11 +92,13 @@ const legendUpdate = () => {
 		// determine on/off state
 		if (visible[series.label]) {
 			// get default line type
-			dataset[i].lines = getLineType(series.lineType, i, true);
+			dataset[i].lines = getLineType(series.lineType, series.label, true);
+			dataset[i].points = getPointType(series.lineType, series.label, true);
 		} else {
 			// turn off
 			dataset[i].lines.fill = false;
 			dataset[i].lines.show = false;
+			dataset[i].points.show = false;
 		}
 	});
 
@@ -104,7 +106,7 @@ const legendUpdate = () => {
 	Forecast.getInfo('setData')(dataset);
 	Forecast.getInfo('draw')();
 	// store the new options
-	saveOptions('visible', Forecast.readVisibility());
+	saveOptions('visible', Forecast.readVisibility(true));
 	// close the dialog
 	hide();
 };

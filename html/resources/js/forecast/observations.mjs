@@ -4,7 +4,7 @@ import {
 } from '../config.mjs';
 import { convertTimestamp } from '../utils.mjs';
 
-const ALLOWED_NULLS = ['windSpeed', 'apparentTemperature', 'dewpoint', 'temperature']
+const ALLOWED_NULLS = ['windSpeed', 'apparentTemperature', 'dewpoint', 'temperature'];
 
 // prepare the observation data
 const prepObsData = (obs, metaData, options) => {
@@ -65,13 +65,13 @@ const makeObsTrend = (obs, config, name) => {
 			break;
 		default:
 			observedValue = config.valueFunction
-			? config.valueFunction(item.properties[name].value)
-			: +item.properties[name].value;
+				? config.valueFunction(item.properties[name].value)
+				: +item.properties[name].value;
 		}
 		/* eslint-enable unicorn/consistent-destructuring */
 
 		if (ALLOWED_NULLS.includes(name) && !observedValue) return null;
- 
+
 		// default pair
 		const pair = [
 			convertTimestamp(Date.parse(timestamp)),

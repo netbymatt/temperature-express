@@ -101,8 +101,10 @@ const locationSearchStart = async (e) => {
 	}
 
 	// US is appended to search to help target the results
-	const url = `https://nominatim.openstreetmap.org/search/${encodeURIComponent(lookup)}`;
-	const data = { format: 'jsonv2', addressdetails: 1, countrycodes: 'us' };
+	const url = 'https://nominatim.openstreetmap.org/search';
+	const data = {
+		q: lookup, format: 'jsonv2', addressdetails: 1, countrycodes: 'us',
+	};
 
 	const queryString = new URLSearchParams(data);
 

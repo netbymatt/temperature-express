@@ -32,15 +32,15 @@ const buildList = (data, initialShow) => {
 
 			const divDescription = document.createElement('div');
 			divDescription.textContent = formatDescription(alert.description);
-			li.append(divDescription);
+			divState.append(divDescription);
 
 			const divInstruction = document.createElement('div');
 			divInstruction.textContent = alert.instrcution ?? '';
-			li.append(divInstruction);
+			divState.append(divInstruction);
 
 			const divTimes = document.createElement('div');
 			divTimes.classList.add('times');
-			li.append(divTimes);
+			divState.append(divTimes);
 
 			const divOnset = document.createElement('div');
 			divOnset.textContent = `Onset: ${relative(alert.onset)}`;
@@ -62,9 +62,8 @@ const buildList = (data, initialShow) => {
 };
 
 // crude formatting of description
-const formatDescription = (text) => text
-	// .replace(/(?<!^)\* /g, '<br/>')	// turn the *(space) into a newline, except at the very beginning of the string
-	.replace('* ', '');	// remove the *(space)
+const formatDescription = (text) => text?.replace('* ', '') ?? '';	// remove the *(space)
+// .replace(/(?<!^)\* /g, '<br/>')	// turn the *(space) into a newline, except at the very beginning of the string
 
 // setup formatting relative time formatting
 const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });

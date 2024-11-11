@@ -21,9 +21,9 @@ const formatter = (val, axis) => {
 
 	// first tick and date change both get date/day info
 	if (dt.day !== lastdt.day
-			|| dt.month !== lastdt.month
-			|| dt.year !== lastdt.year
-			|| firstTick) {
+		|| dt.month !== lastdt.month
+		|| dt.year !== lastdt.year
+		|| firstTick) {
 		tick += `<br>${dt.month}/${dt.day}`;
 	}
 
@@ -35,21 +35,21 @@ const formatter = (val, axis) => {
 // tickSize[0] = numeric, [1] = units
 const tickMs = (tickSize) => {
 	switch (tickSize[1]) {
-	case 'year':
-		return 1000 * 60 * 60 * 24 * 365 * tickSize[0];
-	case 'month':
-		return ((1000 * 60 * 60 * 24 * 365) / 12) * tickSize[0];
-	case 'day':
-		return 1000 * 60 * 60 * 24 * tickSize[0];
-	case 'hour':
-		return 1000 * 60 * 60 * tickSize[0];
-	case 'minute':
-		return 1000 * 60 * tickSize[0];
-	case 'second':
-		return 1000 * tickSize[0];
+		case 'year':
+			return 1000 * 60 * 60 * 24 * 365 * tickSize[0];
+		case 'month':
+			return ((1000 * 60 * 60 * 24 * 365) / 12) * tickSize[0];
+		case 'day':
+			return 1000 * 60 * 60 * 24 * tickSize[0];
+		case 'hour':
+			return 1000 * 60 * 60 * tickSize[0];
+		case 'minute':
+			return 1000 * 60 * tickSize[0];
+		case 'second':
+			return 1000 * tickSize[0];
 
-	default:
-		return false;
+		default:
+			return false;
 	}
 };
 

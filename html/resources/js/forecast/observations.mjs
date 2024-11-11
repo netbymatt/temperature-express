@@ -14,7 +14,7 @@ const prepObsData = (obs, metaData, options) => {
 		if (curDate < prev) return curDate;
 		return prev;
 	}, new Date());
-		// const minTimestamp = Date.parse(obs.features[obs.features.length - 1].properties.timestamp);
+	// const minTimestamp = Date.parse(obs.features[obs.features.length - 1].properties.timestamp);
 	metaData.oldestData = DateTime.fromJSDate(minTimestamp);
 
 	// loop through available observations
@@ -47,28 +47,26 @@ const makeObsTrend = (obs, config, name) => {
 		const { timestamp } = item.properties;
 		let observedValue = 0;
 		let windDirection;
-		/* eslint-disable unicorn/consistent-destructuring */
 		switch (name) {
-		case 'apparentTemperature':
-			observedValue = item.properties.windChill.value
+			case 'apparentTemperature':
+				observedValue = item.properties.windChill.value
 					?? item.properties.heatIndex.value
 					?? item.properties.temperature.value;
-			break;
-		case 'windSpeed':
-			observedValue = item.properties.windSpeed.value;
-			windDirection = (item.properties.windDirection.value + 180) % 360;
-			break;
-		case 'cloudLayers':
-			// return null to gap-fill when there are no cloud reports
-			if (item.properties.cloudLayers.length === 0) return null;
-			observedValue = decodeClouds(item.properties.cloudLayers);
-			break;
-		default:
-			observedValue = config.valueFunction
-				? config.valueFunction(item.properties[name].value)
-				: +item.properties[name].value;
+				break;
+			case 'windSpeed':
+				observedValue = item.properties.windSpeed.value;
+				windDirection = (item.properties.windDirection.value + 180) % 360;
+				break;
+			case 'cloudLayers':
+				// return null to gap-fill when there are no cloud reports
+				if (item.properties.cloudLayers.length === 0) return null;
+				observedValue = decodeClouds(item.properties.cloudLayers);
+				break;
+			default:
+				observedValue = config.valueFunction
+					? config.valueFunction(item.properties[name].value)
+					: +item.properties[name].value;
 		}
-		/* eslint-enable unicorn/consistent-destructuring */
 
 		if (ALLOWED_NULLS.includes(name) && !observedValue) return null;
 
@@ -82,7 +80,7 @@ const makeObsTrend = (obs, config, name) => {
 		if (windDirection) pair.push(windDirection);
 		return pair;
 	}).filter((d) => d !== null); // timestamp loop
-		// sort the pairs
+	// sort the pairs
 	const sorted = pairs.sort((a, b) => a[0] - b[0]);
 
 	// make sure wind directions are only shown every hour

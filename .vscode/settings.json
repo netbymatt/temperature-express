@@ -4,11 +4,13 @@
 			"format": "expanded",
 			"extensionName": ".css",
 			"savePath": "/html/resources/css",
-			"savePathSegmentKeys": null,
-			"savePathReplaceSegmentsWith": null
 		}
 	],
 	"files.exclude": {
 		"**/style.css": true
+	},
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
 	}
 }

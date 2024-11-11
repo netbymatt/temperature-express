@@ -30,8 +30,6 @@ const holidaySource = {
 	'5/4': ['jedi-order', 'Star Wars Day'],
 
 	// thanksgiving
-	'11/24/2022': THANKSGIVING,
-	'11/23/2023': THANKSGIVING,
 	'11/28/2024': THANKSGIVING,
 	'11/27/2025': THANKSGIVING,
 	'11/26/2026': THANKSGIVING,
@@ -41,18 +39,19 @@ const holidaySource = {
 	'11/28/2030': THANKSGIVING,
 
 	// begin daylight savings
-	'3/13/2022': BEGIN_DAYLIGHT,
-	'3/12/2023': BEGIN_DAYLIGHT,
-	'3/10/2024': BEGIN_DAYLIGHT,
+	'3/9/2025': BEGIN_DAYLIGHT,
+	'3/8/2026': BEGIN_DAYLIGHT,
+	'3/14/2027': BEGIN_DAYLIGHT,
+	'3/12/2028': BEGIN_DAYLIGHT,
+	'3/11/2029': BEGIN_DAYLIGHT,
 	// end daylight savings
-	'11/6/2022': END_DAYLIGHT,
-	'11/5/2023': END_DAYLIGHT,
-	'11/3/2024': END_DAYLIGHT,
+	'11/2/2025': END_DAYLIGHT,
+	'11/1/2026': END_DAYLIGHT,
+	'11/7/2027': END_DAYLIGHT,
+	'11/5/2028': END_DAYLIGHT,
+	'11/4/2029': END_DAYLIGHT,
 
 	// memorial day
-	'5/30/2022': MEMORIAL,
-	'5/29/2023': MEMORIAL,
-	'5/27/2024': MEMORIAL,
 	'5/26/2025': MEMORIAL,
 	'5/25/2026': MEMORIAL,
 	'5/31/2027': MEMORIAL,
@@ -60,9 +59,6 @@ const holidaySource = {
 	'5/28/2029': MEMORIAL,
 
 	// labor day
-	'9/5/2022': LABOR,
-	'9/4/2023': LABOR,
-	'9/2/2024': LABOR,
 	'9/1/2025': LABOR,
 	'9/7/2026': LABOR,
 	'9/6/2027': LABOR,
@@ -70,9 +66,6 @@ const holidaySource = {
 	'9/3/2029': LABOR,
 
 	// election day
-	'11/8/2022': ELECTION,
-	'11/7/2023': ELECTION,
-	'11/5/2024': ELECTION,
 	'11/4/2025': ELECTION,
 	'11/9/2026': ELECTION,
 	'11/8/2027': ELECTION,
@@ -80,9 +73,6 @@ const holidaySource = {
 	'11/12/2029': ELECTION,
 
 	// easter
-	'4/17/2022': EASTER,
-	'4/9/2023': EASTER,
-	'3/31/2024': EASTER,
 	'4/20/2025': EASTER,
 	'4/5/2026': EASTER,
 	'3/28/2027': EASTER,
@@ -90,32 +80,29 @@ const holidaySource = {
 	'4/1/2029': EASTER,
 
 	// spring
-	'3/20/2022': SPRING,
-	'3/20/2023': SPRING,
-	'3/19/2024': SPRING,
 	'3/20/2025': SPRING,
 	'3/20/2026': SPRING,
+	'3/20/2027': SPRING,
+	'3/20/2028': SPRING,
 
 	// summer
-	'6/21/2022': SUMMER,
-	'6/21/2023': SUMMER,
-	'6/20/2024': SUMMER,
-	'6/20/2025': SUMMER,
+	'6/21/2025': SUMMER,
 	'6/21/2026': SUMMER,
+	'6/21/2027': SUMMER,
+	'6/20/2028': SUMMER,
 
 	// fall
-	'9/22/2022': FALL,
-	'9/23/2023': FALL,
-	'9/22/2024': FALL,
 	'9/22/2025': FALL,
-	'9/22/2026': FALL,
+	'9/23/2026': FALL,
+	'9/23/2027': FALL,
+	'9/22/2028': FALL,
 
 	// winter
-	'12/21/2022': WINTER,
-	'12/21/2023': WINTER,
 	'12/21/2024': WINTER,
 	'12/21/2025': WINTER,
 	'12/21/2026': WINTER,
+	'12/22/2027': WINTER,
+	'12/21/2028': WINTER,
 
 };
 

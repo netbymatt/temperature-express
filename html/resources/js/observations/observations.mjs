@@ -4,7 +4,7 @@ import {
 } from '../config.mjs';
 import * as ProgressBar from '../progress.mjs';
 import { fetchWithRetry, apiUrl, convertTimestamp } from '../utils.mjs';
-import * as Forecast from '../forecast.mjs';
+import * as Forecast from '../forecast/forecast.mjs';
 
 const ALLOWED_NULLS = ['windSpeed', 'apparentTemperature', 'dewpoint', 'temperature'];
 

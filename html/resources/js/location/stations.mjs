@@ -1,6 +1,6 @@
 import * as ProgressBar from '../progress.mjs';
 import { fetchWithRetry } from '../utils.mjs';
-import * as Forecast from '../forecast.mjs';
+import * as Forecast from '../forecast/forecast.mjs';
 import { saveLocation } from '../placemanager.mjs';
 import * as Observations from '../observations/observations.mjs';
 

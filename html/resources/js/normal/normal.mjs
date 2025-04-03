@@ -1,6 +1,6 @@
 import * as ProgressBar from '../progress.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
-import * as Forecast from '../forecast.mjs';
+import * as Forecast from '../forecast/forecast.mjs';
 
 // normal high/low temperatures for the WFO
 const get = async (wfo) => {

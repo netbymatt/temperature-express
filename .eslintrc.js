@@ -11,8 +11,7 @@ module.exports = {
 		'airbnb-base',
 	],
 	globals: {
-		Atomics: 'readonly',
-		SharedArrayBuffer: 'readonly',
+		SunCalc: 'readonly',
 	},
 	parserOptions: {
 		ecmaVersion: 2024,

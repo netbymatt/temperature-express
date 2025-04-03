@@ -1,6 +1,6 @@
 import * as ProgressBar from '../progress.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
-import * as Forecast from '../forecast.mjs';
+import * as Forecast from './forecast.mjs';
 import { fetchWithRetry, backoff, forEachElem } from '../utils.mjs';
 
 // get an hourly forecast for a specified url

@@ -1,4 +1,7 @@
 import { DateTime } from '../vendor/luxon.mjs';
+import * as Menu from './menu.mjs';
+import * as Tooltip from './tooltip.mjs';
+import { getPlotData, CHART_CONTAINER_SELECTOR } from './forecast/forecast.mjs';
 
 const TABLE_SELECTOR = '#table table';
 
@@ -6,6 +9,7 @@ const TABLE_SELECTOR = '#table table';
 document.addEventListener('DOMContentLoaded', () => {
 	// add double click handler = select all
 	document.querySelector(TABLE_SELECTOR).addEventListener('dblclick', selectTable);
+	Menu.registerClickHandler('menu-table', toggleButton);
 });
 
 const showTable = (data) => {
@@ -52,29 +56,23 @@ const buildFullTable = (data) => {
 		const dt = DateTime.fromMillis(data[0].data[i][0], { zone: 'UTC' });
 
 		// timestamp (day of week, day, hour:minute)
-		html += `<tr${
-			// new day
-			(dt.c.day === lastDay) ? '' : ' class="new-day"'
-		}>`
-				+ `<td>${dt.toLocaleString({ weekday: 'short' })} ${
-					dt.toLocaleString({ month: 'short', day: '2-digit' })} ${
-					dt.toLocaleString({ hour: 'numeric' })}</td>`;
+		// new day
+		html += `<tr${(dt.c.day === lastDay) ? '' : ' class="new-day"'}>`
+			+ `<td>${dt.toLocaleString({ weekday: 'short' })} ${dt.toLocaleString({ month: 'short', day: '2-digit' })} ${dt.toLocaleString({ hour: 'numeric' })}</td>`;
 
 		// loop through visible columns
 		const dataHtml = data.map((series) => {
 			// hide values that are not every hour by testing data length
 			if (series.lines.show && !series.isObs && series.data.length >= data[0].data.length) {
 				if (i < series.data.length) {
-					return `<td>${
-						// hide null values
-						series.data[i][1]?.toFixed?.(series.scale.currentPrecision) ?? ''
-					}</td>`;
+					// hide null values in string
+					return `<td>${series.data[i][1]?.toFixed?.(series.scale.currentPrecision) ?? ''}</td>`;
 				}
 				return '<td></td>';
 			}
 			return '';
 		});
-			// finish up row
+		// finish up row
 		html += `${dataHtml.join('')}</tr>`;
 
 		// remember day
@@ -126,7 +124,19 @@ const selectTable = () => {
 	selection.addRange(range);
 };
 
+// button handler
+const toggleButton = () => {
+	// see if the chart is on the page
+	if (window.getComputedStyle(document.querySelector(CHART_CONTAINER_SELECTOR)).opacity < 1) {
+		toggleTable(false);
+	} else {
+		// calculate and show the table
+		showTable(getPlotData());
+		document.querySelector('#tooltip').classList.remove('show');
+		Tooltip.hideTextForecast();
+	}
+};
+
 export {
 	showTable,
-	toggleTable,
 };

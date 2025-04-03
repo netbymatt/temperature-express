@@ -7,7 +7,7 @@ import {
 } from './placemanager.mjs';
 import * as ProgressBar from './progress.mjs';
 import * as Menu from './menu.mjs';
-import * as Forecast from './forecast.mjs';
+import * as Forecast from './forecast/forecast.mjs';
 import * as Outlook from './spcoutlook.mjs';
 import * as Table from './table.mjs';
 import * as Alerts from './alerts.mjs';

@@ -4,7 +4,6 @@ import * as Menu from './menu.mjs';
 
 const DIALOG_SUN = '#dialog-sun';
 
-/* globals SunCalc */
 // initialize
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#dialog-sun.dialog .close').addEventListener('click', hide);

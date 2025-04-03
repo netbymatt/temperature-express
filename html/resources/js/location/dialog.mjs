@@ -7,7 +7,7 @@ import { fetchWithRetry, forEachElem, apiUrl } from '../utils.mjs';
 import * as Table from '../table.mjs';
 import * as Tooltip from '../tooltip.mjs';
 import * as Alerts from '../alerts.mjs';
-import * as Forecast from '../forecast.mjs';
+import * as Forecast from '../forecast/forecast.mjs';
 
 let latLonReceivedCallback;
 let positionReceivedCallback;
@@ -131,7 +131,7 @@ const directStationLookup = async (stationId) => {
 		}
 
 		// format for the correct response type
-		return 		[
+		return [
 			{
 				lat: station.geometry.coordinates[1],
 				lon: station.geometry.coordinates[0],

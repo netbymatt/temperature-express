@@ -2,7 +2,7 @@ import { getLineType, getPointType } from './config.mjs';
 import { forEachElem } from './utils.mjs';
 import { saveOptions } from './options.mjs';
 import * as Menu from './menu.mjs';
-import * as Forecast from './forecast.mjs';
+import * as Forecast from './forecast/forecast.mjs';
 
 const DIALOG_SELECTOR = '#dialog-legend';
 

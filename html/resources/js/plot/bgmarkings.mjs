@@ -3,8 +3,6 @@ import { AVAILABLE_TRENDS, DAY_BG_COLORS } from '../config.mjs';
 import { dark, convertTimestamp } from '../utils.mjs';
 import { getSavedLocation } from '../placemanager.mjs';
 
-/* globals SunCalc */
-
 const generator = (metaData) => {
 	const generateMarks = (axes) => {
 		const isDark = dark();
@@ -48,13 +46,13 @@ const generator = (metaData) => {
 		const dayColor = (isDark) ? DAY_BG_COLORS.DAY.DARK : DAY_BG_COLORS.DAY.LIGHT;
 
 		do {
-		// calculate today's
+			// calculate today's
 			const todayTimes = SunCalc.getTimes(DateTime.fromMillis(index).toJSDate(), lat, lon);
 
 			let from;
 			let to;
 			if (isDark) {
-			// dark mode slightly lightens the background from dawn to dusk
+				// dark mode slightly lightens the background from dawn to dusk
 				from = convertTimestamp(DateTime.fromJSDate(todayTimes.sunrise, { zone: metaData.minTimestamp.zone.name }));
 				to = convertTimestamp(DateTime.fromJSDate(todayTimes.sunset, { zone: metaData.minTimestamp.zone.name }));
 			} else {
@@ -96,7 +94,7 @@ const dayBoundaries = (startDays, axes, lineWidth) => {
 	// reset to midnight on first day
 	let index = startDays * 24 * 60 * 60 * 1000;
 	do {
-	// vertical black line
+		// vertical black line
 		markings.push({ xaxis: { from: index - lineWidth / 2, to: index + lineWidth / 2 }, color: '#000000' });
 		index += 2 * 12 * 60 * 60 * 1000;
 	} while (index < axes.xaxis.max);

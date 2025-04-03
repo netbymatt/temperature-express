@@ -2,7 +2,9 @@ import { DateTime } from '../../vendor/luxon.mjs';
 import {
 	AVAILABLE_OBS, getLineType, colorByLegend, getPointType,
 } from '../config.mjs';
-import { convertTimestamp } from '../utils.mjs';
+import * as ProgressBar from '../progress.mjs';
+import { fetchWithRetry, apiUrl, convertTimestamp } from '../utils.mjs';
+import * as Forecast from '../forecast.mjs';
 
 const ALLOWED_NULLS = ['windSpeed', 'apparentTemperature', 'dewpoint', 'temperature'];
 
@@ -120,4 +122,26 @@ const decodeClouds = (data) => data.reduce((sum, cur) => {
 	return sum + amount;
 }, 0) / data.length;
 
+const get = async (place) => {
+	// cancel previous request if present
+	get?.cancel?.();
+	// calculate 7 days of observations
+	const startDate = DateTime.local().minus({ days: 7 }).startOf('day').toISO({ suppressMilliseconds: true });
+	// get the observation history for the station
+	const url = `${apiUrl}stations/${place.station}/observations?start=${startDate}`;
+	try {
+		const fetchHandler = fetchWithRetry(url, 3);
+		get.cancel = fetchHandler.cancel;
+		const data = await fetchHandler.data;
+		Forecast.formatData(false, { data, station: place.station });
+	} catch (error) {
+		// see if the other data arrived
+		ProgressBar.set('Get observations failed!', true);
+		Forecast.formatData(false, 0);	// special "no data present case"
+	}
+};
+
 export default prepObsData;
+export {
+	get,
+};

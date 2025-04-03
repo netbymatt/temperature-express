@@ -119,6 +119,18 @@ const formatDay = (index) => {
 	return formatter(date);
 };
 
+// show error function
+const showError = (title, heading, text) => {
+	// fill values
+	document.querySelector('#dialog-failed-heading').innerHTML = heading;
+	document.querySelector('#dialog-failed-text').innerHTML = text;
+	document.querySelector('#dialog-failed .dialog .title div').innerHTML = title;
+
+	// show the dialog
+	document.querySelector('#dialog-failed').classList.remove('initial-hide');
+	setTimeout(() => document.querySelector('#dialog-failed').classList.add('show'), 1);
+};
+
 export {
 	getDuration,
 	convertTimestamp,
@@ -129,4 +141,5 @@ export {
 	fetchWithRetry,
 	getFile,
 	formatDay,
+	showError,
 };

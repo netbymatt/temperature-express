@@ -6,9 +6,9 @@ import * as Menu from './menu.mjs';
 import * as Table from './table.mjs';
 import * as Tooltip from './tooltip.mjs';
 import DataForecast, { OLD_FORECAST_LIMIT } from './forecast/forecast.mjs';
-import DataObs from './forecast/observations.mjs';
+import DataObs from './observations/observations.mjs';
 import { getSavedLocation } from './placemanager.mjs';
-import plotForecast from './forecast/plot.mjs';
+import plotForecast from './plot/plot.mjs';
 import { SCALES, AXIS_LIMITS } from './config.mjs';
 import ScaledNumber from '../vendor/scalednumber.mjs';
 

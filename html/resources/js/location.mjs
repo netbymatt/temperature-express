@@ -1,7 +1,6 @@
 // these functions get lat-long as well as follow me populated, and detailed forecast information
-import { DateTime } from '../vendor/luxon.mjs';
 import {
-	forEachElem, apiUrl, fetchWithRetry, backoff,
+	forEachElem, apiUrl, fetchWithRetry, showError,
 } from './utils.mjs';
 import {
 	getSavedLocation, getSavedPlaces, saveLocation,
@@ -13,6 +12,10 @@ import * as Outlook from './spcoutlook.mjs';
 import * as Table from './table.mjs';
 import * as Alerts from './alerts.mjs';
 import * as Dialog from './location/dialog.mjs';
+import { formatPlaceName } from './location/utils.mjs';
+import * as Stations from './location/stations.mjs';
+import * as Hourly from './forecast/hourly.mjs';
+import * as NormalTemperatures from './normal/normal.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	// set up dialog controls
@@ -162,16 +165,6 @@ const latLonReceived = (places, _place) => {
 	}
 };
 
-// hierarchical place name extraction
-const formatPlaceName = (address) => {
-	// no address is provided if lat/lon are used for coordinates
-	if (!address) return null;
-	const city = address?.city ?? address?.town ?? address?.village ?? address?.municipality ?? address?.hamlet ?? address.county ?? '';
-	const { state } = address;
-	if (!state) return city;
-	return `${city}, ${state}`;
-};
-
 // get point, private
 // updates the place structure with a point looked up from latitude and longitude
 const getPoint = async (_place) => {
@@ -242,8 +235,8 @@ const pointReceived = (point, _place) => {
 	const baseUrl = `${apiUrl}gridpoints/${place.office}/${place.pointX},${place.pointY}`;
 
 	// pass point data to hourly forecast api
-	getHourlyForecast(baseUrl);
-	getNormalTemperatures(place.office);
+	Hourly.get(baseUrl);
+	NormalTemperatures.get(place.office);
 	// get text forecast
 	Menu.getTextForecast(baseUrl);
 
@@ -251,10 +244,10 @@ const pointReceived = (point, _place) => {
 	// use this to determine if a station lookup needs to be carried out
 	if (point || !place.station) {
 		// get stations
-		getStations(baseUrl, place);
+		Stations.get(baseUrl, place);
 	} else {
 		// use cached station
-		stationsReceived({ features: [{ properties: { stationIdentifier: place.station } }] }, place);
+		Stations.received({ features: [{ properties: { stationIdentifier: place.station } }] }, place);
 	}
 
 	// get alerts
@@ -263,133 +256,9 @@ const pointReceived = (point, _place) => {
 
 const stillRetrying = (e, iteration) => {
 	if (iteration === 2) {
-		ProgressBar.set('Get forecast failed', true);
+		ProgressBar.set('Get point failed', true);
 		forEachElem('#loading .centering>div', (elem) => elem.classList.add('error'));
 	}
-};
-
-// get an hourly forecast for a specified url
-const getHourlyForecast = async (baseUrl) => {
-	// cancel previous request if present
-	getHourlyForecast?.cancel?.();
-	getHourlyForecastRetry?.cancel?.();
-	try {
-		const fetchHandler = fetchWithRetry(baseUrl, 0, stillRetrying);
-		getHourlyForecast.cancel = fetchHandler.cancel;
-		const data = await fetchHandler.data;
-		ProgressBar.set('Hourly forecast received');
-		// test for old data
-		if (!forecastIsFresh(data)) {
-			getHourlyForecastRetry(baseUrl);
-		}
-		// store the data
-		Forecast.formatData(data, false);
-	} catch (error) {
-		ProgressBar.message('Get hourly forecast failed', true);
-		stillRetrying(0, 2);
-	}
-};
-
-const forecastIsFresh = (data) => {
-	const updateTime = DateTime.fromISO(data.properties.updateTime);
-	return Date.now() - updateTime <= Forecast.OLD_FORECAST_LIMIT;
-};
-
-// sometimes an out of date forecast is received, retry in the background
-const getHourlyForecastRetry = async (url, count = 0) => {
-	// clear cancel handle
-	getHourlyForecastRetry.cancel = null;
-
-	// message
-	ProgressBar.message('Auto retrying for newer forecast');
-
-	if (count > 0) {
-		try {
-			const response = await fetch(url);
-			if (!response.ok) throw new Error('Unable to get fresher forecast');
-			const data = await response.json();
-			// if fresh update the chart
-			if (forecastIsFresh(data)) {
-				Forecast.formatData(data, false);
-				return;
-			}
-		} catch (error) {
-			ProgressBar.message(error.message, true);
-		}
-	}
-
-	// call again
-	const timeoutHandle = setTimeout(() => getHourlyForecastRetry(url, count + 1), backoff(count) * 1000);
-	getHourlyForecastRetry.cancel = () => clearTimeout(timeoutHandle);
-};
-
-// get list of stations for specified base url
-const getStations = async (baseUrl, place) => {
-	// cancel previous request if present
-	getStations?.cancel?.();
-	// look up data
-	try {
-		const fetchHandler = fetchWithRetry(`${baseUrl}/stations`, 3);
-		getStations.cancel = fetchHandler.cancel;
-		const data = await fetchHandler.data;
-		ProgressBar.set('Geocoding complete');
-		stationsReceived(data, place);
-	} catch (error) {
-		ProgressBar.set('Get stations failed!', 2, true);
-		ProgressBar.message(error);
-		Forecast.formatData(false, 0);	// special "no data present case"
-	}
-};
-
-// stations received, private
-// extract nearest station
-const stationsReceived = async (stations, _place) => {
-	const place = { ..._place };
-	ProgressBar.set(`List of stations received: ${stations.features[0].properties.stationIdentifier}`);
-	// see if there is a closest location
-	try {
-		// if no json was provided then the cached station should be used
-		if (stations) {
-			place.station = stations.features[0].properties.stationIdentifier;
-			saveLocation(place);
-		}
-		getObservations(place);
-	} catch (error) {
-		ProgressBar.set('Station identifier not available', 2, true);
-		ProgressBar.message(error, true);
-		Forecast.formatData(false, 0);// special "no data present case"
-	}
-};
-
-const getObservations = async (place) => {
-	// cancel previous request if present
-	getObservations?.cancel?.();
-	// calculate 7 days of observations
-	const startDate = DateTime.local().minus({ days: 7 }).startOf('day').toISO({ suppressMilliseconds: true });
-	// get the observation history for the station
-	const url = `${apiUrl}stations/${place.station}/observations?start=${startDate}`;
-	try {
-		const fetchHandler = fetchWithRetry(url, 3);
-		getObservations.cancel = fetchHandler.cancel;
-		const data = await fetchHandler.data;
-		Forecast.formatData(false, { data, station: place.station });
-	} catch (error) {
-		// see if the other data arrived
-		ProgressBar.set('Get observations failed!', true);
-		Forecast.formatData(false, 0);	// special "no data present case"
-	}
-};
-
-// show error function
-const showError = (title, heading, text) => {
-	// fill values
-	document.querySelector('#dialog-failed-heading').innerHTML = heading;
-	document.querySelector('#dialog-failed-text').innerHTML = text;
-	document.querySelector('#dialog-failed .dialog .title div').innerHTML = title;
-
-	// show the dialog
-	document.querySelector('#dialog-failed').classList.remove('initial-hide');
-	setTimeout(() => document.querySelector('#dialog-failed').classList.add('show'), 1);
 };
 
 // visibility of page changed
@@ -406,41 +275,5 @@ const visibilityChange = () => {
 			// trigger an update
 			getPlace();
 		}
-	}
-};
-
-// normal high/low temperatures for the WFO
-const getNormalTemperatures = async (wfo) => {
-	// cancel previous request if present
-	getNormalTemperatures?.cancel?.();
-
-	// prepare the body of the request
-	const requestParams = {
-		elems: [{
-			name: 'maxt', interval: 'dly', duration: 'dly', normal: '91', prec: 0,
-		}, {
-			name: 'mint', interval: 'dly', duration: 'dly', normal: '91', prec: 0,
-		}],
-		sid: wfo,
-		sDate: DateTime.now().minus({ days: 10 }).toISODate(),
-		eDate: DateTime.now().plus({ days: 10 }).toISODate(),
-	};
-	const requestBody = new URLSearchParams();
-	requestBody.append('output', 'json');
-	requestBody.append('params', JSON.stringify(requestParams));
-
-	try {
-		const response = await fetch('https://data.rcc-acis.org/StnData', {
-			headers: {
-				accept: 'application/json',
-			},
-			body: requestBody,
-			method: 'POST',
-		});
-		const data = await response.json();
-		ProgressBar.set('Normal temperatures received');
-		Forecast.formatNormalTemperatures(data);
-	} catch (e) {
-		ProgressBar.message('Get normal temperatures failed', true);
 	}
 };

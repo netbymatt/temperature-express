@@ -97,7 +97,7 @@ const plot = (dataset, metaData, plotLimits, inchAxes) => {
 					zoomRange: false,
 				},
 				{
-				// axis 6, lightning
+					// axis 6, lightning
 					position: 'left',
 					min: 0,
 					max: 20,

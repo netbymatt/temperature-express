@@ -11,7 +11,7 @@ const trendConfig = (displayName, scale, units, yAxis, lineType, valueFunction) 
 		lineType, 	// 0=no fill, 1=fill to zero, 2=points only
 		valueFunction,
 	};
-		// set default display units
+	// set default display units
 	obj.scale.setUnit(units);
 	return obj;
 };
@@ -23,25 +23,25 @@ const getLineType = (lineType, name, forceState = false) => {
 	const opt = (visible === undefined) ? true : visible ?? forceState;
 
 	switch (lineType) {
-	case 2:
-		// points only
-		return {
-			show: false,
-		};
-	case 1:
-		// filled under line to zero
-		return {
-			fill: opt,
-			lineWidth: 0,
-			show: opt,
-		};
-	case 0:
-	default:
-		// line only, no fill
-		return {
-			show: opt,
-			lineWidth: 2,
-		};
+		case 2:
+			// points only
+			return {
+				show: false,
+			};
+		case 1:
+			// filled under line to zero
+			return {
+				fill: opt,
+				lineWidth: 0,
+				show: opt,
+			};
+		case 0:
+		default:
+			// line only, no fill
+			return {
+				show: opt,
+				lineWidth: 2,
+			};
 	}
 };
 

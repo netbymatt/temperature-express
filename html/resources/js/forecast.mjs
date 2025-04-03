@@ -183,35 +183,35 @@ const getInfo = (type) => {
 	// can't get anything if the plot isn't drawn
 	if (plot === null) return null;
 	switch (type) {
-	// all available data
-	case 'xMin':
-		return plot.getAxes().xaxis.datamin;
-	case 'xMax':
-		return plot.getAxes().xaxis.datamax;
+		// all available data
+		case 'xMin':
+			return plot.getAxes().xaxis.datamin;
+		case 'xMax':
+			return plot.getAxes().xaxis.datamax;
 
 		// visible data
-	case 'xMinVisible':
-		return plot.getAxes().xaxis.min;
-	case 'xMaxVisible':
-		return plot.getAxes().xaxis.max;
+		case 'xMinVisible':
+			return plot.getAxes().xaxis.min;
+		case 'xMaxVisible':
+			return plot.getAxes().xaxis.max;
 
 		// oldest data
-	case 'oldestData':
-		return metaData.oldestData;
-	case 'forecastTimestamp':
-		return metaData.forecastTimestamp;
-	case 'lastUpdate':
-		return metaData.lastUpdate;
+		case 'oldestData':
+			return metaData.oldestData;
+		case 'forecastTimestamp':
+			return metaData.forecastTimestamp;
+		case 'lastUpdate':
+			return metaData.lastUpdate;
 
 		// x axis limits
-	case 'xLimits':
-		return {
-			min: plot.getAxes().xaxis.min,
-			max: plot.getAxes().xaxis.max,
-		};
+		case 'xLimits':
+			return {
+				min: plot.getAxes().xaxis.min,
+				max: plot.getAxes().xaxis.max,
+			};
 
-	default:
-		return plot[type];
+		default:
+			return plot[type];
 	}
 };
 
@@ -346,11 +346,22 @@ const updateCurrentTemperature = (dataset) => {
 	}
 };
 
+// store and format the normal temperatures received
+const formatNormalTemperatures = (data) => {
+	const { timeZone } = getSavedLocation();
+	if (timeZone) {
+		const placeTime = (DateTime.now().setZone(timeZone).startOf('day'));
+		const userTime = (DateTime.now().startOf('day'));
+		convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60_000 - (userTime - placeTime); // time zone offset in milliseconds
+	}
+};
+
 export {
 	getInfo,
 	formatData,
 	chartVisibility,
 	setUnits,
 	readVisibility,
+	formatNormalTemperatures,
 	OLD_FORECAST_LIMIT,
 };

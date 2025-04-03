@@ -1,4 +1,4 @@
-const max = 7;
+const max = 8;
 let messageContainer;
 let dialog;
 let element;

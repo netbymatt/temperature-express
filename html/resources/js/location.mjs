@@ -67,24 +67,24 @@ const getPlaceFailed = (e, isRetry) => {
 	ProgressBar.message('Geolocation lookup failed', true);
 	ProgressBar.message(e, true);
 	switch (e.code ?? 0) {
-	case 1:
-		// user denied
-		// turn off gps option on location screen and force a user input
-		Dialog.mustEnterPlaceName();
-		break;
+		case 1:
+			// user denied
+			// turn off gps option on location screen and force a user input
+			Dialog.mustEnterPlaceName();
+			break;
 		// position unavailable (internal position source failed)
 		// intentional fall-through to "force user input" below
-	case 2:
-	case 3:
-		// timeout expired
-		// retry once then force user to enter a location
-		if (isRetry) {
-			Dialog.mustEnterPlaceName();
-		} else {
-			getPlace(true);
-		}
-		break;
-	default:
+		case 2:
+		case 3:
+			// timeout expired
+			// retry once then force user to enter a location
+			if (isRetry) {
+				Dialog.mustEnterPlaceName();
+			} else {
+				getPlace(true);
+			}
+			break;
+		default:
 	}
 };
 
@@ -144,7 +144,7 @@ const latLonReceived = (places, _place) => {
 		const newLon = parseFloat(places[0].lon);
 		// if less than 0.01 from previous location forgo location lookup and use cached point
 		if (Math.abs(newLat - place.lat) <= 0.01 && Math.abs(newLon - place.lon) <= 0.01
-				&& place.pointX !== null && pointReceived.placeY !== null) {
+			&& place.pointX !== null && pointReceived.placeY !== null) {
 			Outlook.show([place.lon, place.lat]);
 			// jump to point received
 			pointReceived(false, place);
@@ -243,6 +243,7 @@ const pointReceived = (point, _place) => {
 
 	// pass point data to hourly forecast api
 	getHourlyForecast(baseUrl);
+	getNormalTemperatures(place.office);
 	// get text forecast
 	Menu.getTextForecast(baseUrl);
 
@@ -401,9 +402,45 @@ const visibilityChange = () => {
 		const lastUpdate = Forecast.getInfo('lastUpdate');
 		const forecastTimestamp = Date.parse(Forecast.getInfo('forecastTimestamp'));
 		if (now > lastUpdate + 15 * 60_000
-				|| now > forecastTimestamp + 60 * 60_000) {
+			|| now > forecastTimestamp + 60 * 60_000) {
 			// trigger an update
 			getPlace();
 		}
+	}
+};
+
+// normal high/low temperatures for the WFO
+const getNormalTemperatures = async (wfo) => {
+	// cancel previous request if present
+	getNormalTemperatures?.cancel?.();
+
+	// prepare the body of the request
+	const requestParams = {
+		elems: [{
+			name: 'maxt', interval: 'dly', duration: 'dly', normal: '91', prec: 0,
+		}, {
+			name: 'mint', interval: 'dly', duration: 'dly', normal: '91', prec: 0,
+		}],
+		sid: wfo,
+		sDate: DateTime.now().minus({ days: 10 }).toISODate(),
+		eDate: DateTime.now().plus({ days: 10 }).toISODate(),
+	};
+	const requestBody = new URLSearchParams();
+	requestBody.append('output', 'json');
+	requestBody.append('params', JSON.stringify(requestParams));
+
+	try {
+		const response = await fetch('https://data.rcc-acis.org/StnData', {
+			headers: {
+				accept: 'application/json',
+			},
+			body: requestBody,
+			method: 'POST',
+		});
+		const data = await response.json();
+		ProgressBar.set('Normal temperatures received');
+		Forecast.formatNormalTemperatures(data);
+	} catch (e) {
+		ProgressBar.message('Get normal temperatures failed', true);
 	}
 };

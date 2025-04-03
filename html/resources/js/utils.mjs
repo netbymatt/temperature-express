@@ -34,14 +34,14 @@ const dark = () => isDark;
 
 const backoff = (iteration) => {
 	switch (iteration) {
-	case 0: return 2;
-	case 1: return 2;
-	case 2: return 4;
-	case 3: return 8;
-	case 4: return 16;
-	case 5:
-	default:
-		return 32;
+		case 0: return 2;
+		case 1: return 2;
+		case 2: return 4;
+		case 3: return 8;
+		case 4: return 16;
+		case 5:
+		default:
+			return 32;
 	}
 };
 
@@ -97,7 +97,7 @@ const getFile = async (url, name) => {
 		if (response.status !== 200) throw new Error(`Status code ${response.status}`);
 		const fileData = await response.json();
 		return fileData.features;
-	} catch (error)	{
+	} catch (error) {
 		ProgressBar.message(`Error getting ${name ?? ''} spc outlook: ${url}`, true);
 		ProgressBar.message(error, true);
 		return null;
@@ -106,11 +106,11 @@ const getFile = async (url, name) => {
 
 const formatDay = (index) => {
 	switch (index) {
-	case 0:
-		return 'Today';
-	case 1:
-		return 'Tomorrow';
-	default:
+		case 0:
+			return 'Today';
+		case 1:
+			return 'Tomorrow';
+		default:
 	}
 
 	// calculate date

@@ -139,4 +139,5 @@ const toggleButton = () => {
 
 export {
 	showTable,
+	toggleTable,
 };

@@ -2,8 +2,16 @@ import TickFormatter from './tickformatter.mjs';
 import bgMarkingsGenerator from './bgmarkings.mjs';
 import { dark } from '../utils.mjs';
 import { getOptions } from '../options.mjs';
-import Holidays from './holidays.mjs';
+import HolidayIcon from './holidays.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
+
+const storeData = (type, data) => {
+
+};
+
+const resetData = () => {
+
+};
 
 const plot = (dataset, metaData, plotLimits, inchAxes) => {
 	const { beginningOfFirst, endOfLast, oldestData } = plotLimits;
@@ -192,7 +200,7 @@ const plotDays = (plt) => {
 		if (xLeft === null) xLeft = xaxis.p2c(activeDay.toMillis());
 
 		// get an icon if present
-		const icon = holidayIcon(activeDay);
+		const icon = HolidayIcon(activeDay);
 
 		// clone the base element and put it on the chart
 		const today = label.cloneNode(true);
@@ -209,16 +217,6 @@ const plotDays = (plt) => {
 	// update element on page
 	container.innerHTML = '';
 	container.append(...days);
-};
-
-// holiday icon lookup
-const holidayIcon = (day) => {
-	const icon = Holidays(day);
-
-	// extract icon type and title text (or default)
-	const iconType = icon?.[0] ?? icon;
-	const iconTitle = icon?.[1] ?? '';
-	return icon ? `<i class="fas fa-${iconType}" title="${iconTitle}"></i>` : '';
 };
 
 export default plot;

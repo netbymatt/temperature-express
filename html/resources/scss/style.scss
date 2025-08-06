@@ -86,13 +86,14 @@ a {
 	color: white;
 	padding: 0.1em 0.4em;
 	font-size: 0.8em;
+	
+	@include u.fade-on-show();
 
 	@media (prefers-color-scheme: dark) {
 		background-color: hsl(0deg, 0%, 65%);
 		color: black;
 	}
 
-	@include u.fade-on-show();
 }
 
 

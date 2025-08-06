@@ -766,15 +766,15 @@ body {
   opacity: 0;
   transition: opacity 0.2s ease-in-out, visibility 0.2s;
 }
+#weather-text.show {
+  visibility: visible;
+  opacity: 1;
+}
 @media (prefers-color-scheme: dark) {
   #weather-text {
     background-color: hsl(0, 0%, 65%);
     color: black;
   }
-}
-#weather-text.show {
-  visibility: visible;
-  opacity: 1;
 }
 
 #title {

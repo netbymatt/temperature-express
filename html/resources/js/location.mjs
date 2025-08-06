@@ -277,3 +277,7 @@ const visibilityChange = () => {
 		}
 	}
 };
+
+export {
+	getPlace,
+};

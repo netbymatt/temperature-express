@@ -5,14 +5,6 @@ import { getOptions } from '../options.mjs';
 import HolidayIcon from './holidays.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
 
-const storeData = (type, data) => {
-
-};
-
-const resetData = () => {
-
-};
-
 const plot = (dataset, metaData, plotLimits, inchAxes) => {
 	const { beginningOfFirst, endOfLast, oldestData } = plotLimits;
 	// we want the width of the plot to show at least 3 days and more if the width of the browser allows

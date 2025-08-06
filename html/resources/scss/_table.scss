@@ -94,11 +94,12 @@ $even-row-dark:hsl(0, 0%, 0%);
 	thead tr {
 		background: $odd-row;
 
+		border-collapse: collapse;
+
 		@media (prefers-color-scheme: dark) {
 			background: $odd-row-dark;
 		}
 
-		border-collapse: collapse;
 	}
 
 	thead td,

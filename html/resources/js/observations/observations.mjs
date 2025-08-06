@@ -4,9 +4,18 @@ import {
 } from '../config.mjs';
 import * as ProgressBar from '../progress.mjs';
 import { fetchWithRetry, apiUrl, convertTimestamp } from '../utils.mjs';
+import { getOptions, saveOptions } from '../options.mjs';
+import * as Menu from '../menu.mjs';
 import * as Forecast from '../forecast/forecast.mjs';
+import { getPlace } from '../location.mjs';
 
 const ALLOWED_NULLS = ['windSpeed', 'apparentTemperature', 'dewpoint', 'temperature'];
+
+document.addEventListener('DOMContentLoaded', () => {
+	Menu.registerClickHandler('menu-high-frequency', toggleButton);
+	// set the initial state of the menu button
+	updateMenuButton();
+});
 
 // prepare the observation data
 const prepObsData = (obs, metaData, options) => {
@@ -43,8 +52,11 @@ const prepObsData = (obs, metaData, options) => {
 
 // format observation as a set of series data arrays
 const makeObsTrend = (obs, config, name) => {
+	const { highFrequency } = getOptions();
 	// loop through all timestamps
 	const pairs = obs.features.map((item) => {
+		// check for "high-frequency update" as missing raw message
+		if (item.properties.rawMessage === '' && !highFrequency) return null;
 		// grab the feature
 		const { timestamp } = item.properties;
 		let observedValue = 0;
@@ -138,6 +150,39 @@ const get = async (place) => {
 		// see if the other data arrived
 		ProgressBar.set('Get observations failed!', true);
 		Forecast.formatData(false, 0);	// special "no data present case"
+	}
+};
+
+const toggleButton = () => {
+	// get the current state
+	const { highFrequency } = getOptions();
+
+	// toggle and save the state
+	saveOptions('highFrequency', !highFrequency);
+
+	// update the menu button
+	updateMenuButton();
+
+	// redraw the plot
+	getPlace();
+};
+
+const updateMenuButton = () => {
+	// get the state
+	const { highFrequency } = getOptions();
+
+	// get interesting elements
+	const elemHigh = document.querySelector('.side-menu .update-high');
+	const elemStandard = document.querySelector('.side-menu .update-standard');
+
+	if (highFrequency) {
+		// show the high frequency div
+		elemStandard.style.display = 'none';
+		elemHigh.style.display = 'block';
+	} else {
+		// show the standard div
+		elemStandard.style.display = 'block';
+		elemHigh.style.display = 'none';
 	}
 };
 

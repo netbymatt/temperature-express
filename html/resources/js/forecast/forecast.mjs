@@ -332,7 +332,7 @@ const updateCurrentTemperature = (dataset) => {
 };
 
 // store and format the normal temperatures received
-const formatNormalTemperatures = (data) => {
+const formatNormalTemperatures = () => {
 	const { timeZone } = getSavedLocation();
 	if (timeZone) {
 		const placeTime = (DateTime.now().setZone(timeZone).startOf('day'));

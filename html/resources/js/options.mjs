@@ -1,6 +1,7 @@
 const DEFAULT_OPTIONS = {
 	visible: {},
 	units: 1,	// US
+	highFrequency: false,
 };
 
 // return options, or the defaults

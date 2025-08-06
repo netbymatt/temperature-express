@@ -518,9 +518,7 @@
   background-color: lightgray;
   border: 1px solid darkgray;
   cursor: default;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
   width: 150px;
   visibility: hidden;
   opacity: 0;
@@ -734,9 +732,7 @@ body {
   position: relative;
   overflow: hidden;
   cursor: default;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  user-select: none;
   white-space: nowrap;
 }
 #chart .day {
@@ -953,8 +949,7 @@ input[type=checkbox] {
 }
 
 #chart-area-button.disabled i::before {
-  -webkit-text-decoration: line-through 2px solid black;
-          text-decoration: line-through 2px solid black;
+  text-decoration: line-through 2px solid black;
   color: lightgray;
 }
 

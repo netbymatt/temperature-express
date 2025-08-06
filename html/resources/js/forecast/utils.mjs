@@ -4,7 +4,7 @@ import {
 } from '../config.mjs';
 import { getDuration, convertTimestamp } from '../utils.mjs';
 
-const OLD_FORECAST_LIMIT = 10_800_000;
+const OLD_FORECAST_LIMIT = 6 * (60 * 60 * 1000); // 6 hours
 
 // prepare the forecast data
 const prepForecastData = (fcst, metaData, options) => {

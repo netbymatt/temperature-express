@@ -28,9 +28,9 @@ const holidaySource = {
 	'4/5': ['hand-spock', 'First Contact Day'],
 	'4/7': ['network-wired', 'Internet\'s Birthday'],
 	'5/4': ['jedi-order', 'Star Wars Day'],
+	'10/18': ['gamepad', 'NES Release Day'],
 
 	// thanksgiving
-	'11/28/2024': THANKSGIVING,
 	'11/27/2025': THANKSGIVING,
 	'11/26/2026': THANKSGIVING,
 	'11/25/2027': THANKSGIVING,
@@ -39,7 +39,6 @@ const holidaySource = {
 	'11/28/2030': THANKSGIVING,
 
 	// begin daylight savings
-	'3/9/2025': BEGIN_DAYLIGHT,
 	'3/8/2026': BEGIN_DAYLIGHT,
 	'3/14/2027': BEGIN_DAYLIGHT,
 	'3/12/2028': BEGIN_DAYLIGHT,
@@ -52,14 +51,12 @@ const holidaySource = {
 	'11/4/2029': END_DAYLIGHT,
 
 	// memorial day
-	'5/26/2025': MEMORIAL,
 	'5/25/2026': MEMORIAL,
 	'5/31/2027': MEMORIAL,
 	'5/29/2028': MEMORIAL,
 	'5/28/2029': MEMORIAL,
 
 	// labor day
-	'9/1/2025': LABOR,
 	'9/7/2026': LABOR,
 	'9/6/2027': LABOR,
 	'9/4/2028': LABOR,
@@ -73,32 +70,27 @@ const holidaySource = {
 	'11/12/2029': ELECTION,
 
 	// easter
-	'4/20/2025': EASTER,
 	'4/5/2026': EASTER,
 	'3/28/2027': EASTER,
 	'4/16/2028': EASTER,
 	'4/1/2029': EASTER,
 
 	// spring
-	'3/20/2025': SPRING,
 	'3/20/2026': SPRING,
 	'3/20/2027': SPRING,
 	'3/20/2028': SPRING,
 
 	// summer
-	'6/21/2025': SUMMER,
 	'6/21/2026': SUMMER,
 	'6/21/2027': SUMMER,
 	'6/20/2028': SUMMER,
 
 	// fall
-	'9/22/2025': FALL,
 	'9/23/2026': FALL,
 	'9/23/2027': FALL,
 	'9/22/2028': FALL,
 
 	// winter
-	'12/21/2024': WINTER,
 	'12/21/2025': WINTER,
 	'12/21/2026': WINTER,
 	'12/22/2027': WINTER,

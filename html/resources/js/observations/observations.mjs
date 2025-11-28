@@ -135,21 +135,33 @@ const decodeClouds = (data) => data.reduce((sum, cur) => {
 }, 0) / data.length;
 
 const get = async (place) => {
+	let data = {};
 	// cancel previous request if present
 	get?.cancel?.();
 	// calculate 7 days of observations
 	const startDate = DateTime.local().minus({ days: 7 }).startOf('day').toISO({ suppressMilliseconds: true });
 	// get the observation history for the station
-	const url = `${apiUrl}stations/${place.station}/observations?start=${startDate}`;
-	try {
-		const fetchHandler = fetchWithRetry(url, 3);
-		get.cancel = fetchHandler.cancel;
-		const data = await fetchHandler.data;
+	let next = `${apiUrl}stations/${place.station}/observations?start=${startDate}`;
+	while (next) {
+		try {
+			const fetchHandler = fetchWithRetry(next, 3);
+			get.cancel = fetchHandler.cancel;
+			// eslint-disable-next-line no-await-in-loop
+			const pageData = await fetchHandler.data;
+			if (!data.features) {
+				// first pass
+				data = pageData;
+			} else {
+				data.features.push(...pageData.features);
+			}
+			next = pageData.pagination.next;
+		} catch (error) {
+			// see if the other data arrived
+			ProgressBar.set('Get observations failed!', true);
+			Forecast.formatData(false, 0);	// special "no data present case"
+			return;
+		}
 		Forecast.formatData(false, { data, station: place.station });
-	} catch (error) {
-		// see if the other data arrived
-		ProgressBar.set('Get observations failed!', true);
-		Forecast.formatData(false, 0);	// special "no data present case"
 	}
 };
 

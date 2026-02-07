@@ -118,7 +118,8 @@ const formatData = (fcst, allObs, reset) => {
 			updateCurrentTemperature(dataset);
 			// add the data to the plot
 			const currentDataset = plot.getData();
-			currentDataset.push(...dataset);
+			const obsRemoved = currentDataset.filter((d) => !d.isObs);
+			obsRemoved.push(...dataset);
 			// update minimums for scrolling
 			// get plot limits
 			const { endOfLast, oldestData } = plotLimits();
@@ -128,7 +129,7 @@ const formatData = (fcst, allObs, reset) => {
 			plot.getAxes().xaxis.options.panRange = [oldestData, endOfLast];
 
 			// redraw the plot
-			plot.setData(currentDataset);
+			plot.setData(obsRemoved);
 			plot.setupGrid(true);
 			plot.draw();
 

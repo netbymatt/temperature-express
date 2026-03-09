@@ -1,6 +1,7 @@
 import * as ProgressBar from '../progress.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
 import * as Forecast from '../forecast/forecast.mjs';
+import { AVAILABLE_NORMALS, getLineType, colorByLegend } from '../config.mjs';
 
 // normal high/low temperatures for the WFO
 const get = async (wfo) => {
@@ -31,12 +32,37 @@ const get = async (wfo) => {
 			method: 'POST',
 		});
 		const data = await response.json();
+		const formattedData = formatData(data.data);
+		Forecast.formatNormalTemperatures(formattedData);
 		ProgressBar.set('Normal temperatures received');
-		Forecast.formatNormalTemperatures(data);
 	} catch (e) {
 		ProgressBar.message('Get normal temperatures failed', true);
 	}
 };
+
+const formatData = (data) => {
+	const dataset = Object.entries(AVAILABLE_NORMALS).map(([, config], idx) => ({
+		data: makeTrend(data, idx),
+		label: config.displayName,
+		yaxis: config.yAxis,
+		lines: getLineType(config.lineType, config.displayName),
+		color: colorByLegend(config.displayName, false),
+		points: { show: false },
+		isNorm: true,
+		scale: config.scale,
+		lineType: config.lineType,
+	}));
+	return dataset;
+};
+
+const makeTrend = (data, selection) => data.map(([date, highString, lowString]) => {
+	// turn date into timestamp, shifted +12h for high temperature
+	const timestamp = Date.parse(date) + (selection === 0 ? 12 * 60 * 60 * 1000 : 0);
+	const value = parseInt(selection === 0 ? highString : lowString, 10);
+	return [timestamp, value];
+});
+
+export default get;
 
 export {
 	get,

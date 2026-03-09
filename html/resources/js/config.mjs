@@ -76,6 +76,8 @@ const LEGEND_COLORS = {
 	Barometer: 'rgb(192,192,192)',
 	'Lightning (1-5)': 'rgb(128,128,0)',
 	Rain: 'rgb(232, 198, 67)',
+	'Normal High': 'rgba(255,0,0,0.25)',
+	'Normal Low': 'rgba(0,128,255,0.5)',
 };
 
 // return a set color for each legend
@@ -173,6 +175,11 @@ const AVAILABLE_OBS = { // observations that will be extracted from resulting da
 	apparentTemperature: trendConfig('Feels Like', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
 };
 
+const AVAILABLE_NORMALS = {
+	high: trendConfig('Normal High', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
+	low: trendConfig('Normal Low', new ScaledNumber(0, -1000, 1000, SCALES.TEMPERATURE), '&deg;F', AXIS.TEMPERATURE, FILL.NO),
+};
+
 const AXIS_LIMITS = {
 	y3: {
 		// snow in inches
@@ -206,4 +213,5 @@ export {
 	AVAILABLE_OBS,
 	DAY_BG_COLORS,
 	AXIS_LIMITS,
+	AVAILABLE_NORMALS,
 };

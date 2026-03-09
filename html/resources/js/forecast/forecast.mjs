@@ -40,7 +40,7 @@ const init = () => {
 
 // format data, private
 // formats the data into proper pairs and timestamps
-const formatData = (fcst, allObs, reset) => {
+const formatData = (fcst, allObs, reset, normals) => {
 	// recalculate time zone if provided
 	const { timeZone } = getSavedLocation();
 	if (timeZone) {
@@ -58,6 +58,7 @@ const formatData = (fcst, allObs, reset) => {
 		clearTimeout(obsTimeoutHandle);
 		obsTimeoutHandle = null;
 		formatData.obs = undefined;
+		formatData.normal = undefined;
 		Tooltip.generateTextForecastData();
 	}
 
@@ -69,6 +70,10 @@ const formatData = (fcst, allObs, reset) => {
 
 		// prepare and plot the data
 		const dataset = DataForecast(fcst, metaData, getOptions());
+		if (formatData.normal) {
+			dataset.push(...formatData.normal);
+			formatData.normal = undefined;
+		}
 		plotData(dataset);
 
 		saveOptions('visible', readVisibility());
@@ -81,6 +86,8 @@ const formatData = (fcst, allObs, reset) => {
 
 		// test for previously stored observations and plot it
 		if (formatData.obs) formatData(false, formatData.obs);
+		// test for previously stored normals and plot it
+		if (formatData.normals) formatData(false, false, false, formatData.normals);
 		formatData.fcst = fcst;
 	} // forecast data provided
 
@@ -93,7 +100,7 @@ const formatData = (fcst, allObs, reset) => {
 		// intentional 2 second delay to allow forecast to load first
 		// this creates a much nicer loading fade in
 		if (!plot && !obsTimeoutHandle) {
-			obsTimeoutHandle = setTimeout(() => formatData(fcst, allObs, reset), 2000);
+			obsTimeoutHandle = setTimeout(() => formatData(fcst, allObs, reset, false), 2000);
 			return;
 		}
 		// update progress bar
@@ -128,6 +135,11 @@ const formatData = (fcst, allObs, reset) => {
 			plot.getAxes().xaxis.options.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData];
 			plot.getAxes().xaxis.options.panRange = [oldestData, endOfLast];
 
+			if (formatData.normal) {
+				obsRemoved.push(...formatData.normal);
+				formatData.normal = undefined;
+			}
+
 			// redraw the plot
 			plot.setData(obsRemoved);
 			plot.setupGrid(true);
@@ -137,6 +149,10 @@ const formatData = (fcst, allObs, reset) => {
 			Tooltip.generateTextForecastData(allObs.data.features, true);
 		} // obs != 0 (no data provided)
 	} // observation data provided
+
+	if (normals) {
+		formatData.normal = normals;
+	}
 };
 
 // calculate plotting limits
@@ -333,13 +349,8 @@ const updateCurrentTemperature = (dataset) => {
 };
 
 // store and format the normal temperatures received
-const formatNormalTemperatures = () => {
-	const { timeZone } = getSavedLocation();
-	if (timeZone) {
-		const placeTime = (DateTime.now().setZone(timeZone).startOf('day'));
-		const userTime = (DateTime.now().startOf('day'));
-		convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60_000 - (userTime - placeTime); // time zone offset in milliseconds
-	}
+const formatNormalTemperatures = (normals) => {
+	formatData(false, false, false, normals);
 };
 
 const getPlotData = () => plot?.getData?.();

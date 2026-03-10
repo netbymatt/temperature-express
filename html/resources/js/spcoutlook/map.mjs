@@ -54,7 +54,7 @@ const changeMapDay = (e) => {
 };
 
 const spcImageLink = (day) => {
-	if (day <= 3) return `https://www.spc.noaa.gov/products/outlook/day${day}otlk.gif`;
+	if (day <= 3) return `https://www.spc.noaa.gov/products/outlook/day${day}otlk.png`;
 	return `https://www.spc.noaa.gov/products/exper/day4-8/day${day}prob.gif`;
 };
 

@@ -1,4 +1,4 @@
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 
 // tick size, private
 // returns the size of the tick in milliseconds

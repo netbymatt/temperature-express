@@ -1,4 +1,4 @@
-import { DateTime } from '../vendor/luxon.mjs';
+import { DateTime } from '../vendor/auto/luxon.mjs';
 import * as Menu from './menu.mjs';
 import * as Tooltip from './tooltip.mjs';
 import { getPlotData } from './forecast/forecast.mjs';

@@ -1,5 +1,5 @@
 import * as ProgressBar from '../progress.mjs';
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import { convertTimestamp, chartVisibility, inchAxes } from '../utils.mjs';
 import { getOptions, saveOptions } from '../options.mjs';
 import * as Menu from '../menu.mjs';

@@ -1,4 +1,4 @@
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import { convertTimestamp } from '../utils.mjs';
 
 // calculate plotting limits

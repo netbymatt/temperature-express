@@ -1,4 +1,4 @@
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import {
 	AVAILABLE_TRENDS, getLineType, colorByLegend, OLD_FORECAST_LIMIT,
 } from '../config.mjs';

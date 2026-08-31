@@ -32,14 +32,23 @@
 	"homepage": "https://temperature.express/",
 	"dependencies": {
 		"@eslint/config-helpers": "^0.7.0",
+		"@kevinburke/flot": "^5.1.4",
 		"ejs": "^6.0.1",
 		"express": "^5.1.0",
-		"globals": "^17.11.0"
+		"globals": "^17.11.0",
+		"gulp": "^5.0.1",
+		"gulp-rename": "^2.1.0",
+		"luxon": "^3.7.2",
+		"suncalc": "^2.0.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.5",
 		"eslint": "^9.39.5",
 		"eslint-config-airbnb-extended": "^3.1.1",
 		"sass": "^1.53.0"
+	},
+	"allowScripts": {
+		"@parcel/watcher@2.6.0": true,
+		"unrs-resolver@1.12.2": true
 	}
 }

@@ -3,6 +3,7 @@ import bgMarkingsGenerator from './bgmarkings.mjs';
 import { dark } from '../utils.mjs';
 import { getOptions } from '../options.mjs';
 import plotDays from './plotDays.mjs';
+import { plot } from '../../vendor/auto/flot.mjs';
 
 const plotForecast = (dataset, metaData, plotLimits, inchAxes) => {
 	const { beginningOfFirst, endOfLast, oldestData } = plotLimits;
@@ -22,8 +23,7 @@ const plotForecast = (dataset, metaData, plotLimits, inchAxes) => {
 
 	const bgMarkings = bgMarkingsGenerator(metaData);
 
-	// eslint-disable-next-line no-undef
-	return $.plot(
+	return plot(
 		'#chart',
 		dataset,
 

@@ -1,4 +1,4 @@
-import { DateTime, Duration } from '../vendor/luxon.mjs';
+import { DateTime, Duration } from '../vendor/auto/luxon.mjs';
 import { getSavedLocation } from './placemanager.mjs';
 import * as Menu from './menu.mjs';
 import { DIALOG_SUN } from './config.mjs';

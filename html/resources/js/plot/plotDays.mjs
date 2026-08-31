@@ -1,5 +1,5 @@
 import HolidayIcon from './holidays.mjs';
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 
 // plot days, private
 // plot days in the chart for easier readability

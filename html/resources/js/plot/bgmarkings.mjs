@@ -1,9 +1,8 @@
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import { AVAILABLE_TRENDS, DAY_BG_COLORS } from '../config.mjs';
 import { dark, convertTimestamp } from '../utils.mjs';
 import { getSavedLocation } from '../placemanager.mjs';
-
-/* global SunCalc */
+import SunCalc from '../../vendor/auto/suncalc.mjs';
 
 // dark vertical line at day boundaries
 const dayBoundaries = (startDays, axes, lineWidth) => {

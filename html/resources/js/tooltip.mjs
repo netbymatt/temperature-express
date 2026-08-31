@@ -1,7 +1,5 @@
 import { getDuration, convertTimestamp } from './utils.mjs';
-import { DateTime } from '../vendor/luxon.mjs';
-
-/* global $ */
+import { DateTime } from '../vendor/auto/luxon.mjs';
 
 const hideTextForecast = () => {
 	document.querySelector('#weather-text').classList.remove('show');
@@ -25,7 +23,8 @@ const fillTextForecast = (timestamp) => {
 	return true;
 };
 
-const handler = (event, pos, item) => {
+const handler = (event) => {
+	const [, item] = event.detail;
 	// memoize tooltip
 	if (!handler.elem) {
 		handler.elem = document.querySelector('#tooltip');
@@ -123,9 +122,9 @@ const generateTextForecastData = (data, isObservations) => {
 
 document.addEventListener('DOMContentLoaded', () => {
 	// set up tooltip
-	$('#chart').on('plothover', handler);
-	$('#chart').on('plotpan', handler);
-	$('#chart').on('plotzoom', handler);
+	document.addEventListener('plothover', handler);
+	document.addEventListener('plotpan', handler);
+	document.addEventListener('plotzoom', handler);
 });
 
 export {

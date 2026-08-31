@@ -1,5 +1,5 @@
 import { CHART_CONTAINER_SELECTOR, SCALES, AXIS_LIMITS } from './config.mjs';
-import { Duration } from '../vendor/luxon.mjs';
+import { Duration } from '../vendor/auto/luxon.mjs';
 import * as ProgressBar from './progress.mjs';
 import ScaledNumber from '../vendor/scalednumber.mjs';
 

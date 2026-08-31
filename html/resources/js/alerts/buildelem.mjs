@@ -1,4 +1,4 @@
-import { DateTime, Duration } from '../../vendor/luxon.mjs';
+import { DateTime, Duration } from '../../vendor/auto/luxon.mjs';
 
 // crude formatting of description
 const formatDescription = (text) => text?.replace('* ', '') ?? '';	// remove the *(space)

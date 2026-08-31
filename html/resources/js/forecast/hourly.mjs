@@ -1,5 +1,5 @@
 import * as ProgressBar from '../progress.mjs';
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import * as Forecast from './forecast.mjs';
 import { fetchWithRetry, backoff, forEachElem } from '../utils.mjs';
 import { OLD_FORECAST_LIMIT } from '../config.mjs';

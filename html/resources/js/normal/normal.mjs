@@ -1,5 +1,5 @@
 import * as ProgressBar from '../progress.mjs';
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import * as Forecast from '../forecast/forecast.mjs';
 import { AVAILABLE_NORMALS, getLineType, colorByLegend } from '../config.mjs';
 

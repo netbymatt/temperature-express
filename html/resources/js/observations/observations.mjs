@@ -1,4 +1,4 @@
-import { DateTime } from '../../vendor/luxon.mjs';
+import { DateTime } from '../../vendor/auto/luxon.mjs';
 import * as ProgressBar from '../progress.mjs';
 import { fetchWithRetry, apiUrl } from '../utils.mjs';
 import { getOptions, saveOptions } from '../options.mjs';

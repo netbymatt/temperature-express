@@ -12,10 +12,16 @@ const buildFullTable = (data) => {
 	// table header
 	let tableHeader = '<tr><td>Timestamp</td>';
 
+	// minimum data length is from the temperature series and defaults to data[0]'s length
+	const minDataLength = data.reduce((prev, cur) => {
+		if (cur.label === 'Temperature' && cur.isObs === false) return cur.data.length;
+		return prev;
+	}, data[0].data.length); // default first data series
+
 	// loop through all legends
 	data.forEach((series) => {
 		// hide values that are not every hour by testing data length
-		if (series.lines.show && !series.isObs && series.data.length >= data[0].data.length) {
+		if (series.lines.show && !series.isObs && series.data.length >= minDataLength) {
 			tableHeader += `<td>${series.label}</td>`;
 		}
 	});
@@ -44,7 +50,7 @@ const buildFullTable = (data) => {
 		// loop through visible columns
 		const dataHtml = data.map((series) => {
 			// hide values that are not every hour by testing data length
-			if (series.lines.show && !series.isObs && series.data.length >= data[0].data.length) {
+			if (series.lines.show && !series.isObs && series.data.length >= minDataLength) {
 				if (i < series.data.length) {
 					// hide null values in string
 					return `<td>${series.data[i][1]?.toFixed?.(series.scale.currentPrecision) ?? ''}</td>`;

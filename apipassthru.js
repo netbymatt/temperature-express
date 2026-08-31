@@ -1,7 +1,7 @@
 // pass api calls through to weather.gov
 
 // https get
-const https = require('https');
+const https = require('node:https');
 
 // set default https options
 const options = {
@@ -24,6 +24,7 @@ module.exports = async (req, res) => {
 		getResponse.on('end', () => res.end());
 		getResponse.pipe(res);
 	}).on('error', (e) => {
+		// eslint-disable-next-line no-console
 		console.error(e);
 		res.status(404);
 	});

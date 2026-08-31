@@ -1,5 +1,7 @@
+import { CHART_CONTAINER_SELECTOR, SCALES, AXIS_LIMITS } from './config.mjs';
 import { Duration } from '../vendor/luxon.mjs';
 import * as ProgressBar from './progress.mjs';
+import ScaledNumber from '../vendor/scalednumber.mjs';
 
 // turn an ISO date and duration into start, end and duration
 const getDuration = (timeWithDuration) => {
@@ -15,16 +17,16 @@ const convertTimestamp = (timestamp) => timestamp - convertTimestamp.timeZoneOff
 
 const forEachElem = (selector, callback) => document.querySelectorAll(selector).forEach(callback);
 
-// watch for dark mode change
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-	readDarkMode();
-});
 let isDark;
-
 const readDarkMode = () => {
 	isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 };
 readDarkMode();
+
+// watch for dark mode change
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+	readDarkMode();
+});
 
 // set the apiUrl from either one provided on the web page or the default
 // eslint-disable-next-line no-undef
@@ -131,6 +133,57 @@ const showError = (title, heading, text) => {
 	setTimeout(() => document.querySelector('#dialog-failed').classList.add('show'), 1);
 };
 
+// chart visibility, public
+// show or hide the chart, with immediate option
+const chartVisibility = (show) => {
+	if (show) {
+		document.querySelector(CHART_CONTAINER_SELECTOR).classList.add('show');
+		document.querySelector('.chart-area-button-container').classList.add('show');
+		document.querySelector('#loading').classList.remove('show');
+	} else {
+		document.querySelector(CHART_CONTAINER_SELECTOR).classList.remove('show');
+		document.querySelector('.chart-area-button-container').classList.remove('show');
+		document.querySelector('#loading').classList.add('show');
+		forEachElem('#loading .centering>div', (elem) => elem.classList.remove('error'));
+	}
+};
+
+// get values for the y3 and y4 axes
+const inchAxes = (units) => {
+	const y3 = new ScaledNumber(0, 0, 1000, SCALES.INCHES);
+	const y4 = new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE);
+	const y5 = new ScaledNumber(0, 0, 1e7, SCALES.BAROMETER);
+	const y7 = new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE);
+
+	return {
+		y3: {
+			min: +y3.set(AXIS_LIMITS.y3.min, 1).setUnit(units),
+			max: +y3.set(AXIS_LIMITS.y3.max, 1).setUnit(units),
+		},
+		y4: {
+			min: +y4.set(AXIS_LIMITS.y4.min, 1).setUnit(units),
+			max: +y4.set(AXIS_LIMITS.y4.max, 1).setUnit(units),
+		},
+		y5: {
+			min: +y5.set(AXIS_LIMITS.y5.min, 1).setUnit(units),
+			max: +y5.set(AXIS_LIMITS.y5.max, 1).setUnit(units),
+		},
+		y7: {
+			min: +y7.set(AXIS_LIMITS.y7.min, 1).setUnit(units),
+			max: +y7.set(AXIS_LIMITS.y7.max, 1).setUnit(units),
+		},
+	};
+};
+
+const formatPlaceName = (address) => {
+	// no address is provided if lat/lon are used for coordinates
+	if (!address) return null;
+	const city = address?.city ?? address?.town ?? address?.village ?? address?.municipality ?? address?.hamlet ?? address.county ?? '';
+	const { state } = address;
+	if (!state) return city;
+	return `${city}, ${state}`;
+};
+
 export {
 	getDuration,
 	convertTimestamp,
@@ -142,4 +195,7 @@ export {
 	getFile,
 	formatDay,
 	showError,
+	chartVisibility,
+	inchAxes,
+	formatPlaceName,
 };

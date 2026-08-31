@@ -2,26 +2,17 @@ import * as ProgressBar from '../progress.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
 import * as Forecast from './forecast.mjs';
 import { fetchWithRetry, backoff, forEachElem } from '../utils.mjs';
+import { OLD_FORECAST_LIMIT } from '../config.mjs';
 
-// get an hourly forecast for a specified url
-const get = async (baseUrl) => {
-	// cancel previous request if present
-	get?.cancel?.();
-	getHourlyForecastRetry?.cancel?.();
-	try {
-		const fetchHandler = fetchWithRetry(baseUrl, 0, stillRetrying);
-		get.cancel = fetchHandler.cancel;
-		const data = await fetchHandler.data;
-		ProgressBar.set('Hourly forecast received');
-		// test for old data
-		if (!forecastIsFresh(data)) {
-			getHourlyForecastRetry(baseUrl);
-		}
-		// store the data
-		Forecast.formatData(data, false);
-	} catch (error) {
-		ProgressBar.message('Get hourly forecast failed', true);
-		stillRetrying(0, 2);
+const forecastIsFresh = (data) => {
+	const updateTime = DateTime.fromISO(data.properties.updateTime);
+	return Date.now() - updateTime <= OLD_FORECAST_LIMIT;
+};
+
+const stillRetrying = (e, iteration) => {
+	if (iteration === 2) {
+		ProgressBar.set('Get forecast failed', true);
+		forEachElem('#loading .centering>div', (elem) => elem.classList.add('error'));
 	}
 };
 
@@ -52,18 +43,26 @@ const getHourlyForecastRetry = async (url, count = 0) => {
 	getHourlyForecastRetry.cancel = () => clearTimeout(timeoutHandle);
 };
 
-const forecastIsFresh = (data) => {
-	const updateTime = DateTime.fromISO(data.properties.updateTime);
-	return Date.now() - updateTime <= Forecast.OLD_FORECAST_LIMIT;
-};
-
-const stillRetrying = (e, iteration) => {
-	if (iteration === 2) {
-		ProgressBar.set('Get forecast failed', true);
-		forEachElem('#loading .centering>div', (elem) => elem.classList.add('error'));
+// get an hourly forecast for a specified url
+const getHourly = async (baseUrl) => {
+	// cancel previous request if present
+	getHourly?.cancel?.();
+	getHourlyForecastRetry?.cancel?.();
+	try {
+		const fetchHandler = fetchWithRetry(baseUrl, 0, stillRetrying);
+		getHourly.cancel = fetchHandler.cancel;
+		const data = await fetchHandler.data;
+		ProgressBar.set('Hourly forecast received');
+		// test for old data
+		if (!forecastIsFresh(data)) {
+			getHourlyForecastRetry(baseUrl);
+		}
+		// store the data
+		Forecast.formatData(data, false);
+	} catch {
+		ProgressBar.message('Get hourly forecast failed', true);
+		stillRetrying(0, 2);
 	}
 };
 
-export {
-	get,
-};
+export default getHourly;

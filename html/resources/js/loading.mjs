@@ -3,20 +3,15 @@ import { forEachElem } from './utils.mjs';
 const LOADING_CURRENT_SELECTOR = '#loading-current';
 const LOADING_NEXT_SELECTOR = '#loading-next';
 
-document.addEventListener('DOMContentLoaded', () => {
-	// get the loading text
-	randomLoadingText.strings = [];
-	forEachElem('.hidden-placeholders .loading li', (elem) => randomLoadingText.strings.push(elem.innerText));
-
-	// put an initial string on the page
-	const startString = randomLoadingText();
-	document.querySelector(LOADING_CURRENT_SELECTOR).innerHTML = startString;
-	document.querySelector(LOADING_NEXT_SELECTOR).innerHTML = startString;
-
-	// animate the throbber and loading text
-	animateThrobber();
-	setTimeout(animateLoadingText, 1000);
-});
+// get a random loading text
+const randomLoadingText = (current) => {
+	let newText = '';
+	do {
+		const i = Math.floor(Math.random() * randomLoadingText.strings.length);
+		newText = `${randomLoadingText.strings[i]}...`;
+	} while (current === newText);
+	return newText;
+};
 
 // animate throbber, private
 // animates the throbber when it is visible
@@ -28,7 +23,9 @@ const animateThrobber = (_state = 0) => {
 	// skip animation if throbber is not visible
 	if (!document.querySelector('#loading').classList.contains('show')) {
 		// try again next time
-		setTimeout(() => { animateThrobber(state); }, 200);
+		setTimeout(() => {
+			animateThrobber(state);
+		}, 200);
 		return;
 	}
 
@@ -46,11 +43,12 @@ const animateThrobber = (_state = 0) => {
 
 // animate the loading text
 // animates the loading text when it is visible
-const animateLoadingText = () => {
+// step 0 = swap in new text, step 1 = slide the swapped text back to its resting position
+const animateLoadingText = (step = 0) => {
 	// skip animation if throbber is not visible
 	if (document.querySelector('#loading').classList.contains('hide')) {
 		// try again next time
-		setTimeout(animateLoadingText, 500);
+		setTimeout(() => animateLoadingText(0), 500);
 		return;
 	}
 
@@ -58,39 +56,41 @@ const animateLoadingText = () => {
 	const nextElem = document.querySelector(LOADING_NEXT_SELECTOR);
 	const currentElem = document.querySelector(LOADING_CURRENT_SELECTOR);
 
-	// get current text so there's no duplicates
-	const newText = randomLoadingText(nextElem.textContent);
+	if (step === 0) {
+		// get current text so there's no duplicates
+		const newText = randomLoadingText(nextElem.textContent);
 
-	// switch out the new text with the current
-	if (nextElem.textContent !== '') {
-		currentElem.textContent = nextElem.textContent;
+		// switch out the new text with the current
+		if (nextElem.textContent !== '') {
+			currentElem.textContent = nextElem.textContent;
+		}
+		// swap back to original positions
+		currentElem.classList.remove('second');
+		nextElem.classList.remove('second');
+		// put the new text into the "next" position
+		nextElem.textContent = newText;
+
+		setTimeout(() => animateLoadingText(1), 900);
+	} else {
+		// slide current text out and new text in
+		currentElem.classList.add('second');
+		nextElem.classList.add('second');
+
+		setTimeout(() => animateLoadingText(0), 900);
 	}
-	// swap back to original positions
-	currentElem.classList.remove('second');
-	nextElem.classList.remove('second');
-	// put the new text into the "next" position
-	nextElem.textContent = newText;
-
-	setTimeout(animateLoadingTextPart2, 900);
 };
 
-const animateLoadingTextPart2 = () => {
-	// get the elements
-	const nextElem = document.querySelector(LOADING_NEXT_SELECTOR);
-	const currentElem = document.querySelector(LOADING_CURRENT_SELECTOR);
-	// slide current text out and new text in
-	currentElem.classList.add('second');
-	nextElem.classList.add('second');
+document.addEventListener('DOMContentLoaded', () => {
+	// get the loading text
+	randomLoadingText.strings = [];
+	forEachElem('.hidden-placeholders .loading li', (elem) => randomLoadingText.strings.push(elem.innerText));
 
-	setTimeout(animateLoadingText, 900);
-};
+	// put an initial string on the page
+	const startString = randomLoadingText();
+	document.querySelector(LOADING_CURRENT_SELECTOR).innerHTML = startString;
+	document.querySelector(LOADING_NEXT_SELECTOR).innerHTML = startString;
 
-// get a random loading text
-const randomLoadingText = (current) => {
-	let newText = '';
-	do {
-		const i = Math.floor(Math.random() * randomLoadingText.strings.length);
-		newText = `${randomLoadingText.strings[i]}...`;
-	} while (current === newText);
-	return newText;
-};
+	// animate the throbber and loading text
+	animateThrobber();
+	setTimeout(animateLoadingText, 1000);
+});

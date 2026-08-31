@@ -1,5 +1,35 @@
 import { DateTime, Duration } from '../../vendor/luxon.mjs';
 
+// crude formatting of description
+const formatDescription = (text) => text?.replace('* ', '') ?? '';	// remove the *(space)
+// .replace(/(?<!^)\* /g, '<br/>')	// turn the *(space) into a newline, except at the very beginning of the string
+
+// setup formatting relative time formatting
+const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+// return a relative time
+const relative = (time) => {
+	// convert time to a duration of hours
+	const now = DateTime.utc();
+	const event = DateTime.fromISO(time);
+	const duration = Duration.fromMillis(event.toMillis() - now.toMillis());
+	const hours = duration.as('hour');
+	let unit = 'hour';
+	let asUnit = hours;
+	// determine units
+	if (Math.abs(hours) < 1.5) {
+		unit = 'minute';
+		asUnit = Math.round(hours * 60);
+	} else if (Math.abs(hours) > 18) {
+		unit = 'day';
+		asUnit = Math.round(hours / 24);
+	} else {
+		asUnit = Math.round(hours);
+	}
+
+	return `${rtf.format(asUnit, unit)}, ${event.toLocaleString(DateTime.DATETIME_SHORT)}`;
+};
+
 const buildElem = (alert) => {
 	const li = document.createElement('li');
 	if (!alert.isActive) li.classList.add('inactive');
@@ -41,35 +71,5 @@ const buildElem = (alert) => {
 
 	return li;
 };
-
-// crude formatting of description
-const formatDescription = (text) => text?.replace('* ', '') ?? '';	// remove the *(space)
-// .replace(/(?<!^)\* /g, '<br/>')	// turn the *(space) into a newline, except at the very beginning of the string
-
-// return a relative time
-const relative = (time) => {
-	// convert time to a duration of hours
-	const now = DateTime.utc();
-	const event = DateTime.fromISO(time);
-	const duration = Duration.fromMillis(event.toMillis() - now.toMillis());
-	const hours = duration.as('hour');
-	let unit = 'hour';
-	let asUnit = hours;
-	// determine units
-	if (Math.abs(hours) < 1.5) {
-		unit = 'minute';
-		asUnit = Math.round(hours * 60);
-	} else if (Math.abs(hours) > 18) {
-		unit = 'day';
-		asUnit = Math.round(hours / 24);
-	} else {
-		asUnit = Math.round(hours);
-	}
-
-	return `${rtf.format(asUnit, unit)}, ${event.toLocaleString(DateTime.DATETIME_SHORT)}`;
-};
-
-// setup formatting relative time formatting
-const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
 export default buildElem;

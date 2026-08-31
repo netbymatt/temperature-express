@@ -1,10 +1,64 @@
 import { DateTime } from '../../vendor/luxon.mjs';
 import {
-	AVAILABLE_TRENDS, getLineType, colorByLegend,
+	AVAILABLE_TRENDS, getLineType, colorByLegend, OLD_FORECAST_LIMIT,
 } from '../config.mjs';
 import { getDuration, convertTimestamp } from '../utils.mjs';
+import findWindDirection from './findWindDirection.mjs';
+import zeroAdjacentNulls from './zeroAdjacentNulls.mjs';
 
-const OLD_FORECAST_LIMIT = 6 * (60 * 60 * 1000); // 6 hours
+const setLastUpdate = (fcst) => {
+	const dateSpan = document.querySelector('#date span');
+	const updateTime = DateTime.fromISO(fcst.properties.updateTime);
+
+	dateSpan.innerHTML = updateTime.toLocaleString({
+		weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
+	});
+	// remove the loading indicator
+	dateSpan.parentNode.classList.remove('loading');
+
+	// if older than 3 hours alert user
+	if (Date.now() - updateTime > OLD_FORECAST_LIMIT) {
+		dateSpan.parentNode.classList.add('old');
+	} else {
+		dateSpan.parentNode.classList.remove('old');
+	}
+};
+
+// format forecast as a set of series data arrays
+const makeForecastTrend = (series, config, windDirections = []) => {
+	const startOfHour = DateTime.utc().startOf('hour').toMillis();
+	const dataWithNulls = series.flatMap((item) => {
+		const duration = getDuration(item.validTime);
+
+		// loop through duration at one hour intervals
+		const eachHour = [];
+
+		// calculate the value to add
+		const value = config.valueFunction
+			? [config.valueFunction(+config.scale.set(item.value, 0))]
+			: [+config.scale.set(item.value, 0)];
+
+		// add wind direction if necessary
+		if (config.displayName === 'Wind Speed') {
+			value.push(findWindDirection(duration.startTime, windDirections));
+		}
+		// add this value for each hour
+		do {
+			// test for timestamp greater than now
+			if (duration.startTime >= startOfHour) {
+				eachHour.push([convertTimestamp(duration.startTime), ...value]);
+			}
+			// increment start time by 1 hour
+			duration.startTime += 3_600_000;
+		} while (duration.startTime < duration.endTime);
+		return eachHour;
+	});
+
+	// some data requires extra processing
+	if (!config.valueFunction) return dataWithNulls;
+
+	return zeroAdjacentNulls(dataWithNulls);
+};
 
 // prepare the forecast data
 const prepForecastData = (fcst, metaData, options) => {
@@ -80,91 +134,4 @@ const prepForecastData = (fcst, metaData, options) => {
 	return dataset;
 };
 
-// format forecast as a set of series data arrays
-const makeForecastTrend = (series, config, windDirections = []) => {
-	const startOfHour = DateTime.utc().startOf('hour').toMillis();
-	const dataWithNulls = series.flatMap((item) => {
-		const duration = getDuration(item.validTime);
-
-		// loop through duration at one hour intervals
-		const eachHour = [];
-
-		// calculate the value to add
-		const value = config.valueFunction
-			? [config.valueFunction(+config.scale.set(item.value, 0))]
-			: [+config.scale.set(item.value, 0)];
-
-		// add wind direction if necessary
-		if (config.displayName === 'Wind Speed') {
-			value.push(findWindDirection(duration.startTime, windDirections));
-		}
-		// add this value for each hour
-		do {
-			// test for timestamp greater than now
-			if (duration.startTime >= startOfHour) {
-				eachHour.push([convertTimestamp(duration.startTime), ...value]);
-			}
-			// increment start time by 1 hour
-			duration.startTime += 3_600_000;
-		} while (duration.startTime < duration.endTime);
-		return eachHour;
-	});
-
-	// some data requires extra processing
-	if (!config.valueFunction) return dataWithNulls;
-
-	return zeroAdjacentNulls(dataWithNulls);
-};
-
-// scan forwards and backwards through the array and replace a null that is adjacent
-// modify data in place
-const zeroAdjacentNulls = (data) => {
-	const newData = [];
-	const lastIndex = data.length - 1;
-	for (let i = 0; i <= lastIndex; i += 1) {
-		// copy only if not already touched
-		if (!newData[i]) newData[i] = [data[i][0], data[i][1]];
-
-		// forwards
-		const next = data?.[i + 1]?.[1];
-		if (data[i][1] === null && next !== null && next !== undefined) newData[i][1] = 0;
-
-		// backwards
-		const prev = data?.[lastIndex - i - 1]?.[1];
-		if (data[lastIndex - i][1] === null && prev !== null && prev !== undefined) newData[lastIndex - i] = [data[lastIndex - i][0], 0];
-	}
-	return newData;
-};
-
-// find wind direction, private
-// finds wind direction in array of timestamp/wind directions pairs
-const findWindDirection = (timestamp, windDirections = []) => {
-	let direction = 0; // default case
-	for (let i = 0; i < windDirections.length; i += 1) {
-		// exit loop if we've gone past the provided timestamp
-		if (windDirections[i][0] > timestamp) break;
-		[, direction] = windDirections[i];
-	}
-	return direction;
-};
-
-const setLastUpdate = (fcst) => {
-	const dateSpan = document.querySelector('#date span');
-	const updateTime = DateTime.fromISO(fcst.properties.updateTime);
-
-	dateSpan.innerHTML = updateTime.toLocaleString({
-		weekday: 'short', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
-	});
-	// remove the loading indicator
-	dateSpan.parentNode.classList.remove('loading');
-
-	// if older than 3 hours alert user
-	if (Date.now() - updateTime > OLD_FORECAST_LIMIT) {
-		dateSpan.parentNode.classList.add('old');
-	} else {
-		dateSpan.parentNode.classList.remove('old');
-	}
-};
-
 export default prepForecastData;
-export { OLD_FORECAST_LIMIT };

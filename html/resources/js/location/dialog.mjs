@@ -3,30 +3,31 @@ import {
 	getSavedLocation, DEFAULT_PLACE, saveLocation,
 } from '../placemanager.mjs';
 import * as ProgressBar from '../progress.mjs';
-import { fetchWithRetry, forEachElem, apiUrl } from '../utils.mjs';
 import * as Table from '../table.mjs';
 import * as Tooltip from '../tooltip.mjs';
-import * as Alerts from '../alerts.mjs';
-import * as Forecast from '../forecast/forecast.mjs';
+import * as Alerts from '../alerts/index.mjs';
+import directStationLookup from './directStationLookup.mjs';
+import geoCodeLocation from './geocodeLocation.mjs';
+import { chartVisibility } from '../utils.mjs';
 
 let latLonReceivedCallback;
 let positionReceivedCallback;
 
 const LOCATION_SEARCH_SELECTOR = '#dialog-location';
 
-// init is called by parent module to provide latLonReceived
-const init = (latLonReceived, positionReceived) => {
-	// dialog interactions
-	document.querySelector(LOCATION_SEARCH_SELECTOR).addEventListener('keypress', locationSearchStart);
-	document.querySelector('#dialog-location.dialog .close').addEventListener('click', hide);
-	document.querySelector('#followMe').parentNode.addEventListener('click', followMeToggle);
-	// menu interactions
-	Menu.registerClickHandler('menu-location-dialog', promptUser);
-	Menu.registerClickHandler('menu-location-use-gps', setFollowMe);
-	Menu.registerCloseAll(hide);
-	// callbacks
-	latLonReceivedCallback = latLonReceived;
-	positionReceivedCallback = positionReceived;
+const hide = () => {
+	document.querySelector(LOCATION_SEARCH_SELECTOR).classList.remove('show');
+};
+
+const setCheckbox = (state) => {
+	const checkbox = document.querySelector('#followMe');
+	if (state) {
+		checkbox.classList.add('fa-check-square');
+		checkbox.classList.remove('fa-square');
+		return;
+	}
+	checkbox.classList.add('fa-square');
+	checkbox.classList.remove('fa-check-square');
 };
 
 // prompt user, public
@@ -44,22 +45,11 @@ const promptUser = () => {
 	setTimeout(() => {
 		document.querySelector(LOCATION_SEARCH_SELECTOR).classList.add('show');
 		setTimeout(() => {
-			const textBox = document.querySelector(LOCATION_SEARCH_SELECTOR);
+			const textBox = document.querySelector(`${LOCATION_SEARCH_SELECTOR} input`);
 			textBox.focus();
 			textBox.select();
 		}, 100);
 	}, 1);
-};
-
-const setCheckbox = (state) => {
-	const checkbox = document.querySelector('#followMe');
-	if (state) {
-		checkbox.classList.add('fa-check-square');
-		checkbox.classList.remove('fa-square');
-		return;
-	}
-	checkbox.classList.add('fa-square');
-	checkbox.classList.remove('fa-check-square');
 };
 
 const locationSearchStart = async (e) => {
@@ -80,7 +70,7 @@ const locationSearchStart = async (e) => {
 
 	// hide the chart while updating
 	Table.toggleTable(false);
-	Forecast.chartVisibility(0);
+	chartVisibility(0);
 	Tooltip.handler(false);
 	Alerts.updateButtonState(true);
 
@@ -108,67 +98,7 @@ const locationSearchStart = async (e) => {
 
 	const queryString = new URLSearchParams(data);
 
-	geoCodeLocation(`${url}?${queryString}`, place);
-};
-
-// one time direct station lookup, no retries for speed
-const directStationLookup = async (stationId) => {
-	try {
-		// try to get the result
-		const stationResponse = await fetch(`${apiUrl}stations/${stationId}`);
-		if (!stationResponse.ok) {
-			ProgressBar.message(`Station lookup failed ${stationId}: Network error`);
-			return false;
-		}
-
-		// get the entire response
-		const station = await stationResponse.json();
-
-		// test for nws internal 404
-		if (station?.status !== undefined) {
-			ProgressBar.message(`Station lookup failed ${stationId}: ${station.status}`);
-			return false;
-		}
-
-		// format for the correct response type
-		return [
-			{
-				lat: station.geometry.coordinates[1],
-				lon: station.geometry.coordinates[0],
-			},
-		];
-	} catch (error) {
-		ProgressBar.message(`Station lookup error: ${error.message}`);
-		return false;
-	}
-};
-
-const geoCodeLocation = async (url, place) => {
-	// cancel previous request if present
-	geoCodeLocation?.cancel?.();
-	// look up data
-	try {
-		const fetchHandler = fetchWithRetry(url, 2, stillRetrying);
-		geoCodeLocation.cancel = fetchHandler.cancel;
-		const data = await fetchHandler.data;
-		ProgressBar.set('Geocoding complete');
-		latLonReceivedCallback(data, place);
-	} catch (error) {
-		ProgressBar.set('Unable to geocode', true);
-		ProgressBar.message(error, true);
-		stillRetrying(0, 2);
-	}
-};
-
-const stillRetrying = (e, iteration) => {
-	if (iteration === 2) {
-		ProgressBar.set('Location lookup failed', true);
-		forEachElem('#loading .centering>div', (elem) => elem.classList.add('error'));
-	}
-};
-
-const hide = () => {
-	document.querySelector(LOCATION_SEARCH_SELECTOR).classList.remove('show');
+	geoCodeLocation(`${url}?${queryString}`, place, latLonReceivedCallback);
 };
 
 const mustEnterPlaceName = () => {
@@ -192,11 +122,13 @@ const followMeToggle = () => {
 		savedPlace.textSearch = null;
 		// hide the chart while updating
 		Table.toggleTable(false);
-		Forecast.chartVisibility(0);
+		chartVisibility(0);
 		Tooltip.handler(false);
 		document.querySelector('#location').innerHTML = 'Loading location...';
 		// start lookup, save of place occurs at end of successful lookup
-		navigator.geolocation.getCurrentPosition((position) => { positionReceivedCallback(position, savedPlace); });
+		navigator.geolocation.getCurrentPosition((position) => {
+			positionReceivedCallback(position, savedPlace);
+		});
 		ProgressBar.reset('GPS');
 		// close the dialog
 		hide();
@@ -211,6 +143,21 @@ const setFollowMe = () => {
 	// hide the menu and trigger the gps function
 	hide();
 	followMeToggle();
+};
+
+// init is called by parent module to provide latLonReceived
+const init = (latLonReceived, positionReceived) => {
+	// dialog interactions
+	document.querySelector(LOCATION_SEARCH_SELECTOR).addEventListener('keypress', locationSearchStart);
+	document.querySelector('#dialog-location.dialog .close').addEventListener('click', hide);
+	document.querySelector('#followMe').parentNode.addEventListener('click', followMeToggle);
+	// menu interactions
+	Menu.registerClickHandler('menu-location-dialog', promptUser);
+	Menu.registerClickHandler('menu-location-use-gps', setFollowMe);
+	Menu.registerCloseAll(hide);
+	// callbacks
+	latLonReceivedCallback = latLonReceived;
+	positionReceivedCallback = positionReceived;
 };
 
 export {

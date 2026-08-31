@@ -3,17 +3,9 @@ import { forEachElem } from './utils.mjs';
 import { saveOptions } from './options.mjs';
 import * as Menu from './menu.mjs';
 import * as Forecast from './forecast/forecast.mjs';
+import readVisibility from './forecast/readVisibility.mjs';
 
 const DIALOG_SELECTOR = '#dialog-legend';
-
-document.addEventListener('DOMContentLoaded', () => {
-	// dialog close buttons
-	document.querySelector('#dialog-legend.dialog .close').addEventListener('click', hide);
-	document.querySelector('#dialog-legend .touch-button').addEventListener('click', legendUpdate);
-
-	Menu.registerClickHandler('menu-legend', menuClick);
-	Menu.registerCloseAll(hide);
-});
 
 // legend click, private
 // opens the legend editor dialog
@@ -37,7 +29,7 @@ const menuClick = () => {
 	dialogContent.innerHTML = '';
 
 	// get checkbox visibility
-	const visible = Forecast.readVisibility(true);
+	const visible = readVisibility(true, Forecast.getPlotData());
 
 	// build the checkboxes
 	const checkboxes = Object.entries(combined).map(([key, val], i) => {
@@ -106,7 +98,16 @@ const legendUpdate = () => {
 	Forecast.getInfo('setData')(dataset);
 	Forecast.getInfo('draw')();
 	// store the new options
-	saveOptions('visible', Forecast.readVisibility(true));
+	saveOptions('visible', readVisibility(true));
 	// close the dialog
 	hide();
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+	// dialog close buttons
+	document.querySelector('#dialog-legend.dialog .close').addEventListener('click', hide);
+	document.querySelector('#dialog-legend .touch-button').addEventListener('click', legendUpdate);
+
+	Menu.registerClickHandler('menu-legend', menuClick);
+	Menu.registerCloseAll(hide);
+});

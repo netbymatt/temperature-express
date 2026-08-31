@@ -1,7 +1,7 @@
 // launch express to serve files
 const express = require('express');
-const path = require('path');
-const apiPassthru = require('./apipassthru');
+const path = require('node:path');
+const apiPassthru = require('./apipassthru.js');
 
 const PORT = 3000;
 

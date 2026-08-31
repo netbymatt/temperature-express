@@ -1,14 +1,12 @@
 import { formatDay } from '../utils.mjs';
 
-document.addEventListener('DOMContentLoaded', () => init());
-
-const init = () => {
-	document.querySelector('#dialog-outlook-map.dialog .close').addEventListener('click', hide);
-	document.querySelector('#dialog-outlook-map-navigation').addEventListener('click', changeMapDay);
-};
-
 const hide = () => {
 	document.querySelector('#dialog-outlook-map').classList.remove('show');
+};
+
+const spcImageLink = (day) => {
+	if (day <= 3) return `https://www.spc.noaa.gov/products/outlook/day${day}otlk.png`;
+	return `https://www.spc.noaa.gov/products/exper/day4-8/day${day}prob.gif`;
 };
 
 // day is zero based
@@ -53,10 +51,12 @@ const changeMapDay = (e) => {
 	show(newDay);
 };
 
-const spcImageLink = (day) => {
-	if (day <= 3) return `https://www.spc.noaa.gov/products/outlook/day${day}otlk.png`;
-	return `https://www.spc.noaa.gov/products/exper/day4-8/day${day}prob.gif`;
+const init = () => {
+	document.querySelector('#dialog-outlook-map.dialog .close').addEventListener('click', hide);
+	document.querySelector('#dialog-outlook-map-navigation').addEventListener('click', changeMapDay);
 };
+
+document.addEventListener('DOMContentLoaded', () => init());
 
 export {
 	hide,

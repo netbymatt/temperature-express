@@ -1,12 +1,30 @@
 import { getDuration, convertTimestamp } from './utils.mjs';
 import { DateTime } from '../vendor/luxon.mjs';
 
-document.addEventListener('DOMContentLoaded', () => {
-	// set up tooltip
-	$('#chart').on('plothover', handler);
-	$('#chart').on('plotpan', handler);
-	$('#chart').on('plotzoom', handler);
-});
+/* global $ */
+
+const hideTextForecast = () => {
+	document.querySelector('#weather-text').classList.remove('show');
+};
+
+const fillTextForecast = (timestamp) => {
+	const elem = document.querySelector('#weather-text');
+
+	if (!timestamp || !fillTextForecast.data) return hideTextForecast();
+
+	const matchingPeriod = fillTextForecast.data.find((period) => period.startTime <= timestamp && period.endTime >= timestamp);
+	if (!matchingPeriod) return hideTextForecast();
+
+	const strings = matchingPeriod.value.map((f) => `${f.coverage ?? ''} ${f.intensity ?? ''} ${f.weather ?? ''}`.replaceAll('_', ' '));
+
+	const filteredStrings = strings.filter((s) => s.length > 2);
+	if (filteredStrings.length === 0) return hideTextForecast();
+
+	elem.innerHTML = `${filteredStrings.join(', ')}`;
+	elem.classList.add('show');
+	return true;
+};
+
 const handler = (event, pos, item) => {
 	// memoize tooltip
 	if (!handler.elem) {
@@ -62,28 +80,6 @@ const handler = (event, pos, item) => {
 	}
 };
 
-const fillTextForecast = (timestamp) => {
-	const elem = document.querySelector('#weather-text');
-
-	if (!timestamp || !fillTextForecast.data) return hideTextForecast();
-
-	const matchingPeriod = fillTextForecast.data.find((period) => period.startTime <= timestamp && period.endTime >= timestamp);
-	if (!matchingPeriod) return hideTextForecast();
-
-	const strings = matchingPeriod.value.map((f) => `${f.coverage ?? ''} ${f.intensity ?? ''} ${f.weather ?? ''}`.replaceAll('_', ' '));
-
-	const filteredStrings = strings.filter((s) => s.length > 2);
-	if (filteredStrings.length === 0) return hideTextForecast();
-
-	elem.innerHTML = `${filteredStrings.join(', ')}`;
-	elem.classList.add('show');
-	return true;
-};
-
-const hideTextForecast = () => {
-	document.querySelector('#weather-text').classList.remove('show');
-};
-
 const generateTextForecastData = (data, isObservations) => {
 	if (!data) {
 		fillTextForecast.data = undefined;
@@ -124,6 +120,13 @@ const generateTextForecastData = (data, isObservations) => {
 		};
 	}));
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+	// set up tooltip
+	$('#chart').on('plothover', handler);
+	$('#chart').on('plotpan', handler);
+	$('#chart').on('plotzoom', handler);
+});
 
 export {
 	handler,

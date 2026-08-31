@@ -1,6 +1,14 @@
 import { getOptions } from './options.mjs';
 import ScaledNumber from '../vendor/scalednumber.mjs';
 
+// constants
+const CHART_CONTAINER_SELECTOR = '#chart-container';
+const OLD_FORECAST_LIMIT = 6 * (60 * 60 * 1000); // 6 hours
+const TABLE_SELECTOR = '#table table';
+const DIALOG_OUTLOOK_SELECTOR = '#dialog-outlook';
+const MENU_UNITS_SELECTOR = '#menu-units span';
+const DIALOG_SUN = '#dialog-sun';
+
 // returns an object representing how to plot each trend
 const trendConfig = (displayName, scale, units, yAxis, lineType, valueFunction) => {
 	const obj = {
@@ -8,7 +16,7 @@ const trendConfig = (displayName, scale, units, yAxis, lineType, valueFunction) 
 		scale,
 		units,
 		yAxis,	// 0=temperature, 1=percent, 2=inches (precipitation)
-		lineType, 	// 0=no fill, 1=fill to zero, 2=points only
+		lineType, // 0=no fill, 1=fill to zero, 2=points only
 		valueFunction,
 	};
 	// set default display units
@@ -214,4 +222,10 @@ export {
 	DAY_BG_COLORS,
 	AXIS_LIMITS,
 	AVAILABLE_NORMALS,
+	CHART_CONTAINER_SELECTOR,
+	OLD_FORECAST_LIMIT,
+	TABLE_SELECTOR,
+	DIALOG_OUTLOOK_SELECTOR,
+	MENU_UNITS_SELECTOR,
+	DIALOG_SUN,
 };

@@ -1,19 +1,19 @@
 import * as ProgressBar from '../progress.mjs';
 import { DateTime } from '../../vendor/luxon.mjs';
-import { forEachElem, convertTimestamp } from '../utils.mjs';
+import { convertTimestamp, chartVisibility, inchAxes } from '../utils.mjs';
 import { getOptions, saveOptions } from '../options.mjs';
 import * as Menu from '../menu.mjs';
 import * as Tooltip from '../tooltip.mjs';
-import DataForecast, { OLD_FORECAST_LIMIT } from './utils.mjs';
-import DataObs from '../observations/observations.mjs';
+import prepForecastData from './utils.mjs';
+import prepObsData from '../observations/utils.mjs';
 import { getSavedLocation } from '../placemanager.mjs';
 import plotForecast from '../plot/plot.mjs';
-import { SCALES, AXIS_LIMITS } from '../config.mjs';
-import ScaledNumber from '../../vendor/scalednumber.mjs';
+import plotLimits from './plotLimits.mjs';
 
-const CHART_CONTAINER_SELECTOR = '#chart-container';
+import readVisibility from './readVisibility.mjs';
+import updateCurrentTemperature from './updateCurrentTemperature.mjs';
 
-const metaData = {			// metadata
+const metaData = { // metadata
 	minTimestamp: null,
 	maxTimestamp: null,
 	oldestData: null,
@@ -23,19 +23,14 @@ const metaData = {			// metadata
 let plot = null; // the plot object once loaded
 let obsTimeoutHandle = null;
 
-// init
-document.addEventListener('DOMContentLoaded', () => init());
+// plot data, public
+const plotData = (dataset) => {
+	// get plot limits
 
-const init = () => {
-	// get timezone for conversion
-	convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60_000; // time zone offset in milliseconds
+	plot = plotForecast(dataset, metaData, plotLimits(metaData), inchAxes); // plot function
 
-	// catch window resize and update plot
-	window.addEventListener('resize', windowResize);
-	// and call it now to do the initial resize
-	windowResize();
-
-	Menu.registerClickHandler('menu-units', toggleUnits);
+	// show the chart
+	chartVisibility(true);
 };
 
 // format data, private
@@ -69,14 +64,14 @@ const formatData = (fcst, allObs, reset, normals) => {
 		metaData.forecastTimestamp = fcst.properties.updateTime;
 
 		// prepare and plot the data
-		const dataset = DataForecast(fcst, metaData, getOptions());
+		const dataset = prepForecastData(fcst, metaData, getOptions());
 		if (formatData.normal) {
 			dataset.push(...formatData.normal);
 			formatData.normal = undefined;
 		}
 		plotData(dataset);
 
-		saveOptions('visible', readVisibility());
+		saveOptions('visible', readVisibility(false, plot.getData()));
 
 		// save text forecast data
 		Tooltip.generateTextForecastData(fcst?.properties?.weather?.values);
@@ -114,13 +109,13 @@ const formatData = (fcst, allObs, reset, normals) => {
 				minTimestamp: DateTime.now().startOf('day'),
 				maxTimestamp: DateTime.now().plus({ days: 7 }).endOf('day'),
 			};
-			plot = plotForecast([], emptyMetaData, plotLimits(), inchAxes);
+			plot = plotForecast([], emptyMetaData, plotLimits(metaData), inchAxes);
 			chartVisibility(true);
 			// indicate still loading
 			document.querySelector('#date').classList.add('loading');
 		}
 		if (obs?.features?.length > 0) {
-			const dataset = DataObs(obs, metaData, getOptions());
+			const dataset = prepObsData(obs, metaData, getOptions());
 			// update if temperature is available
 			updateCurrentTemperature(dataset);
 			// add the data to the plot
@@ -129,7 +124,7 @@ const formatData = (fcst, allObs, reset, normals) => {
 			obsRemoved.push(...dataset);
 			// update minimums for scrolling
 			// get plot limits
-			const { endOfLast, oldestData } = plotLimits();
+			const { endOfLast, oldestData } = plotLimits(metaData);
 			plot.getOptions().xaxis.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData]; // 12 hours - range of data
 			plot.getOptions().xaxis.panRange = [oldestData, endOfLast];
 			plot.getAxes().xaxis.options.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData];
@@ -153,34 +148,6 @@ const formatData = (fcst, allObs, reset, normals) => {
 	if (normals) {
 		formatData.normal = normals;
 	}
-};
-
-// calculate plotting limits
-const plotLimits = () => {
-	// if no metadata exists plot 7 days each way
-	if (!metaData.minTimestamp || !metaData.maxTimestamp || !metaData.oldestData) {
-		return {
-			beginningOfFirst: convertTimestamp(DateTime.now().startOf('day')),
-			endOfLast: convertTimestamp(DateTime.now().plus({ days: 7 }).endOf('day')),
-			oldestData: convertTimestamp(DateTime.now().plus({ days: -7 }).startOf('day')),
-		};
-	}
-	// calculate beginning of first day and end of last day to snap display to full days
-	return {
-		beginningOfFirst: convertTimestamp(metaData.minTimestamp.startOf('day')),
-		endOfLast: convertTimestamp(metaData.maxTimestamp.endOf('day')),
-		oldestData: convertTimestamp(metaData.oldestData.startOf('day')),
-	};
-};
-
-// plot data, public
-const plotData = (dataset) => {
-	// get plot limits
-
-	plot = plotForecast(dataset, metaData, plotLimits(), inchAxes); // plot function
-
-	// show the chart
-	chartVisibility(true);
 };
 
 // window resize, private
@@ -228,61 +195,6 @@ const getInfo = (type) => {
 		default:
 			return plot[type];
 	}
-};
-
-// chart visibility, public
-// show or hide the chart, with immediate option
-const chartVisibility = (show) => {
-	if (show) {
-		document.querySelector(CHART_CONTAINER_SELECTOR).classList.add('show');
-		document.querySelector('.chart-area-button-container').classList.add('show');
-		document.querySelector('#loading').classList.remove('show');
-	} else {
-		document.querySelector(CHART_CONTAINER_SELECTOR).classList.remove('show');
-		document.querySelector('.chart-area-button-container').classList.remove('show');
-		document.querySelector('#loading').classList.add('show');
-		forEachElem('#loading .centering>div', (elem) => elem.classList.remove('error'));
-	}
-};
-
-// read the visibility of each series and return an object for use with saving options
-const readVisibility = (withPoints) => {
-	const dataset = plot.getData();
-	const result = {};
-	dataset.forEach((series) => {
-		// look for new objects
-		if (!result?.[series.label]) {
-			result[series.label] = series.lines.show || (withPoints && series.points.show);
-		}
-	});
-	return result;
-};
-
-// get values for the y3 and y4 axes
-const inchAxes = (units) => {
-	const y3 = new ScaledNumber(0, 0, 1000, SCALES.INCHES);
-	const y4 = new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE);
-	const y5 = new ScaledNumber(0, 0, 1e7, SCALES.BAROMETER);
-	const y7 = new ScaledNumber(0, 0, 1000, SCALES.INCHES_ICE);
-
-	return {
-		y3: {
-			min: +y3.set(AXIS_LIMITS.y3.min, 1).setUnit(units),
-			max: +y3.set(AXIS_LIMITS.y3.max, 1).setUnit(units),
-		},
-		y4: {
-			min: +y4.set(AXIS_LIMITS.y4.min, 1).setUnit(units),
-			max: +y4.set(AXIS_LIMITS.y4.max, 1).setUnit(units),
-		},
-		y5: {
-			min: +y5.set(AXIS_LIMITS.y5.min, 1).setUnit(units),
-			max: +y5.set(AXIS_LIMITS.y5.max, 1).setUnit(units),
-		},
-		y7: {
-			min: +y7.set(AXIS_LIMITS.y7.min, 1).setUnit(units),
-			max: +y7.set(AXIS_LIMITS.y7.max, 1).setUnit(units),
-		},
-	};
 };
 
 // set the units
@@ -337,17 +249,6 @@ const toggleUnits = () => {
 	Menu.unitsChanged();
 };
 
-const updateCurrentTemperature = (dataset) => {
-	const temperatureData = dataset.find((d) => d.label === 'Temperature' && d.isObs);
-	if (temperatureData) {
-		const latestTemperature = temperatureData.data?.at?.(-1)?.[1];
-		const { scale } = temperatureData;
-		if (latestTemperature) {
-			document.querySelector('#current-temperature').innerHTML = latestTemperature.toFixed(scale.currentPrecision) + scale.currentUnitName;
-		}
-	}
-};
-
 // store and format the normal temperatures received
 const formatNormalTemperatures = (normals) => {
 	formatData(false, false, false, normals);
@@ -355,14 +256,25 @@ const formatNormalTemperatures = (normals) => {
 
 const getPlotData = () => plot?.getData?.();
 
+const init = () => {
+	// get timezone for conversion
+	convertTimestamp.timeZoneOffset = (new Date()).getTimezoneOffset() * 60_000; // time zone offset in milliseconds
+
+	// catch window resize and update plot
+	window.addEventListener('resize', windowResize);
+	// and call it now to do the initial resize
+	windowResize();
+
+	Menu.registerClickHandler('menu-units', toggleUnits);
+};
+
+// init
+document.addEventListener('DOMContentLoaded', () => init());
+
 export {
 	getInfo,
 	formatData,
-	chartVisibility,
 	setUnits,
-	readVisibility,
 	formatNormalTemperatures,
-	OLD_FORECAST_LIMIT,
-	CHART_CONTAINER_SELECTOR,
 	getPlotData,
 };

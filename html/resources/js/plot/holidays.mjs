@@ -115,7 +115,7 @@ Object.entries(holidaySource).forEach(([date, icon]) => {
 const lookup = (day) => dates[day.toFormat('L/d/yyyy')];
 
 // holiday icon lookup
-const holidayIcon = (day) => {
+const HolidayIcon = (day) => {
 	const icon = lookup(day);
 
 	// extract icon type and title text (or default)
@@ -124,4 +124,4 @@ const holidayIcon = (day) => {
 	return icon ? `<i class="fas fa-${iconType}" title="${iconTitle}"></i>` : '';
 };
 
-export default holidayIcon;
+export default HolidayIcon;

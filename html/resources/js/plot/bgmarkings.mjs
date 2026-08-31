@@ -3,33 +3,22 @@ import { AVAILABLE_TRENDS, DAY_BG_COLORS } from '../config.mjs';
 import { dark, convertTimestamp } from '../utils.mjs';
 import { getSavedLocation } from '../placemanager.mjs';
 
-const generator = (metaData) => {
-	const generateMarks = (axes) => {
-		const isDark = dark();
-		// days since epoch
-		const startDays = Math.floor(axes.xaxis.min / (1000 * 60 * 60 * 24));
+/* global SunCalc */
 
-		// calculate size of background boxes based on visible area
-		// light = daylight
+// dark vertical line at day boundaries
+const dayBoundaries = (startDays, axes, lineWidth) => {
+	const markings = [];
+	// reset to midnight on first day
+	let index = startDays * 24 * 60 * 60 * 1000;
+	do {
+		// vertical black line
+		markings.push({ xaxis: { from: index - lineWidth / 2, to: index + lineWidth / 2 }, color: '#000000' });
+		index += 2 * 12 * 60 * 60 * 1000;
+	} while (index < axes.xaxis.max);
+	return markings;
+};
 
-		// array of highlights
-		const markings = [];
-
-		markings.push(...dayNight(startDays, axes, isDark));
-
-		// calculate 5 px width for black line (as ms)
-		// since the plot is not yet drawn, we have to make a best guess about the width of the plot area based on the width of the chart placeholder
-		const lineWidth = axes.xaxis.c2p(2) - axes.xaxis.c2p(0);
-
-		markings.push(...dayBoundaries(startDays, axes, lineWidth));
-
-		// blue line at current time
-		const currentMillis = convertTimestamp(DateTime.local().setZone(metaData.minTimestamp.zone.name));
-		markings.push({ xaxis: { from: currentMillis - lineWidth / 3, to: currentMillis + lineWidth / 3 }, color: '#0000FF' });
-
-		return markings;
-	};
-
+const bgMarkingsGenerator = (metaData) => {
 	// day and night background colors based on sunrise/sunset
 	const dayNight = (startDays, axes, isDark) => {
 		const markings = [];
@@ -86,19 +75,33 @@ const generator = (metaData) => {
 		return markings;
 	};
 
+	const generateMarks = (axes) => {
+		const isDark = dark();
+		// days since epoch
+		const startDays = Math.floor(axes.xaxis.min / (1000 * 60 * 60 * 24));
+
+		// calculate size of background boxes based on visible area
+		// light = daylight
+
+		// array of highlights
+		const markings = [];
+
+		markings.push(...dayNight(startDays, axes, isDark));
+
+		// calculate 5 px width for black line (as ms)
+		// since the plot is not yet drawn, we have to make a best guess about the width of the plot area based on the width of the chart placeholder
+		const lineWidth = axes.xaxis.c2p(2) - axes.xaxis.c2p(0);
+
+		markings.push(...dayBoundaries(startDays, axes, lineWidth));
+
+		// blue line at current time
+		const currentMillis = convertTimestamp(DateTime.local().setZone(metaData.minTimestamp.zone.name));
+		markings.push({ xaxis: { from: currentMillis - lineWidth / 3, to: currentMillis + lineWidth / 3 }, color: '#0000FF' });
+
+		return markings;
+	};
+
 	return generateMarks;
 };
-// dark vertical line at day boundaries
-const dayBoundaries = (startDays, axes, lineWidth) => {
-	const markings = [];
-	// reset to midnight on first day
-	let index = startDays * 24 * 60 * 60 * 1000;
-	do {
-		// vertical black line
-		markings.push({ xaxis: { from: index - lineWidth / 2, to: index + lineWidth / 2 }, color: '#000000' });
-		index += 2 * 12 * 60 * 60 * 1000;
-	} while (index < axes.xaxis.max);
-	return markings;
-};
 
-export default generator;
+export default bgMarkingsGenerator;

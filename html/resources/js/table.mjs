@@ -1,27 +1,8 @@
 import { DateTime } from '../vendor/luxon.mjs';
 import * as Menu from './menu.mjs';
 import * as Tooltip from './tooltip.mjs';
-import { getPlotData, CHART_CONTAINER_SELECTOR } from './forecast/forecast.mjs';
-
-const TABLE_SELECTOR = '#table table';
-
-// initialize
-document.addEventListener('DOMContentLoaded', () => {
-	// add double click handler = select all
-	document.querySelector(TABLE_SELECTOR).addEventListener('dblclick', selectTable);
-	Menu.registerClickHandler('menu-table', toggleButton);
-});
-
-const showTable = (data) => {
-	// table html
-	const tableHtml = buildFullTable(data);
-
-	// put table on page
-	document.querySelector(TABLE_SELECTOR).innerHTML = tableHtml;
-
-	// show the table
-	toggleTable(true);
-};
+import { getPlotData } from './forecast/forecast.mjs';
+import { TABLE_SELECTOR, CHART_CONTAINER_SELECTOR } from './config.mjs';
 
 // build full table, private
 // builds a table with each individual data point
@@ -113,6 +94,17 @@ const toggleTable = (show, includeChart = true) => {
 	}
 };
 
+const showTable = (data) => {
+	// table html
+	const tableHtml = buildFullTable(data);
+
+	// put table on page
+	document.querySelector(TABLE_SELECTOR).innerHTML = tableHtml;
+
+	// show the table
+	toggleTable(true);
+};
+
 // select table, private
 // selects all text in table for easy copying
 const selectTable = () => {
@@ -136,6 +128,13 @@ const toggleButton = () => {
 		Tooltip.hideTextForecast();
 	}
 };
+
+// initialize
+document.addEventListener('DOMContentLoaded', () => {
+	// add double click handler = select all
+	document.querySelector(TABLE_SELECTOR).addEventListener('dblclick', selectTable);
+	Menu.registerClickHandler('menu-table', toggleButton);
+});
 
 export {
 	showTable,

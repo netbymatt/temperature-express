@@ -1,15 +1,9 @@
 import { DateTime, Duration } from '../vendor/luxon.mjs';
 import { getSavedLocation } from './placemanager.mjs';
 import * as Menu from './menu.mjs';
+import { DIALOG_SUN } from './config.mjs';
 
-const DIALOG_SUN = '#dialog-sun';
-
-// initialize
-document.addEventListener('DOMContentLoaded', () => {
-	document.querySelector('#dialog-sun.dialog .close').addEventListener('click', hide);
-	Menu.registerClickHandler('menu-sun', show);
-	Menu.registerCloseAll(hide);
-});
+/* globals SunCalc */
 
 // fill out the dialog data
 const sunInfo = () => {
@@ -52,3 +46,10 @@ const show = () => {
 const hide = () => {
 	document.querySelector(DIALOG_SUN).classList.remove('show');
 };
+
+// initialize
+document.addEventListener('DOMContentLoaded', () => {
+	document.querySelector('#dialog-sun.dialog .close').addEventListener('click', hide);
+	Menu.registerClickHandler('menu-sun', show);
+	Menu.registerCloseAll(hide);
+});

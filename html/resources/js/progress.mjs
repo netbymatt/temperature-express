@@ -4,21 +4,13 @@ let dialog;
 let element;
 let value = 0;
 
-document.addEventListener('DOMContentLoaded', () => {
-	// event handlers
-	document.querySelector('#dialog-messages-reset').addEventListener('click', refresh);
-	document.querySelector('#dialog-messages-copy').addEventListener('click', copy);
-	document.querySelector('#dialog-messages.dialog .close').addEventListener('click', hideMessages);
-	// document.getElementById('dialog-messages-retry').addEventListener('click', hideMessages);
+const show = () => {
+	element.classList.add('show');
+};
 
-	// get elements
-	element = document.querySelector('#progressbar');
-	dialog = document.querySelector('#dialog-messages');
-	messageContainer = dialog.querySelector('.content');
-
-	// setup the progress bar
-	progressBar(0);
-});
+const hide = () => {
+	element.classList.remove('show');
+};
 
 const progressBar = (newValue) => {
 	// typeof value === number
@@ -35,42 +27,6 @@ const progressBar = (newValue) => {
 	}
 
 	value = newValue;
-};
-
-// update the progress bar
-const set = (msg, _amount = 1, _error = false) => {
-	let amount = _amount;
-	let error = _error;
-	if (typeof amount === 'boolean') {
-		amount = 1;
-		error = amount;
-	}
-	// output message
-	message(msg, error, 'progress');
-	// update value
-	const newValue = value + amount;
-	// set progress bar
-	progressBar(newValue);
-	// show the progress bar
-	show();
-	// test for full and fade out progress bar
-	if (newValue >= max) {
-		hide();
-	}
-};
-
-const show = () => {
-	element.classList.add('show');
-};
-
-const hide = () => {
-	element.classList.remove('show');
-};
-
-const reset = (msg) => {
-	progressBar(0);
-	show();
-	message(`Loading new forecast: ${msg}`, false, 'new');
 };
 
 // error and style are optional
@@ -98,12 +54,42 @@ const message = (msg, _error = false, _style = '') => {
 	if (mustScroll) messageContainer.scrollTop = messageContainer.scrollHeight;
 };
 
+// update the progress bar
+const set = (msg, _amount = 1, _error = false) => {
+	let amount = _amount;
+	let error = _error;
+	if (typeof amount === 'boolean') {
+		amount = 1;
+		error = amount;
+	}
+	// output message
+	message(msg, error, 'progress');
+	// update value
+	const newValue = value + amount;
+	// set progress bar
+	progressBar(newValue);
+	// show the progress bar
+	show();
+	// test for full and fade out progress bar
+	if (newValue >= max) {
+		hide();
+	}
+};
+
+const reset = (msg) => {
+	progressBar(0);
+	show();
+	message(`Loading new forecast: ${msg}`, false, 'new');
+};
+
 const showMessages = () => {
 	dialog.classList.remove('initial-hide');
 	dialog.classList.add('show');
 	// always scroll to bottom, and again after expansion animation
 	messageContainer.scrollTop = messageContainer.scrollHeight;
-	setTimeout(() => { messageContainer.scrollTop = messageContainer.scrollHeight; }, 500);
+	setTimeout(() => {
+		messageContainer.scrollTop = messageContainer.scrollHeight;
+	}, 500);
 };
 
 const hideMessages = () => {
@@ -129,6 +115,22 @@ const copy = () => {
 		setTimeout(() => dialog.classList.remove('copy-animation'), 300);
 	});
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+	// event handlers
+	document.querySelector('#dialog-messages-reset').addEventListener('click', refresh);
+	document.querySelector('#dialog-messages-copy').addEventListener('click', copy);
+	document.querySelector('#dialog-messages.dialog .close').addEventListener('click', hideMessages);
+	// document.getElementById('dialog-messages-retry').addEventListener('click', hideMessages);
+
+	// get elements
+	element = document.querySelector('#progressbar');
+	dialog = document.querySelector('#dialog-messages');
+	messageContainer = dialog.querySelector('.content');
+
+	// setup the progress bar
+	progressBar(0);
+});
 
 export {
 	set, reset, message, showMessages, hideMessages,

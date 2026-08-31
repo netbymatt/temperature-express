@@ -22,12 +22,15 @@ const getSavedLocation = () => {
 	return { ...DEFAULT_PLACE };
 };
 
-// save provided location structure
-const saveLocation = (saveObj) => {
-	if (!localStorage.setItem) return;
-	localStorage.setItem('location', JSON.stringify(saveObj));
-	// save it to the history list
-	savePlace(saveObj);
+// get list of saved places
+// newest saved place is at index 0
+const getSavedPlaces = () => {
+	if (!localStorage.getItem) return [];
+
+	// check for object in browser data store
+	const saveStr = localStorage.getItem('savedLocations');
+	if (!saveStr) return [];
+	return JSON.parse(saveStr);
 };
 
 // save a previous place to the previous place list
@@ -38,8 +41,8 @@ const savePlace = (newPlace) => {
 	// see if there is a match between the new place and any existing place
 	const match = saved.findIndex((val) => (
 		val.pointX === newPlace.pointX
-				&& val.pointY === newPlace.pointY
-				&& val.office === newPlace.office
+		&& val.pointY === newPlace.pointY
+		&& val.office === newPlace.office
 	));
 
 	// if there's a match remove the existing item
@@ -54,15 +57,12 @@ const savePlace = (newPlace) => {
 	localStorage.setItem('savedLocations', JSON.stringify(saved.splice(0, 5)));
 };
 
-// get list of saved places
-// newest saved place is at index 0
-const getSavedPlaces = () => {
-	if (!localStorage.getItem) return [];
-
-	// check for object in browser data store
-	const saveStr = localStorage.getItem('savedLocations');
-	if (!saveStr) return [];
-	return JSON.parse(saveStr);
+// save provided location structure
+const saveLocation = (saveObj) => {
+	if (!localStorage.setItem) return;
+	localStorage.setItem('location', JSON.stringify(saveObj));
+	// save it to the history list
+	savePlace(saveObj);
 };
 
 export {

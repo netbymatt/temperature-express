@@ -1,6 +1,29 @@
 import { DateTime } from '../../vendor/luxon.mjs';
 
-const formatter = (val, axis) => {
+// tick size, private
+// returns the size of the tick in milliseconds
+// tickSize[0] = numeric, [1] = units
+const tickMs = (tickSize) => {
+	switch (tickSize[1]) {
+		case 'year':
+			return 1000 * 60 * 60 * 24 * 365 * tickSize[0];
+		case 'month':
+			return ((1000 * 60 * 60 * 24 * 365) / 12) * tickSize[0];
+		case 'day':
+			return 1000 * 60 * 60 * 24 * tickSize[0];
+		case 'hour':
+			return 1000 * 60 * 60 * tickSize[0];
+		case 'minute':
+			return 1000 * 60 * tickSize[0];
+		case 'second':
+			return 1000 * tickSize[0];
+
+		default:
+			return false;
+	}
+};
+
+const TickFormatter = (val, axis) => {
 	// calculate axis total time range (hours)
 	const axisHours = Math.round(((axis.max - axis.min) / 1000 / 60 / 60) * 10) / 10;
 	// determine if this is the first tick
@@ -30,27 +53,4 @@ const formatter = (val, axis) => {
 	return tick;
 };
 
-// tick size, private
-// returns the size of the tick in milliseconds
-// tickSize[0] = numeric, [1] = units
-const tickMs = (tickSize) => {
-	switch (tickSize[1]) {
-		case 'year':
-			return 1000 * 60 * 60 * 24 * 365 * tickSize[0];
-		case 'month':
-			return ((1000 * 60 * 60 * 24 * 365) / 12) * tickSize[0];
-		case 'day':
-			return 1000 * 60 * 60 * 24 * tickSize[0];
-		case 'hour':
-			return 1000 * 60 * 60 * tickSize[0];
-		case 'minute':
-			return 1000 * 60 * tickSize[0];
-		case 'second':
-			return 1000 * tickSize[0];
-
-		default:
-			return false;
-	}
-};
-
-export default formatter;
+export default TickFormatter;

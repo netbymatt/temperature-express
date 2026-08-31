@@ -53,7 +53,7 @@ const formatData = (fcst, allObs, reset, normals) => {
 		clearTimeout(obsTimeoutHandle);
 		obsTimeoutHandle = null;
 		formatData.obs = undefined;
-		formatData.normal = undefined;
+		formatData.normals = undefined;
 		Tooltip.generateTextForecastData();
 	}
 
@@ -65,9 +65,9 @@ const formatData = (fcst, allObs, reset, normals) => {
 
 		// prepare and plot the data
 		const dataset = prepForecastData(fcst, metaData, getOptions());
-		if (formatData.normal) {
-			dataset.push(...formatData.normal);
-			formatData.normal = undefined;
+		if (formatData.normals) {
+			dataset.push(...formatData.normals);
+			formatData.normals = undefined;
 		}
 		plotData(dataset);
 
@@ -130,9 +130,8 @@ const formatData = (fcst, allObs, reset, normals) => {
 			plot.getAxes().xaxis.options.zoomRange = [11 * 60 * 60 * 1000, endOfLast - oldestData];
 			plot.getAxes().xaxis.options.panRange = [oldestData, endOfLast];
 
-			if (formatData.normal) {
-				obsRemoved.push(...formatData.normal);
-				formatData.normal = undefined;
+			if (formatData.normals) {
+				obsRemoved.push(...formatData.normals);
 			}
 
 			// redraw the plot
@@ -146,7 +145,7 @@ const formatData = (fcst, allObs, reset, normals) => {
 	} // observation data provided
 
 	if (normals) {
-		formatData.normal = normals;
+		formatData.normals = normals;
 	}
 };
 

@@ -22,7 +22,7 @@ app.use('/products', apiPassthru);
 // root document
 app.use('/', (req, res, next) => {
 	if (req.originalUrl === '/') {
-		res.render(path.join(__dirname, './html/index'), { version: null, _apiUrl: `http://localhost:${PORT}/` });
+		res.render(path.join(__dirname, './html/index'), { version: null, _apiUrl: '/' });
 	} else {
 		next();
 	}

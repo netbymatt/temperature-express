@@ -51,9 +51,13 @@ const makeObsTrend = (obs, config, name) => {
 				observedValue = decodeClouds(item.properties.cloudLayers);
 				break;
 			default:
-				observedValue = config.valueFunction
-					? config.valueFunction(item.properties[name].value)
-					: +item.properties[name].value;
+				if (item.properties[name] !== undefined) {
+					observedValue = config.valueFunction
+						? config.valueFunction(item.properties[name].value)
+						: +item.properties[name].value;
+				} else {
+					observedValue = null;
+				}
 		}
 
 		if (ALLOWED_NULLS.includes(name) && !observedValue) return null;

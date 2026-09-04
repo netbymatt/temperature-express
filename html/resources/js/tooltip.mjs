@@ -24,6 +24,15 @@ const fillTextForecast = (timestamp) => {
 };
 
 const handler = (event) => {
+	// false clears out the tooltip
+	if (event === false) {
+		if (handler.elem) {
+			handler.elem.classList.remove('show');
+		}
+		// clear out the text forecast
+		fillTextForecast();
+		return;
+	}
 	const [, item] = event.detail;
 	// memoize tooltip
 	if (!handler.elem) {

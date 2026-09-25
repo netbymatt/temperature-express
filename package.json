@@ -11,7 +11,7 @@
 		"build": "npm run build:html && npm run build:css"
 	},
 	"funding": [
-		"https://buymeacoffee.com/temp.exp"
+		"https://buymeacoffee.com/weatherstar4000"
 	],
 	"repository": {
 		"type": "git",

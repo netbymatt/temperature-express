@@ -20,7 +20,7 @@ const received = async (stations, _place) => {
 	} catch (error) {
 		ProgressBar.set('Station identifier not available', 2, true);
 		ProgressBar.message(error, true);
-		Forecast.formatData(false, 0);// special "no data present case"
+		Forecast.setObservations(null); // observations not available
 	}
 };
 
@@ -38,7 +38,7 @@ const get = async (baseUrl, place) => {
 	} catch (error) {
 		ProgressBar.set('Get stations failed!', 2, true);
 		ProgressBar.message(error);
-		Forecast.formatData(false, 0);	// special "no data present case"
+		Forecast.setObservations(null); // observations not available
 	}
 };
 

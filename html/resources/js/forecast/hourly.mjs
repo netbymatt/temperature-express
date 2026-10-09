@@ -31,7 +31,7 @@ const getHourlyForecastRetry = async (url, count = 0) => {
 			const data = await response.json();
 			// if fresh update the chart
 			if (forecastIsFresh(data)) {
-				Forecast.formatData(data, false);
+				Forecast.setForecast(data);
 				return;
 			}
 		} catch (error) {
@@ -58,7 +58,7 @@ const getHourly = async (baseUrl) => {
 			getHourlyForecastRetry(baseUrl);
 		}
 		// store the data
-		Forecast.formatData(data, false);
+		Forecast.setForecast(data);
 	} catch {
 		ProgressBar.message('Get hourly forecast failed', true);
 		stillRetrying(0, 2);

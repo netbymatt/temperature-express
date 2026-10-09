@@ -98,7 +98,7 @@ const legendUpdate = () => {
 	Forecast.getInfo('setData')(dataset);
 	Forecast.getInfo('draw')();
 	// store the new options
-	saveOptions('visible', readVisibility(true));
+	saveOptions('visible', readVisibility(true, dataset));
 	// close the dialog
 	hide();
 };

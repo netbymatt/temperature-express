@@ -33,10 +33,10 @@ const get = async (place) => {
 		} catch {
 			// see if the other data arrived
 			ProgressBar.set('Get observations failed!', true);
-			Forecast.formatData(false, 0);	// special "no data present case"
+			Forecast.setObservations(null); // observations not available
 			return;
 		}
-		Forecast.formatData(false, { data, station: place.station });
+		Forecast.setObservations({ data, station: place.station });
 	}
 };
 

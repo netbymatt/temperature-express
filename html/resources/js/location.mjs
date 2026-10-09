@@ -50,7 +50,7 @@ const pointReceived = (point, _place) => {
 	saveLocation(place);
 
 	// clear any stored data on the plot and hide the alert icon
-	Forecast.formatData(false, false, true);
+	Forecast.reset();
 	Alerts.updateButtonState(true);
 
 	// calculate base url
